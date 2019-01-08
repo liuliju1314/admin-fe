@@ -11,10 +11,33 @@ const routes = [
         ]
     },
     {
+        path: '/device', component: LayOut, children: [
+            { path: '', component: () => import('@/views/device/DeviceList') }
+        ]
+    },
+    {
         path: '/404', component: LayOut, children: [
             { path: '', component: () => import('@/views/errorPage/404') }
         ]
 
+    },
+    {
+        path: '/product',
+        component: LayOut,
+        children: [   
+            {
+                path: "addgroup",
+                component: () => import('@/views/device/DeviceList')
+            },
+            {
+                path: "addproduct",
+                component: () => import('@/views/device/DeviceList')
+            },
+            {
+                path: "addattribute",
+                component: () => import('@/views/device/DeviceList')
+            },  
+        ]
     },
     { path: '*', redirect: '/404' }
 ]
