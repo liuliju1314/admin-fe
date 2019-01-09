@@ -14,30 +14,41 @@ const routes = [
         path: '/device', component: LayOut, children: [
             { path: '', component: () => import('@/views/device/DeviceList') }
         ]
-    },
-    {
-        path: '/404', component: LayOut, children: [
-            { path: '', component: () => import('@/views/errorPage/404') }
-        ]
-
-    },
+    },   
     {
         path: '/product',
         component: LayOut,
         children: [   
             {
                 path: "addgroup",
-                component: () => import('@/views/device/DeviceList')
+                component: () => import('@/views/example/ExampleVue')
             },
             {
                 path: "addproduct",
-                component: () => import('@/views/device/DeviceList')
+                component: () => import('@/views/example/ExampleVue')
             },
             {
                 path: "addattribute",
-                component: () => import('@/views/device/DeviceList')
+                component: () => import('@/views/example/ExampleVue')
             },  
         ]
+    },
+    {
+        path: '/fireware', component: LayOut, children: [
+            { path: '', component: () => import('@/views/fireware/FirewareManage') }
+        ]
+    },
+    {
+        path: '/user', component: LayOut, children: [
+            { path: '', component: () => import('@/views/user/AccountManage') }
+        ]
+
+    },
+    {
+        path: '/404', component: LayOut, children: [
+            { path: '', component: () => import('@/views/errorPage/404') }
+        ]
+
     },
     { path: '*', redirect: '/404' }
 ]

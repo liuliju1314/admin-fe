@@ -4,7 +4,14 @@
             <span>设备DID：{{did}}</span>
         </div>
         <div>
-            <span>设备固件版本：{{fwVersion}}</span>
+            <span>
+                设备固件版本：
+                <ol>
+                <li v-for="(item,index) in fwVersion" :key="index">
+                    {{ item }}
+                </li>
+            </ol>
+            </span>
         </div>
 
         <!-- 循环的设备列表 -->
@@ -15,7 +22,7 @@
             <el-table-column prop="desc" label="正式版"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="handleClick(scope.row)" type="text" size="small">升级</el-button>
+                    <el-button @click="handleUpgrade(scope.row)" type="text" size="small">升级</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -31,7 +38,11 @@
     data () {
       return {
           did: 1,
-          fwVersion: {default: "0.0.2"},
+          fwVersion: [
+              {default: "0.0.2"},
+              {default: "0.0.3"},
+              {default: "0.0.2"},
+          ],
           firmwareList: [{
             createdAt: "2019-01-06T11:01:06.935Z",
             desc: "正式版",

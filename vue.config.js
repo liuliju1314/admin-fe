@@ -64,12 +64,12 @@ module.exports = {
         port: 8080,
         https: false,
         hotOnly: false,
-        // proxy: {
-        //     '/api': {
-        //         target: '', // 设置你调用的接口域名和端口号
-        //         changeOrigin: true,   // 跨域
-        //     }
-        // }
+        proxy: {
+            "/api": {
+                target: "http://47.107.91.58:11021", // 设置你调用的接口域名和端口号
+                changeOrigin: true // 跨域
+            },
+        }
     },
 
     pluginOptions: {

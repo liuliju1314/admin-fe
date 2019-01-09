@@ -12,8 +12,7 @@
                         placeholder="请选择设备类型"
                         size="small"
                     >
-                        <el-option label="全部" :value="1"></el-option>
-                        <el-option label="遥测雨量计" :value="2"></el-option>
+                        <el-option label="遥测雨量计" :value="0"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="绑定状态">
@@ -22,9 +21,8 @@
                         placeholder="请选择绑定状态"
                         size="small"
                     >
-                        <el-option label="全部" :value="1"></el-option>
-                        <el-option label="在线" :value="2"></el-option>
-                        <el-option label="离线" :value="3"></el-option>
+                        <el-option label="在线" :value="0"></el-option>
+                        <el-option label="离线" :value="1"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -53,8 +51,18 @@
                         <el-button
                             type="text"
                             size="small"
+                            @click="handleTest(scope.row)"
+                        >测试</el-button>
+                        <el-button
+                            type="text"
+                            size="small"
                             @click="handleUpgrade(scope.row)"
                         >升级</el-button>
+                        <el-button
+                            type="text"
+                            size="small"
+                            @click="handleMore(scope.row)"
+                        >更多</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -74,6 +82,11 @@
                   <el-button @click="dialogVisible = false">取 消</el-button>
                 </span>
             </el-dialog>
+        </div>
+        <!-- 显示更多操作 -->
+        <div>
+            <el-button @click="dialogVisible = false">编辑</el-button>
+            <el-button @click="dialogVisible = false">删除</el-button>
         </div>
     </el-card>
 </template>
@@ -145,6 +158,7 @@ import DeviceUpgrade from "./DeviceUpgrade";
             dialogVisible: false,
             title: "",
             value: "",
+            count: ""
         };
     },
 
@@ -163,16 +177,33 @@ import DeviceUpgrade from "./DeviceUpgrade";
       indexMethod(index) {
         return index + 1;
       },
+      handleTest() {
+        console.log("测试")
+      },
       handleUpgrade() {
         this.dialogVisible = true
         console.log("升级")
+      },
+      handleMore() {
+        console.log("更多")
       },
       isOnline(val) {
         if(val.online == true)
           {return "在线"}
         else if (val.online == false)
           {return "离线"}
+      },
+      //去除大括号
+      removeBlock(str) {
+        if (str) {
+            var reg = /^\{/gi;
+            var reg2 = /\}$/gi;
+            str = str.replace(reg, '');
+            str = str.replace(reg2, '');
+        } 
+        return str;
       }
+
     },
 
     watch: {}
