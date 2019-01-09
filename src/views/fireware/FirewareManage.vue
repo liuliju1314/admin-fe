@@ -46,9 +46,9 @@
         class="dialogList"
         :title="title"
         :visible.sync="dialogVisible"
-        width="80%"
+        width="50%"
         center
-        top="5vh"
+        top="15vh"
     >
         <component :is="componentId" :firewareForm="firewareInformation"></component>
         <span slot="footer" class="dialog-footer">

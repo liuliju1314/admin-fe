@@ -8,7 +8,7 @@
         <el-input v-model="firewareForm.version"></el-input>
     </el-form-item>
     <el-form-item label="固件分组">
-        <el-select v-model="firewareForm.release">
+        <el-select v-model="firewareForm.group">
             <el-option label="正式版" value="release"></el-option>
             <el-option label="测试版" value="develop"></el-option>
         </el-select>
@@ -34,6 +34,10 @@
     components: {},
 
     computed: {},
+
+    created() {
+        this.firewareForm.group = this.firewareForm.group;
+    },
 
     beforeMount() {},
 

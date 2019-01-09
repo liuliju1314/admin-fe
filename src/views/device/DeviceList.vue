@@ -31,7 +31,6 @@
             </el-form>   
             <!-- 循环的设备列表 -->
             <el-table :data="deviceList" style="width: 100%; margin-top: 12px">
-                <el-table-column type="index" :index="indexMethod"></el-table-column>
                 <el-table-column prop="model" label="产品型号"></el-table-column>
                 <el-table-column prop="name" label="产品名字"></el-table-column>
                 <el-table-column prop="hwID" label="设备编号"></el-table-column>
@@ -39,14 +38,14 @@
                 <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
                 <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
                 <el-table-column prop="props.count" label="计数传感器"></el-table-column>
-                <el-table-column label="软件版本号">
+                <el-table-column label="软件版本号" :formatter="removeBlock">
                     <template slot-scope="scope">
                       <span>{{scope.row.fwVersion}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
                 <el-table-column prop="online" label="在线状态" :formatter="isOnline"></el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width = 150>
                     <template slot-scope="scope">
                         <el-button
                             type="text"
@@ -57,12 +56,17 @@
                             type="text"
                             size="small"
                             @click="handleUpgrade(scope.row)"
-                        >升级</el-button>
-                        <el-button
+                        >升级</el-button>  
+                        <div
                             type="text"
-                            size="small"
-                            @click="handleMore(scope.row)"
-                        >更多</el-button>
+                            style="display: inline-block"
+                        >
+                        <div @click="btnShow = scope.row.did">更多</div> 
+                        <div style="position:absolute;top: 20px;left: 20px" v-if="btnShow === scope.row.did">
+                            <div type="text" size="small" @click="handleUpgrade(scope.row)">第一个</div>
+                            <div type="text" size="small" @click="handleUpgrade(scope.row)">第二个</div>
+                        </div>
+                        </div>  
                     </template>
                 </el-table-column>
             </el-table>
@@ -82,11 +86,6 @@
                   <el-button @click="dialogVisible = false">取 消</el-button>
                 </span>
             </el-dialog>
-        </div>
-        <!-- 显示更多操作 -->
-        <div>
-            <el-button @click="dialogVisible = false">编辑</el-button>
-            <el-button @click="dialogVisible = false">删除</el-button>
         </div>
     </el-card>
 </template>
@@ -126,7 +125,7 @@ import DeviceUpgrade from "./DeviceUpgrade";
                 broken: false,
                 brokenAt: "0001-01-01T00:00:00Z",
                 createdAt: "2019-01-05T04:37:26.457Z",
-                did: "460045357201156",
+                did: "460045357201157",
                 fwVersion: {default: "0.0.2"},
                 group: "release",
                 hwID: "460045357201156",
@@ -142,10 +141,10 @@ import DeviceUpgrade from "./DeviceUpgrade";
                 broken: false,
                 brokenAt: "0001-01-01T00:00:00Z",
                 createdAt: "2019-01-05T04:37:26.457Z",
-                did: "460045357201156",
+                did: "460045357201106",
                 fwVersion: {default: "0.0.2"},
                 group: "release",
-                hwID: "460045357201156",
+                hwID: "46004535720115",
                 hwVersion: "",
                 model: "YL3800",
                 name: "遥测雨量计",
@@ -158,7 +157,8 @@ import DeviceUpgrade from "./DeviceUpgrade";
             dialogVisible: false,
             title: "",
             value: "",
-            count: ""
+            count: "",
+            btnShow: false
         };
     },
 
@@ -173,9 +173,6 @@ import DeviceUpgrade from "./DeviceUpgrade";
     methods: {
       handlePage() {
         console.log("查询")
-      },
-      indexMethod(index) {
-        return index + 1;
       },
       handleTest() {
         console.log("测试")
@@ -202,8 +199,10 @@ import DeviceUpgrade from "./DeviceUpgrade";
             str = str.replace(reg2, '');
         } 
         return str;
+      },
+      showMore(){
+          this.btnShow = true
       }
-
     },
 
     watch: {}
