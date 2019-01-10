@@ -6,7 +6,7 @@
     <div class="content">
         <div class="table-wrapper">
             <div class="btn-box">
-                <el-button type="primary" size="small" @click="handleShowStation(0)">+ 添加固件</el-button>
+                <el-button type="primary" size="small" @click="handleShowDialog(0)">+ 添加固件</el-button>
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@
                 <el-button
                     type="text"
                     size="small"
-                    @click="handleShowStation(1,scope.row,)"
+                    @click="handleShowDialog(1,scope.row,)"
                 >修改</el-button>
                 <el-button
                     type="text"
@@ -109,7 +109,7 @@ import EditFireware from "./EditFireware";
             console.log("添加成功")
         },
         // 点击显示不同对话框
-        handleShowStation(value,firewareManger) {
+        handleShowDialog(value,firewareManger) {
             this.dialogVisible = true;
             this.firewareInformation = firewareManger;
             // console.log(firewareManger)

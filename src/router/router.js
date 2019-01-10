@@ -29,7 +29,7 @@ const routes = [
             },
             {
                 path: "addattribute",
-                component: () => import('@/views/example/ExampleVue')
+                component: () => import('@/views/product/property/PropertyList')
             },  
         ]
     },

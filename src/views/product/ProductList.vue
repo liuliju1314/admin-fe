@@ -7,7 +7,7 @@
             <div class="content">
                 <div class="table-wrapper">
                     <div class="btn-box">
-                        <el-button type="primary" size="small" @click="handleShowStation()">+ 添加产品</el-button>
+                        <el-button type="primary" size="small" @click="handleShowProduct()">+ 添加产品</el-button>
                     </div>
                 </div>
             </div>       
@@ -52,7 +52,17 @@
                 ></el-pagination>
             </div>
         </div>
+
+        <!-- 添加属性对话框 -->
+        <el-dialog title="添加新固件" :visible.sync="dialogVisible" width="60%">
+            <add-fireware></add-fireware>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addFireware()">确 定</el-button>
+            </span>
+        </el-dialog>
     </el-card>
+
 </template>
 
 <script>

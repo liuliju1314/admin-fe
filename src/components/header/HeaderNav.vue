@@ -5,7 +5,7 @@
             <svg-icon v-else icon-class="open"></svg-icon>
         </li>
         <li class="nav-item right-menu">
-            <el-dropdown>
+            <el-dropdown @command="handleCommand">
                 <div class="el-dropdown-link">
                     <span>user</span>
                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -38,6 +38,13 @@ export default {
             this.isCollapse = !this.isCollapse;
             console.log(this.isCollapse);
             this.$emit("listenCollapse", this.isCollapse);
+        },
+        handleCommand(command) {
+            if(command == 'logout'){
+                this.$store.dispatch("UserLogout").then(() => {
+                    this.$router.push("/login");
+                });
+            }
         }
     }
 };

@@ -1,7 +1,7 @@
 // import { userLogin, userLogout } from '@/api/user/user'
-import { userLogin } from "@/api/user/user";
+import { userLogin,userLogout} from "@/api/user/user";
 // import { setToken, getStorage, getJsonStorage, setStorage } from '@/utils/auth';
-import { setToken, getStorage, setStorage } from '@/utils/auth';
+import { setToken, removeToken, getStorage, setStorage } from '@/utils/auth';
 
 const user = {
     state: {
@@ -33,6 +33,20 @@ const user = {
                 })
             })
         },
+        UserLogout({ commit }) {
+            return new Promise((resolve, reject) => {
+                userLogout()
+                    .then(() => {
+                        commit('SET_TOKEN', "")
+                        removeToken()
+                        localStorage.clear();                      
+                        resolve();
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            });
+        }
         // UserLogout({ commit, state }) {
         //     return new Promise((resolve, reject) => {
         //         userLogout(state.id).then(() => {

@@ -11,8 +11,8 @@ export function userLogin(data) {
 // 退出
 export function userLogout(data) {
     return service({
-        url: '/api/user/logout',
+        url: '/web/logout',
         method: 'get',
-        param: data
+        params: data
     })
 }
