@@ -12,6 +12,6 @@ export const menus = [
     },
     { name: "设备管理", icon: "manage", path: "/device"},
     { name: "固件管理", icon: "product", path: "/fireware" },
-    { name: "账号管理", icon: "user", path: "/user" }
+    { name: "账号管理", icon: "account", path: "/user" }
 ];
 

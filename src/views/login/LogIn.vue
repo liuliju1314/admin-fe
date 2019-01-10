@@ -2,11 +2,11 @@
     <div class="login-box">
         <div class="login-title">账号登录</div>
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on">
-            <el-form-item prop="username" :error="errors.userLoginError">
+            <el-form-item prop="phone" :error="errors.userLoginError">
                 <span class="svg-container">
                     <svg-icon icon-class="user" />
                 </span>
-                <el-input v-model="loginForm.username" placeholder="用户名" name="username" type="text" auto-complete="on" />
+                <el-input v-model="loginForm.phone" placeholder="用户名" name="phone" type="text" auto-complete="on" />
             </el-form-item>
 
             <el-form-item prop="password">
@@ -23,17 +23,16 @@
 </template>
 
 <script>
-import { userLogin } from "@/api/user/user";
 export default {
     name: "LogIn",
     data() {
         return {
             loginForm: {
-                username: "",
+                phone: "",
                 password: ""
             },
             loginRules: {
-                username: [
+                phone: [
                     {
                         required: true,
                         message: "请输入用户名",
@@ -59,9 +58,7 @@ export default {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
-                    // this.$store
-                    //     .dispatch("userLogin", this.loginForm)
-                    userLogin(this.loginForm)
+                    this.$store.dispatch("UserLogin", this.loginForm)
                         .then(() => {
                             this.loading = false;
                             this.$router.push("/home");

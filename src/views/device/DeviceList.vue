@@ -8,21 +8,21 @@
                 <!-- 测站类型框 -->
                 <el-form-item label="设备类型">
                     <el-select
-                        v-model="form.stationType"
+                        v-model="form.model"
                         placeholder="请选择设备类型"
                         size="small"
                     >
-                        <el-option label="遥测雨量计" :value="0"></el-option>
+                        <el-option label="遥测雨量计" value="YL3800"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="绑定状态">
                     <el-select
-                        v-model="form.binded"
+                        v-model="form.online"
                         placeholder="请选择绑定状态"
                         size="small"
                     >
-                        <el-option label="在线" :value="0"></el-option>
-                        <el-option label="离线" :value="1"></el-option>
+                        <el-option label="在线" value="true"></el-option>
+                        <el-option label="离线" value="false"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -71,12 +71,12 @@
                 </el-table-column>
             </el-table>
             <!-- 分页逻辑 -->
-            <div class="pagination-box" v-if="form.pageSize < deviceList.length">
+            <div class="pagination-box" v-if="form.pageSize < count">
                 <el-pagination
                     :page-size="form.pageSize"
                     :page="form.page"
                     layout="prev, pager, next"
-                    :total="deviceList.length"
+                    :total="count"
                     @current-change="handlePage"
                 ></el-pagination>
             </div>
@@ -92,7 +92,7 @@
 
 <script>
 import DeviceUpgrade from "./DeviceUpgrade";
-
+import { DeviceList } from "@/api/device/device";
   export default {
     name:'',
     props:[''],
@@ -100,60 +100,12 @@ import DeviceUpgrade from "./DeviceUpgrade";
       return {
             form: {
                 page: 1,
-                pageSize: 10,
-                stationType: "",
-                binded: "",
+                pageSize: 6,
+                model: "",
+                online: "",
                 isPage: true
             },
-            deviceList: [{
-                broken: false,
-                brokenAt: "0001-01-01T00:00:00Z",
-                createdAt: "2019-01-05T04:37:26.457Z",
-                did: "460045357201156",
-                fwVersion: {default: "0.0.2"},
-                group: "release",
-                hwID: "460045357201156",
-                hwVersion: "",
-                model: "YL3800",
-                name: "遥测雨量计",
-                online: true,
-                pid: "1z0zbfe0db5",
-                props: {batVolt: 10.746, chgVolt: 12.6445, count: 0, rssi: 12},
-                updatedAt: "2019-01-08T07:11:38.644Z"
-            },
-            {
-                broken: false,
-                brokenAt: "0001-01-01T00:00:00Z",
-                createdAt: "2019-01-05T04:37:26.457Z",
-                did: "460045357201157",
-                fwVersion: {default: "0.0.2"},
-                group: "release",
-                hwID: "460045357201156",
-                hwVersion: "",
-                model: "YL3800",
-                name: "遥测雨量计",
-                online: true,
-                pid: "1z0zbfe0db5",
-                props: {batVolt: 10.746, chgVolt: 12.6445, count: 0, rssi: 12},
-                updatedAt: "2019-01-08T07:11:38.644Z"
-            },
-            {
-                broken: false,
-                brokenAt: "0001-01-01T00:00:00Z",
-                createdAt: "2019-01-05T04:37:26.457Z",
-                did: "460045357201106",
-                fwVersion: {default: "0.0.2"},
-                group: "release",
-                hwID: "46004535720115",
-                hwVersion: "",
-                model: "YL3800",
-                name: "遥测雨量计",
-                online: false,
-                pid: "1z0zbfe0db5",
-                props: {batVolt: 10.746, chgVolt: 12.6445, count: 0, rssi: 12},
-                updatedAt: "2019-01-08T07:11:38.644Z"
-            }
-            ],
+            deviceList: [],
             dialogVisible: false,
             title: "",
             value: "",
@@ -170,10 +122,27 @@ import DeviceUpgrade from "./DeviceUpgrade";
 
     mounted() {},
 
+    created() {
+        this.getDeviceList();
+    },
+
     methods: {
-      handlePage() {
-        console.log("查询")
+      //获取设备列表
+      getDeviceList() {
+        DeviceList(this.form)
+            .then(res => {
+                this.deviceList = res.payload.result;
+                this.count = res.payload.count;
+            })
+            .catch(error => {
+                return error;
+            });
       },
+      //分页
+      handlePage(value) {
+            this.form.page = value;
+            this.getDeviceList();
+        },
       handleTest() {
         console.log("测试")
       },
@@ -199,10 +168,7 @@ import DeviceUpgrade from "./DeviceUpgrade";
             str = str.replace(reg2, '');
         } 
         return str;
-      },
-    //   showMore() {
-    //       this.btnShow = true
-    //   }
+      }
     },
 
     watch: {}

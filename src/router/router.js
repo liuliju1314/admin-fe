@@ -25,7 +25,7 @@ const routes = [
             },
             {
                 path: "addproduct",
-                component: () => import('@/views/example/ExampleVue')
+                component: () => import('@/views/product/ProductList')
             },
             {
                 path: "addattribute",
