@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { userLogin } from "@/api/user/user";
 export default {
     name: "LogIn",
     data() {
@@ -58,15 +59,22 @@ export default {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
-                    this.$store
-                        .dispatch("UserLogin", this.loginForm)
-                        .then(() => {  
-                            // 验证用户是否绑定手机
+                    // this.$store
+                    //     .dispatch("userLogin", this.loginForm)
+                    userLogin(this.loginForm)
+                        .then(() => {
                             this.loading = false;
-                            this.$router.push("/home");                               
-                        }).cacth( error => {
-                            return error
+                            this.$router.push("/home");
                         })
+                        .catch(error => {
+                            this.loading = false;
+                            if (error.code === 10102 || error.code === 10103) {
+                                this.errors.userLoginError = error.message;
+                            }
+                            if (error.code === 10105) {
+                                this.errors.verifyCodeError = error.message;
+                            }
+                        });
                 }
             });
         }

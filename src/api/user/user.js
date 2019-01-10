@@ -1,14 +1,14 @@
 import service from "@/utils/request";
 
-// 登入
+// 登录
 export function userLogin(data) {
     return service({
-        url: '/api/user/login',
+        url: '/web/login',
         method: 'post',
         data
     })
 }
-// 登出
+// 退出
 export function userLogout(data) {
     return service({
         url: '/api/user/logout',

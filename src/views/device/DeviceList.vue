@@ -59,12 +59,12 @@
                         >升级</el-button>  
                         <div
                             type="text"
-                            style="display: inline-block"
+                            style="display: inline-block;margin-left: 10px;font-size: 12px;"
                         >
-                        <div @click="btnShow = scope.row.did">更多</div> 
-                        <div style="position:absolute;top: 20px;left: 20px" v-if="btnShow === scope.row.did">
-                            <div type="text" size="small" @click="handleUpgrade(scope.row)">第一个</div>
-                            <div type="text" size="small" @click="handleUpgrade(scope.row)">第二个</div>
+                        <div @click="btnShow = scope.row.did" style="color: #409EFF;">更多</div> 
+                        <div class="morebox" v-if="btnShow === scope.row.did">
+                            <div type="text" size="small" @click="handleUpgrade(scope.row)" class="moreitem">第一个</div>
+                            <div type="text" size="small" @click="handleUpgrade(scope.row)" class="moreitem">第二个</div>
                         </div>
                         </div>  
                     </template>
@@ -200,9 +200,9 @@ import DeviceUpgrade from "./DeviceUpgrade";
         } 
         return str;
       },
-      showMore(){
-          this.btnShow = true
-      }
+    //   showMore() {
+    //       this.btnShow = true
+    //   }
     },
 
     watch: {}
@@ -211,5 +211,27 @@ import DeviceUpgrade from "./DeviceUpgrade";
 
 </script>
 <style lang='less' scoped>
-
+.morebox {
+    position:absolute;
+    text-align: left;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    z-index: 1000;
+    top: 51px;
+    left: 82px;
+}
+.morebox .moreitem{
+    padding: 5px 12px;
+    margin: 0;
+    clear: both;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(0,0,0,.65);
+    white-space: nowrap;
+    cursor: pointer;
+}
+.morebox .moreitem:hover{
+    background-color: #e6f7ff;
+}
 </style>

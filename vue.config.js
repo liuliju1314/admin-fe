@@ -65,7 +65,8 @@ module.exports = {
         https: false,
         hotOnly: false,
         proxy: {
-            "/api": {
+            "/web": {
+                // ws: false, // proxy websockets
                 target: "http://47.107.91.58:11021", // 设置你调用的接口域名和端口号
                 changeOrigin: true // 跨域
             },
