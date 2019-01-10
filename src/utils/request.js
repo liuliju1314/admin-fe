@@ -7,39 +7,13 @@ import { getToken, setToken } from './auth'
 
 const service = axios.create({
     baseURL: process.env.BASE_API,
-    timeout: 5000 // request timeout
+    timeout: 5000,
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        }
 })
 
-
-// // request拦截器
-// service.interceptors.request.use(
-//     config => {
-//         if (getToken) {
-//             config.headers.Authorization = getToken()
-//         }
-//         return config
-//     },
-//     error => {
-//         Promise.reject(error)
-//     }
-// )
-
-// request interceptor 
-// service.interceptors.request.use(  
-//     config => { 
-//     // Do something before request is sent 
-//     if (store.getters.token) { 
-//     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改 
-//     config.headers['X-Token'] = getToken() 
-//     } 
-//     return config 
-//     }, 
-//     error => { 
-//     // Do something with request error 
-//     console.log(error) // for debug 
-//     Promise.reject(error) 
-//     } 
-// ) 
 
 // request拦截器
 service.interceptors.request.use(config => {

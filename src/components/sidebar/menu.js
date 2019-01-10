@@ -6,8 +6,8 @@ export const menus = [
         path: "/product",
         children: [
             {name: "添加功能组", icon: "addgroup", path: "/product/addgroup"}, 
-            {name: "添加产品", icon: "addproduct", path: "/product/addproduct"}, 
-            {name: "添加属性", icon: "addattribute", path: "/product/addattribute"},    
+            {name: "产品列表", icon: "addproduct", path: "/product/addproduct"}, 
+            {name: "属性列表", icon: "addattribute", path: "/product/addattribute"},    
         ]
     },
     { name: "设备管理", icon: "manage", path: "/device"},

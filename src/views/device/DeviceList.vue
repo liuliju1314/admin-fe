@@ -142,7 +142,7 @@ import { DeviceList } from "@/api/device/device";
       handlePage(value) {
             this.form.page = value;
             this.getDeviceList();
-        },
+      },
       handleTest() {
         console.log("测试")
       },
