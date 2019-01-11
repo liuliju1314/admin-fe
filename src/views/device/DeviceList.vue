@@ -45,7 +45,7 @@
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
                 <el-table-column prop="online" label="在线状态" :formatter="isOnline"></el-table-column>
-                <el-table-column label="操作" width = 150>
+                <el-table-column label="操作" width = 160>
                     <template slot-scope="scope">
                         <el-button
                             type="text"
@@ -57,7 +57,17 @@
                             size="small"
                             @click="handleUpgrade(scope.row)"
                         >升级</el-button>  
-                        <div
+                        <el-button
+                            type="text"
+                            size="small"
+                            @click="handleUpgrade(scope.row)"
+                        >编辑</el-button>
+                        <el-button
+                            type="text"
+                            size="small"
+                            @click="handleUpgrade(scope.row)"
+                        >删除</el-button>
+                        <!-- <div
                             type="text"
                             style="display: inline-block;margin-left: 10px;font-size: 12px;"
                         >
@@ -66,7 +76,7 @@
                             <div type="text" size="small" @click="handleUpgrade(scope.row)" class="moreitem">第一个</div>
                             <div type="text" size="small" @click="handleUpgrade(scope.row)" class="moreitem">第二个</div>
                         </div>
-                        </div>  
+                        </div>   -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -92,7 +102,7 @@
 
 <script>
 import DeviceUpgrade from "./DeviceUpgrade";
-import { DeviceList } from "@/api/device/device";
+import { getDeviceList } from "@/api/device/device";
   export default {
     name:'',
     props:[''],
@@ -123,13 +133,13 @@ import { DeviceList } from "@/api/device/device";
     mounted() {},
 
     created() {
-        this.getDeviceList();
+        this.getDevice();
     },
 
     methods: {
       //获取设备列表
-      getDeviceList() {
-        DeviceList(this.form)
+      getDevice() {
+        getDeviceList(this.form)
             .then(res => {
                 this.deviceList = res.payload.result;
                 this.count = res.payload.count;
@@ -140,8 +150,8 @@ import { DeviceList } from "@/api/device/device";
       },
       //分页
       handlePage(value) {
-            this.form.page = value;
-            this.getDeviceList();
+        this.form.page = value;
+        this.getDevice();
       },
       handleTest() {
         console.log("测试")

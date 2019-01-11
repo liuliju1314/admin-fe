@@ -20,11 +20,11 @@ const routes = [
         component: LayOut,
         children: [   
             {
-                path: "addgroup",
+                path: "addProduct",
                 component: () => import('@/views/example/ExampleVue')
             },
             {
-                path: "addproduct",
+                path: "productList",
                 component: () => import('@/views/product/ProductList')
             },
             {
@@ -35,7 +35,7 @@ const routes = [
     },
     {
         path: '/fireware', component: LayOut, children: [
-            { path: '', component: () => import('@/views/fireware/FirewareManage') }
+            { path: '', component: () => import('@/views/fireware/FirewareList') }
         ]
     },
     {

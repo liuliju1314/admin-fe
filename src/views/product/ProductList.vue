@@ -4,13 +4,13 @@
             <span class="card-title">产品列表</span>
         </div>
         <div class="product-wrapper">
-            <div class="content">
+            <!-- <div class="content">
                 <div class="table-wrapper">
                     <div class="btn-box">
                         <el-button type="primary" size="small" @click="handleShowProduct()">+ 添加产品</el-button>
                     </div>
                 </div>
-            </div>       
+            </div> -->
             <!-- 循环的产品列表 -->
             <el-table :data="productList" style="width: 100%; margin-top: 12px">
                 <el-table-column prop="pid" label="产品编码"></el-table-column>
@@ -79,7 +79,8 @@ import { getProductList } from "@/api/product/product";
             isPage: true      
           },
           count: "",
-          productList: []
+          productList: [],
+          dialogVisible: false,
       };
     },
 

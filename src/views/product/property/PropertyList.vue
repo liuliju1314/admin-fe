@@ -14,34 +14,34 @@
                         <el-table-column prop="name" label="属性名称"></el-table-column>
                         <el-table-column prop="label" label="数据点名称"></el-table-column>
                         <el-table-column prop="propType" label="属性类型"></el-table-column>
-                        <el-table-column prop="permission" label="读写属性"></el-table-column>
+                        <el-table-column prop="permission" label="读写类型"></el-table-column>
                         <el-table-column prop="instant" label="采样值"></el-table-column>
                         <el-table-column prop="history" label="默认值"></el-table-column>
-                        <el-table-column prop="辅助信息" label="辅助信息"></el-table-column>
+                        <el-table-column prop="desc" label="辅助信息"></el-table-column>
                         <el-table-column label="操作">
-                        <template slot-scope="scope">
-                            <el-button
-                                type="text"
-                                size="small"
-                                @click="handleEditProperty(scope.row)"
-                            >编辑</el-button>
-                            <el-button
-                                type="text"
-                                size="small"
-                                @click="handleDeleteProperty(scope.row)"
-                            >删除</el-button>
-                        </template>
-                    </el-table-column>
+                            <template slot-scope="scope">
+                                <el-button
+                                    type="text"
+                                    size="small"
+                                    @click="handleEditProperty(scope.row)"
+                                >编辑</el-button>
+                                <el-button
+                                    type="text"
+                                    size="small"
+                                    @click="handleDeleteProperty(scope.row)"
+                                >删除</el-button>
+                            </template>
+                        </el-table-column>
                     </el-table>
                 </div>
             </div>      
         </div>
         <!-- 显示添加固件属性对话框 -->
-        <el-dialog title="添加属性" :visible.sync="dialogVisible" width="60%" >
-            <add-propert></add-propert>
+        <el-dialog title="添加属性" :visible.sync="dialogVisible" width="60%" margin-top="3vh" >
+            <add-propert ref="addPropert"></add-propert>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button @click="resetForm()">取 消</el-button>
+                <el-button type="primary" @click="addPropert()">确 定</el-button>
             </span>
         </el-dialog>
   </el-card>
@@ -52,27 +52,28 @@ import AddPropert from "./AddPropert";
 
 
   export default {
-    name:'',
-    props:[''],
     data () {
       return {
         dialogVisible: false,
-        propertyList: []
+        propertyList: [],
       };
     },
 
     components: { AddPropert },
 
-    computed: {},
-
-    beforeMount() {},
-
-    mounted() {},
 
     methods: {
-      showPropertyDialog() {
-        this.dialogVisible = true;
-      }
+        showPropertyDialog() {
+            this.dialogVisible = true;
+        },
+        addPropert() {
+            console.log(this.$refs.addPropert.form)
+            this.$refs.addPropert.submitForm();
+        },
+        resetForm() {
+            this.$refs.addPropert.resetForm();
+            this.dialogVisible = false;
+        }
     },
 
     watch: {}
