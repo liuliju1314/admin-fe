@@ -18,7 +18,9 @@
         <el-table-column prop="name" label="固件名字"></el-table-column>
         <el-table-column prop="version" label="固件版本"></el-table-column>
         <el-table-column prop="desc" label="升级描述"></el-table-column>
-        <el-table-column prop="updatedAt" label="上传时间"></el-table-column>
+        <el-table-column label="创建时间">
+            <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
+        </el-table-column>
         <el-table-column label="操作">
             <template slot-scope="scope">
                 <el-button
@@ -44,14 +46,6 @@
             @current-change="handlePage"
         ></el-pagination>
     </div>
-    <!-- 添加固件对话框 -->
-    <!-- <el-dialog title="添加新固件" :visible.sync="dialogVisible" width="60%">
-        <add-fireware></add-fireware>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addFireware()">确 定</el-button>
-        </span>
-    </el-dialog> -->
     <el-dialog
         class="dialogList"
         :title="title"
@@ -74,6 +68,8 @@
 import AddFireware from "./AddFireware";
 import EditFireware from "./EditFireware";
 import { getFirewareList } from "@/api/fireware/fireware";
+import { formatDate } from "@/utils/format";
+
 
 
   export default {
@@ -142,6 +138,9 @@ import { getFirewareList } from "@/api/fireware/fireware";
             this.firewareInformation = firewareManger;
             // console.log(firewareManger)
             this.componentId = this.componentList[value];
+        },
+        changeTimeFormater(cellvalue) {
+            return formatDate(cellvalue, "y-m-d");
         },
     },
 

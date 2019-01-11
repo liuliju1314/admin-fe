@@ -16,7 +16,9 @@
                 <el-table-column prop="name" label="姓名"></el-table-column>
                 <el-table-column prop="phone" label="电话"></el-table-column>
                 <el-table-column prop="role" label="权限" :formatter="isRole"></el-table-column>
-                <el-table-column prop="activatedAt" label="注册时间"></el-table-column>
+                <el-table-column label="注册时间">
+                    <template slot-scope="scope">{{ changeTimeFormater(scope.row.activatedAt) }}</template>
+                </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button
@@ -71,6 +73,8 @@
 
 <script>
 import { getManagerList } from "@/api/user/user";
+import { formatDate } from "@/utils/format";
+
 
   export default {
     name:'',
@@ -138,7 +142,10 @@ import { getManagerList } from "@/api/user/user";
       addManage() {
         console.log("添加成功")
         this.dialogVisible = false;
-      }
+      },
+      changeTimeFormater(cellvalue) {
+        return formatDate(cellvalue, "y-m-d");
+      },
     },
 
     watch: {}
