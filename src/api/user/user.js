@@ -3,7 +3,7 @@ import service from "@/utils/request";
 // 登录
 export function userLogin(data) {
     return service({
-        url: '/api/web/login',
+        url: '/web/login',
         method: 'post',
         data
     })
@@ -11,17 +11,18 @@ export function userLogin(data) {
 // 退出
 export function userLogout(data) {
     return service({
-        url: '/api/web/logout',
+        url: '/web/logout',
         method: 'get',
         params: data
     })
 }
 
 // 获取管理员列表接口
-export function getManagerList() {
+export function getManagerList(data) {
     return service({
-        url: '/api/web/all_managers',
-        method: 'get'
+        url: '/web/all_managers',
+        method: 'get',
+        params: data
     })
 }
 

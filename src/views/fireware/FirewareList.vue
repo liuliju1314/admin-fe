@@ -34,6 +34,16 @@
             </template>
         </el-table-column>
     </el-table>
+    <!-- 分页逻辑 -->
+    <div class="pagination-box" v-if="form.pageSize < count">
+        <el-pagination
+            :page-size="form.pageSize"
+            :page="form.page"
+            layout="prev, pager, next"
+            :total="count"
+            @current-change="handlePage"
+        ></el-pagination>
+    </div>
     <!-- 添加固件对话框 -->
     <!-- <el-dialog title="添加新固件" :visible.sync="dialogVisible" width="60%">
         <add-fireware></add-fireware>
@@ -63,6 +73,8 @@
 <script>
 import AddFireware from "./AddFireware";
 import EditFireware from "./EditFireware";
+import { getFirewareList } from "@/api/fireware/fireware";
+
 
   export default {
     name:'',
@@ -70,16 +82,13 @@ import EditFireware from "./EditFireware";
     data () {
       return {
           dialogVisible: false,
-          firewareList: [{
-            createdAt: "2019-01-06T11:01:06.935Z",
-            desc: "正式版",
-            fwID: "6pxrqh8njsw",
-            group: "release",
-            name: "app",
-            pid: "1z0zbfe0db5",
-            updatedAt: "2019-01-06T11:01:06.935Z",
-            version: "0.1.2"
-          }],
+          form: {
+            page: 1,
+            pageSize: 6,
+            isPage: true      
+          },
+          count: '',
+          firewareList: [],
           componentList: [AddFireware, EditFireware],
           componentId: "",
           title: "",
@@ -88,6 +97,10 @@ import EditFireware from "./EditFireware";
     },
 
     computed: {},
+
+    created() {
+        this.getFireware();
+    },
 
     beforeMount() {},
 
@@ -107,6 +120,21 @@ import EditFireware from "./EditFireware";
         addFireware() {
             this.dialogVisible = false;
             console.log("添加成功")
+        },
+        getFireware() {       
+            getFirewareList(this.form)
+            .then(res => {
+                this.firewareList = res.payload.result;
+                this.count = res.payload.count;
+            })
+            .catch(error => {
+                return error;
+            });
+        },
+        //分页
+        handlePage(value) {
+            this.form.page = value;
+            this.getFireware();
         },
         // 点击显示不同对话框
         handleShowDialog(value,firewareManger) {

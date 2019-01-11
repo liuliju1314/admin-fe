@@ -82,15 +82,7 @@ import { getManagerList } from "@/api/user/user";
           pageSize: 6,
           isPage: true      
         },
-        manageList: [{
-          activatedAt: "",
-          createdAt: "",
-          name: "",
-          phone: "",
-          role: "",
-          uid: "",
-          updatedAt: ""
-        }],
+        manageList: [],
         addManageForm: {
           name: '',
           phone: '',
