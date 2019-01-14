@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <!-- 添加属性对话框 -->
+        <!-- 添加管理员对话框 -->
         <el-dialog title="添加管理员" :visible.sync="dialogVisible" width="60%">
           <el-form ref="form" :model="addManageForm" label-width="100px"  class="form-box">
               <el-form-item label="电话" prop="phone">

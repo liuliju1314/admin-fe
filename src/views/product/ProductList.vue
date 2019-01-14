@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <!-- 添加属性对话框 -->
+        <!-- 添加固件对话框 -->
         <el-dialog title="添加新固件" :visible.sync="dialogVisible" width="60%">
             <add-fireware></add-fireware>
             <span slot="footer" class="dialog-footer">

@@ -36,7 +36,7 @@
                 </div>
             </div>      
         </div>
-        <!-- 显示添加固件属性对话框 -->
+        <!-- 显示添加属性属性对话框 -->
         <el-dialog title="添加属性" :visible.sync="dialogVisible" width="60%" margin-top="3vh" >
             <add-propert ref="addPropert"></add-propert>
             <span slot="footer" class="dialog-footer">

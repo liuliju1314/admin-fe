@@ -54,10 +54,10 @@
         center
         top="15vh"
     >
-        <component :is="componentId" :firewareForm="firewareInformation"></component>
+        <component ref="isAddEdit" :is="componentId" :firewareForm="firewareInformation"></component>
         <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addFireware()">确 定</el-button>
+            <el-button type="primary" @click="handlesubAccount()">确 定</el-button>
         </span>
     </el-dialog>
   </el-card>
@@ -88,7 +88,8 @@ import { formatDate } from "@/utils/format";
           componentList: [AddFireware, EditFireware],
           componentId: "",
           title: "",
-          firewareInformation:""
+          firewareInformation:"",
+          isEdit: false
       };
     },
 
@@ -113,11 +114,7 @@ import { formatDate } from "@/utils/format";
         deleteFireware() {
             console.log("删除固件")
         },
-        addFireware() {
-            this.dialogVisible = false;
-            console.log("添加成功")
-        },
-        getFireware() {       
+        getFireware() {    
             getFirewareList(this.form)
             .then(res => {
                 this.firewareList = res.payload.result;
@@ -134,14 +131,29 @@ import { formatDate } from "@/utils/format";
         },
         // 点击显示不同对话框
         handleShowDialog(value,firewareManger) {
+            this.isEdit = false;
             this.dialogVisible = true;
             this.firewareInformation = firewareManger;
-            // console.log(firewareManger)
+            console.log("firewareInformation: " + JSON.stringify(this.firewareInformation))
             this.componentId = this.componentList[value];
+            if(value == 0) {
+                this.isEdit = true;
+            }
+        },
+        // 点击确定进行不同功能
+        handlesubAccount() {
+            // this.dialogVisible = false;
+            this.isEdit ? this.addFireware() : console.log("我是编辑");
+        },
+        addFireware() {
+            this.$refs.isAddEdit.addFireware();
+        },
+        uploadFirmware() {
+            this.$refs.isAddEdit.uploadFirmware();            
         },
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");
-        },
+        }
     },
 
     watch: {}
