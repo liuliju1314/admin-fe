@@ -20,8 +20,8 @@ const routes = [
         component: LayOut,
         children: [   
             {
-                path: "addProduct",
-                component: () => import('@/views/example/ExampleVue')
+                path: "createProduct",
+                component: () => import('@/views/product/create')
             },
             {
                 path: "productList",
