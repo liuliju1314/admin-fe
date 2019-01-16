@@ -12,7 +12,7 @@ export function getFirewareList(data) {
 // 上传固件
 export function updateFirmware(data) {
     return service({
-        url: '/api/web/update_firmware2',
+        url: '/api/web/update_firmware',
         method: 'post',
         data
     })

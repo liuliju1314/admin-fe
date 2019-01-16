@@ -15,7 +15,6 @@
     <el-form-item label="升级描述" prop="desc"> 
         <el-input type="textarea" v-model="fwForm.desc"></el-input>
     </el-form-item>
-
     </el-form>
 </template>
 
@@ -51,10 +50,10 @@ import { uploadFirmware } from "@/api/fireware/fireware";
     computed: {},
 
     created() {
-        this.fwForm.group = this.firewareForm.group;
-        this.fwForm.pid = this.firewareForm.pid;
-        this.fwForm.fileList.name = this.firewareForm.files.filename;
-        this.fwForm.fileList.url = this.firewareForm.files.path;
+        this.fwForm = this.firewareForm;
+        this.fwForm.fileList.name = this.firewareForm.filename;
+        this.fwForm.fileList.url = this.firewareForm.path;
+
         console.log("this.fwForm.fileList: " + JSON.stringify(this.fwForm.fileList))
     },
 

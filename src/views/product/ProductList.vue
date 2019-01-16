@@ -26,9 +26,9 @@
                 <el-table-column label="创建时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
                 </el-table-column>
-                <el-table-column label="创建时间">
+                <!-- <el-table-column label="更新时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.updatedAt) }}</template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <!-- 分页逻辑 -->
             <div class="pagination-box" v-if="form.pageSize < count">
