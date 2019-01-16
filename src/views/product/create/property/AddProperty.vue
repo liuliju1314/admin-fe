@@ -1,4 +1,5 @@
 <template>
+<el-main>
     <el-form ref="propertForm" :model="propertForm" label-width="100px" :rules="formRules" v-model="labelPosition" class="form-box" size="mini">
       <el-form-item label="属性名称" prop="name">
         <el-input v-model="propertForm.name"></el-input>
@@ -54,36 +55,8 @@
       <el-form-item label="描述">
         <el-input type="textarea" v-model="propertForm.desc"></el-input>
       </el-form-item>
-      <el-form-item>
-          <el-button size="small" plain @click="handleNext(false)">上一步</el-button>
-          <el-button type="primary" size="small" @click="handleNext(true)">下一步</el-button>
-      </el-form-item>
-
     </el-form>
-    <!-- <el-form
-        ref="baseInfoForm"
-        :model="baseInfoForm"
-        label-width="90px"
-        size="small"
-        :rules="formRules"
-    >
-        <el-form-item label="产品型号" prop="model">
-            <el-input v-model="baseInfoForm.model"></el-input>
-        </el-form-item>
-        <el-form-item label="产品名称" prop="name">
-            <el-input v-model="baseInfoForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="产品类型" prop="category">
-            <el-input v-model="baseInfoForm.category"></el-input>
-        </el-form-item>
-        <el-form-item label="描述">
-          <el-input type="textarea" v-model="baseInfoForm.desc"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button size="small" plain @click="handleNext(false)">上一步</el-button>
-            <el-button type="primary" size="small" @click="handleNext(true)">下一步</el-button>
-        </el-form-item>
-    </el-form> -->
+</el-main>
 </template>
 
 <script>

@@ -4,41 +4,30 @@
             <span class="card-title">产品列表</span>
         </div>
         <div class="product-wrapper">
-            <!-- <div class="content">
-                <div class="table-wrapper">
-                    <div class="btn-box">
-                        <el-button type="primary" size="small" @click="handleShowProduct()">+ 添加产品</el-button>
-                    </div>
-                </div>
-            </div> -->
-            <!-- 循环的产品列表 -->
-            <el-table :data="productList" style="width: 100%; margin-top: 12px">
+            <div class="btn-box">
+                <el-button type="primary" size="small" @click="addProduct()">+ 添加产品</el-button>
+            </div>
+            <el-table 
+                :data="productList" 
+                @row-click="openDetails"
+                style="width: 100%; margin-top: 12px"
+            >
                 <el-table-column prop="pid" label="产品编码"></el-table-column>
                 <el-table-column prop="model" label="产品型号"></el-table-column>
                 <el-table-column prop="name" label="产品名称"></el-table-column>
                 <el-table-column prop="category" label="产品分组"></el-table-column>
-                <el-table-column label="固件名称">
+                <!-- <el-table-column label="固件名称">
                     <template slot-scope="scope">
                         <div v-for="(item,index) in scope.row.fwTypes" :key="index">
                             <span class="span">{{item.name}}</span>
                         </div>
                     </template>
+                </el-table-column> -->
+                <el-table-column label="创建时间">
+                    <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
                 </el-table-column>
-                <el-table-column prop="createdAt" label="创建时间"></el-table-column>
-                <el-table-column prop="updatedAt" label="更新时间"></el-table-column>
-                <el-table-column label="操作">
-                    <template slot-scope="scope">
-                        <el-button
-                            type="text"
-                            size="small"
-                            @click="handleEditProduct(scope.row)"
-                        >编辑</el-button>
-                        <el-button
-                            type="text"
-                            size="small"
-                            @click="handleDeleteProduct(scope.row)"
-                        >删除</el-button>
-                    </template>
+                <el-table-column label="创建时间">
+                    <template slot-scope="scope">{{ changeTimeFormater(scope.row.updatedAt) }}</template>
                 </el-table-column>
             </el-table>
             <!-- 分页逻辑 -->
@@ -53,12 +42,12 @@
             </div>
         </div>
 
-        <!-- 添加固件对话框 -->
-        <el-dialog title="添加新固件" :visible.sync="dialogVisible" width="60%">
-            <add-fireware></add-fireware>
+        <!-- 添加产品对话框 -->
+        <el-dialog title="添加产品" :visible.sync="dialogVisible" width="60%">
+            <add-product ref="product"></add-product>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addFireware()">确 定</el-button>
+                <el-button type="primary" @click="addProductFrom()">确 定</el-button>
             </span>
         </el-dialog>
     </el-card>
@@ -67,6 +56,9 @@
 
 <script>
 import { getProductList } from "@/api/product/product";
+import { formatDate } from "@/utils/format";
+import AddProduct from "./AddProduct"
+
 
   export default {
     name:'',
@@ -88,7 +80,9 @@ import { getProductList } from "@/api/product/product";
         this.getProductList();
     },
 
-    components: {},
+    components: {
+        AddProduct
+    },
 
     computed: {},
 
@@ -97,6 +91,18 @@ import { getProductList } from "@/api/product/product";
     mounted() {},
 
     methods: {
+        addProduct() {
+            this.dialogVisible = true
+        },
+        addProductFrom() {
+            this.$refs.product.$refs.addProductForm.validate(valid => {
+                if (valid) {
+                    this.dialogVisible = false
+                } else {
+                    return false;
+                }
+            });
+        },
         getProductList() {
             getProductList(this.form)
             .then(res => {
@@ -120,6 +126,13 @@ import { getProductList } from "@/api/product/product";
         handleDeleteProduct() {
             console.log("删除产品")
         },
+        openDetails(row) {
+            // console.log(row.pid)
+            this.$router.push({ name: '/createProduct', params: { pid: row.pid }});
+        },
+        changeTimeFormater(cellvalue) {
+            return formatDate(cellvalue, "y-m-d");
+        }
     },
 
     watch: {}

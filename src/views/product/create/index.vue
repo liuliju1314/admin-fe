@@ -4,49 +4,41 @@
             <div slot="header" class="clearfix">
                 <span class="card-title">创建产品</span>
             </div>
-            <div class="product-form-box">
-                <el-steps :active="active" >
-                    <el-step title="产品基本信息"></el-step>
-                    <el-step title="添加属性"></el-step>
-                    <el-step title="完成"></el-step>
-                </el-steps>
-                <div class="form-box">
-                    <keep-alive>
-                        <component :is="component" @listenNext="handleNext"></component>
-                    </keep-alive>
-                </div>
-            </div>
+            <el-tabs type="card">
+                <el-tab-pane label="产品信息">
+                    <base-info></base-info>
+                </el-tab-pane>
+                <el-tab-pane label="添加属性">
+                    <property-list></property-list>
+                </el-tab-pane>
+                <el-tab-pane label="固件调试">
+                    <fireware-list></fireware-list>
+                </el-tab-pane>
+            </el-tabs>
         </el-card>
     </el-main>
 </template>
 
 <script>
-import AddPropert from "./AddProperty";
 import BaseInfo from "./BaseInfo";
+import PropertyList from "./property/PropertyList";
+import FirewareList from "./Fireware/FirewareList"
 
   export default {
     name:'',
     props:[''],
     data () {
       return {
-            active: 0,
-            components: [
-                BaseInfo,
-                AddPropert,
-            ],
-            component: BaseInfo
         };
     },
-
-     methods: {
-        handleNext(value) {
-            this.active = value ? this.active + 1 : this.active - 1;
-            if (this.active === 1) {
-                this.component = AddPropert;
-            } else {
-                this.component = this.components[this.active];
-            }
-        }
+    components: {
+        BaseInfo,
+        PropertyList,
+        FirewareList
+    },
+    methods: {},
+    created() {
+        console.log("this.$router: " + JSON.stringify(this.$route.params.pid))
     }
 
   }

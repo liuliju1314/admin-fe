@@ -1,4 +1,5 @@
 <template>
+<el-main>
     <el-form
         ref="baseInfoForm"
         :model="baseInfoForm"
@@ -19,9 +20,10 @@
           <el-input type="textarea" v-model="baseInfoForm.desc"></el-input>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" size="small" @click="handleNext">下一步</el-button>
+          <el-button type="primary" @click="onSubmit">保存</el-button>
         </el-form-item>
     </el-form>
+</el-main>
 </template>
 
 <script>
@@ -45,6 +47,9 @@ export default {
   methods: {
     handleNext() {
       this.$emit("listenNext", true);
+    },
+    onSubmit() {
+      console.log("baocun")
     }
   },
   created() {},
@@ -52,4 +57,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.el-main {
+  background-color: #fff;
+}
 </style>

@@ -3,7 +3,7 @@ import service from "@/utils/request";
 // 获得固件列表
 export function getFirewareList(data) {
     return service({
-        url: 'web/all_firmwares',
+        url: '/api/web/all_firmwares',
         method: 'get',
         params: data
     })
@@ -12,7 +12,7 @@ export function getFirewareList(data) {
 // 上传固件
 export function updateFirmware(data) {
     return service({
-        url: 'web/update_firmware2',
+        url: '/api/web/update_firmware2',
         method: 'post',
         data
     })

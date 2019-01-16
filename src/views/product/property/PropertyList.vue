@@ -9,7 +9,7 @@
                     <div class="btn-box">
                         <el-button type="primary" size="small" @click="showPropertyDialog()">+ 添加属性</el-button>
                     </div>
-                    <!-- 循环的产品列表 -->
+                    <!-- 循环的属性列表 -->
                     <el-table :data="propertyList" style="width: 100%; margin-top: 12px">
                         <el-table-column prop="name" label="属性名称"></el-table-column>
                         <el-table-column prop="label" label="数据点名称"></el-table-column>

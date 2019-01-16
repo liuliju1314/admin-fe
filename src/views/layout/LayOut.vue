@@ -52,6 +52,7 @@ export default {
 }
 .box-card {
     text-align: left;
+    min-height: 85vh;
 }
 .el-card__header {
     box-sizing: border-box;

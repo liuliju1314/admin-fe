@@ -85,8 +85,8 @@ import { formatDate } from "@/utils/format";
           },
           count: '',
           firewareList: [],
-          componentList: [AddFireware, EditFireware],
-          componentId: "",
+          componentList: [AddFireware,EditFireware],
+          componentId: "AddFireware",
           title: "",
           firewareInformation:"",
           isEdit: false
@@ -162,5 +162,4 @@ import { formatDate } from "@/utils/format";
 
 </script>
 <style lang='less' scoped>
-
 </style>

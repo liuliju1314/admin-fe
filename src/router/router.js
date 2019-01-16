@@ -9,18 +9,14 @@ const routes = [
         path: '/home', component: LayOut, redirect: '/home/index', name: 'home', meta: { title: 'home' }, children: [
             { path: 'index', component: () => import('@/views/example/ExampleVue') }
         ]
-    },
-    {
-        path: '/device', component: LayOut, children: [
-            { path: '', component: () => import('@/views/device/DeviceList') }
-        ]
     },   
     {
         path: '/product',
         component: LayOut,
-        children: [   
+        children: [  
             {
-                path: "createProduct",
+                path: "createProduct/:pid",
+                name: "/createProduct",
                 component: () => import('@/views/product/create')
             },
             {
@@ -31,6 +27,11 @@ const routes = [
                 path: "addattribute",
                 component: () => import('@/views/product/property/PropertyList')
             },  
+        ]
+    },
+    {
+        path: '/device', component: LayOut, children: [
+            { path: '', component: () => import('@/views/device/DeviceList') }
         ]
     },
     {
