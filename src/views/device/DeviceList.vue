@@ -26,7 +26,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button size="small" type="primary" @click="handlePage()">查询</el-button>
+                    <el-button size="small" type="primary" @click="handleeEquipment()">查询</el-button>
                 </el-form-item>
             </el-form>   
             <!-- 循环的设备列表 -->
@@ -47,17 +47,17 @@
                 <el-table-column prop="online" label="在线状态" :formatter="isOnline"></el-table-column>
                 <el-table-column label="操作" width = 160>
                     <template slot-scope="scope">
-                        <el-button
+                        <!-- <el-button
                             type="text"
                             size="small"
                             @click="handleTest(scope.row)"
-                        >测试</el-button>
+                        >测试</el-button> -->
                         <el-button
                             type="text"
                             size="small"
                             @click="handleUpgrade(scope.row)"
                         >升级</el-button>  
-                        <el-button
+                        <!-- <el-button
                             type="text"
                             size="small"
                             @click="handleUpgrade(scope.row)"
@@ -66,7 +66,7 @@
                             type="text"
                             size="small"
                             @click="handleUpgrade(scope.row)"
-                        >删除</el-button>
+                        >删除</el-button> -->
                         <!-- <div
                             type="text"
                             style="display: inline-block;margin-left: 10px;font-size: 12px;"
@@ -152,6 +152,9 @@ import { getDeviceList } from "@/api/device/device";
       handlePage(value) {
         this.form.page = value;
         this.getDevice();
+      },
+      handleeEquipment() {
+          this.getDevice();
       },
       handleTest() {
         console.log("测试")
