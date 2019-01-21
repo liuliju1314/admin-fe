@@ -78,7 +78,6 @@ import { formatDate } from "@/utils/format";
 
   export default {
     name:'',
-    props:[''],
     data () {
       return {
         form: {
@@ -96,23 +95,13 @@ import { formatDate } from "@/utils/format";
         count: ''
       };
     },
-
-    components: {},
-
-    computed: {},
-
     created() {
       this.getManager();
     },
-
-    beforeMount() {},
-
-    mounted() {},
-
     methods: {
       handleShowManage() {
         this.dialogVisible = true;
-        console.log("添加新管理员")
+        // console.log("添加新管理员")
       },
       //分页
       handlePage(value) {
@@ -136,7 +125,7 @@ import { formatDate } from "@/utils/format";
         console.log("删除管理员")
       },
       isRole(val) {
-        if(val.role == "super")
+        if(val.role === "super")
           {return "超级管理员"}
       },
       addManage() {

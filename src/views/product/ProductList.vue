@@ -57,12 +57,10 @@
 <script>
 import { getProductList } from "@/api/product/product";
 import { formatDate } from "@/utils/format";
-import AddProduct from "./AddProduct"
-
+import AddProduct from "./AddProduct";
 
   export default {
     name:'',
-    props:[''],
     data () {
       return {
           form: {
