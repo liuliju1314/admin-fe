@@ -63,12 +63,11 @@
 import { addProperty } from "@/api/property/property";
 
 export default {
-  components: {},
-  props: {},
   data() {
       return {
         labelPosition: 'right',
         propertForm: {
+          pid: '',
           name: '',
           label: '',
           propType: '',
@@ -101,38 +100,37 @@ export default {
         }
       };
   },
-  watch: {},
-  computed: {},
+  created() {
+    this.propertForm.pid = this.$route.params.pid;
+  },
   methods: {
     handleNext(value) {
       this.$emit("listenNext", value);
     },
-            addEnumerate() {
-            this.propertForm.metadata.push({ propertyValue: "", propertyDesc: "" });
-        },
-        deleteEnumerate(index) {
-            this.propertForm.metadata.splice(index, 1);
-        },
-        //验证表单信息是否为空
-        submitForm() {
-          this.$refs.propertForm.validate(valid => {
-                if (valid) {
-                    addProperty(this.propertForm)
-                      .then(() => {
-                      })
-                      .catch(() => {
-                      });
-                } else {
-                    return false;
-                }
-            });
-        },
-        resetForm() {
-          this.$refs.propertForm.resetFields();
-        } 
+    addEnumerate() {    
+      this.propertForm.metadata.push({ propertyValue: "", propertyDesc: "" });
+    },
+    deleteEnumerate(index) {
+      this.propertForm.metadata.splice(index, 1);
+    },
+    //验证表单信息是否为空
+    submitForm() {
+      this.$refs.propertForm.validate(valid => {
+        if (valid) {
+            addProperty(this.propertForm)
+              .then(() => {
+              })
+              .catch(() => {
+              });
+        } else {
+            return false;
+        }
+      });
+    },
+    resetForm() {
+      this.$refs.propertForm.resetFields();
+    } 
   },
-  created() {},
-  mounted() {}
 }
 </script>
 <style lang="less" scoped>
