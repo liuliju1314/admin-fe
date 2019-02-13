@@ -134,52 +134,10 @@ import { formatDate } from "@/utils/format";
             count: ''
         };
     },
-<<<<<<< HEAD
-=======
-
->>>>>>> 4953ed039eb4db13b2b9f5faec48b7f0fd6bc5cd
     created() {
         this.getManager();
     },
     methods: {
-<<<<<<< HEAD
-      handleShowManage() {
-        this.dialogVisible = true;
-        // console.log("添加新管理员")
-      },
-      //分页
-      handlePage(value) {
-          this.form.page = value;
-          this.getManager();
-      },
-      getManager() {
-        getManagerList()
-        .then(res => {
-            this.manageList = res.payload.result;
-            this.count = res.payload.count;
-        })
-        .catch(error => {
-            return error;
-        });
-      },
-      handleEditManage() {
-        console.log("编辑管理员")
-      },
-      handleDeleteManage() {
-        console.log("删除管理员")
-      },
-      isRole(val) {
-        if(val.role === "super")
-          {return "超级管理员"}
-      },
-      addManage() {
-        console.log("添加成功")
-        this.dialogVisible = false;
-      },
-      changeTimeFormater(cellvalue) {
-        return formatDate(cellvalue, "y-m-d");
-      },
-=======
         handleShowManage() {
             this.dialogVisible = true;
             console.log("添加新管理员")
@@ -222,7 +180,6 @@ import { formatDate } from "@/utils/format";
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");
         },
->>>>>>> 4953ed039eb4db13b2b9f5faec48b7f0fd6bc5cd
     },
 
     watch: {}

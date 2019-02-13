@@ -30,7 +30,7 @@
 <script>
 
 export default {
-  props: {},
+  name: 'ProductCreate',
   data() {
     return {
       imageUrl: '',

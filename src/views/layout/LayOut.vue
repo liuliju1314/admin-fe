@@ -48,6 +48,7 @@ export default {
     padding: 0;
 }
 .el-main {
+    padding: 10px;
     background-color: #f0f2f5;
 }
 .box-card {

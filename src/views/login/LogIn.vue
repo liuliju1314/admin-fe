@@ -58,6 +58,7 @@ export default {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
+                    this.loginForm.phone = this.loginForm.phone.trim();
                     this.$store.dispatch("UserLogin", this.loginForm)
                         .then(() => {
                             this.loading = false;

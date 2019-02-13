@@ -14,19 +14,35 @@ const routes = [
         path: '/product',
         component: LayOut,
         children: [  
+            // {
+            //     path: "createProduct/:pid",
+            //     name: "/createProduct",
+            //     component: () => import('@/views/product/create')
+            // },
+            // {
+            //     path: "productList",
+            //     component: () => import('@/views/product/ProductList')
+            // },
+            // {
+            //     path: "addattribute",
+            //     component: () => import('@/views/product/property/PropertyList')
+            // },  
             {
-                path: "createProduct/:pid",
-                name: "/createProduct",
-                component: () => import('@/views/product/create')
-            },
+                path: "developing",
+                component: () => import('@/views/product/ProductDeveloping')
+            }, 
             {
-                path: "productList",
-                component: () => import('@/views/product/ProductList')
-            },
+                path: "release",
+                component: () => import('@/views/product/ProductRelease')
+            }, 
             {
-                path: "addattribute",
-                component: () => import('@/views/product/property/PropertyList')
-            },  
+                path: "create",
+                component: () => import('@/views/product/create/ProductCreate'),children: [
+                    { path: "info", component: () => import('@/views/product/create/ProductInfo') },
+                    { path: "property", component: () => import('@/views/product/create/property/PropertyList') },
+                    { path: "fireware", component: () => import('@/views/product/create/fireware/FirewareList') }
+                ]
+            }, 
         ]
     },
     {
