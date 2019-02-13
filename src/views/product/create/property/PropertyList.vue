@@ -20,11 +20,11 @@
     </el-table>
 
     <!-- 添加属性对话框 -->
-    <el-dialog title="添加属性" :visible.sync="dialogVisible" width="60%">
-        <add-property></add-property>
+    <el-dialog title="添加属性" :visible.sync="dialogVisible" width="60%" :before-close="cancelAddFireware">
+        <add-property ref="addPropertyFrom"></add-property>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addFireware()">确 定</el-button>
+            <el-button @click="cancelAddFireware">取 消</el-button>
+            <el-button type="primary" @click="addProperty()">确 定</el-button>
         </span>
     </el-dialog>
     </el-main>
@@ -54,6 +54,15 @@ export default {
   methods:{
     addPropert() {
         this.dialogVisible = true;
+    },
+    // 关闭前清除表单
+    cancelAddFireware() {
+        this.$refs.addPropertyFrom.resetForm();
+        this.dialogVisible = false;
+    },
+    // 添加属性
+    addProperty() {
+        this.$refs.addPropertyFrom.submitForm();
     },
     //   删除属性
     handleDeletePropert() {
