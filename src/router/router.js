@@ -54,6 +54,7 @@ const routes = [
     { path: '*', redirect: '/404' }
 ]
 
+
 export default new Router({
     mode: 'history',
     routes

@@ -68,6 +68,37 @@
               </el-form-item>
           </el-form>
         </el-dialog>
+
+
+        <!-- 编辑管理员对话框 -->
+        <el-dialog title="编辑管理员" :visible.sync="editManage" width="60%">
+          <el-form ref="editManageForm" :model="editManageForm" label-width="100px"  class="form-box">
+              <el-form-item label="UID" prop="uid">
+                <el-input v-model="editManageForm.uid" disabled="disabled"></el-input>
+              </el-form-item>
+              <el-form-item label="电话" prop="phone">
+                <el-input v-model="editManageForm.phone"></el-input>
+              </el-form-item>
+              <el-form-item label="姓名" prop="name">
+                <el-input v-model="editManageForm.name"></el-input>
+              </el-form-item>
+              <el-form-item label="密码" prop="password">
+                <el-input v-model="editManageForm.password"></el-input>
+              </el-form-item>
+              <el-form-item label="权限" prop="role">
+                  <el-select v-model="editManageForm.role">
+                      <el-option  value="0">super</el-option>
+                      <el-option  value="1">系统管理员</el-option>
+                      <el-option  value="2">区域管理员</el-option>
+                  </el-select>
+              </el-form-item>
+              <el-form-item>
+                  <el-button @click="editManage = false">取 消</el-button>
+                  <el-button type="primary" @click="iseditManage()">确 定</el-button>
+              </el-form-item>
+          </el-form>
+        </el-dialog>
+
   </el-card>
 </template>
 
@@ -79,26 +110,39 @@ import { formatDate } from "@/utils/format";
   export default {
     name:'',
     data () {
-      return {
-        form: {
-          page: 1,
-          pageSize: 6,
-          isPage: true      
-        },
-        manageList: [],
-        addManageForm: {
-          name: '',
-          phone: '',
-          role: ''
-        },
-        dialogVisible: false,
-        count: ''
-      };
+        return {
+            form: {
+                page: 1,
+                pageSize: 6,
+                isPage: true      
+            },
+            manageList: [],
+            addManageForm: {
+                name: '',
+                phone: '',
+                role: ''
+            },
+            editManageForm: {
+                uid: '',
+                phone: '',
+                name: '',
+                password: '',
+                role: ''
+            },
+            dialogVisible: false,
+            editManage: false,
+            count: ''
+        };
     },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4953ed039eb4db13b2b9f5faec48b7f0fd6bc5cd
     created() {
-      this.getManager();
+        this.getManager();
     },
     methods: {
+<<<<<<< HEAD
       handleShowManage() {
         this.dialogVisible = true;
         // console.log("添加新管理员")
@@ -135,6 +179,50 @@ import { formatDate } from "@/utils/format";
       changeTimeFormater(cellvalue) {
         return formatDate(cellvalue, "y-m-d");
       },
+=======
+        handleShowManage() {
+            this.dialogVisible = true;
+            console.log("添加新管理员")
+        },
+        //分页
+        handlePage(value) {
+            this.form.page = value;
+            this.getManager();
+        },
+        getManager() {
+            getManagerList()
+            .then(res => {
+                this.manageList = res.payload.result;
+                this.count = res.payload.count;
+            })
+            .catch(error => {
+                return error;
+            });
+        },
+        handleEditManage(value) {
+            this.editManageForm = value,
+            this.editManage = true,
+            console.log("编辑管理员")
+        },
+        iseditManage() {
+            console.log("编辑成功")
+            this.editManage = false
+        },
+        handleDeleteManage() {
+            console.log("删除管理员")
+        },
+        isRole(val) {
+            if(val.role == "super")
+            {return "超级管理员"}
+        },
+        addManage() {
+            console.log("添加成功")
+            this.dialogVisible = false;
+        },
+        changeTimeFormater(cellvalue) {
+            return formatDate(cellvalue, "y-m-d");
+        },
+>>>>>>> 4953ed039eb4db13b2b9f5faec48b7f0fd6bc5cd
     },
 
     watch: {}
@@ -142,6 +230,6 @@ import { formatDate } from "@/utils/format";
   }
 
 </script>
-<style lang='' scoped>
+<style lang='less' scoped>
 
 </style>
