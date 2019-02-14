@@ -1,12 +1,11 @@
 export const menus = [
     { name: "首页", icon: "home", path: "/home" },
     { 
-        name: "产品", 
+        name: "产品管理", 
         icon: "product", 
         path: "/product",
         children: [
-            { name: "开发中的产品", icon: "edit", path: "/product/developing" }, 
-            { name: "已发布的产品", icon: "release", path: "/product/release" },  
+            { name: "产品列表", icon: "edit", path: "/product" }, 
             { name: "创建产品", icon: "create", path: "/product/create" },  
         ]
     },

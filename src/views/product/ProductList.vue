@@ -1,24 +1,30 @@
 <template>
     <el-card class="box-card create-station-wrapper" shadow="never">
         <div slot="header" class="clearfix">
-            <span class="card-title">已发布的产品</span>
+            <span class="card-title">产品列表</span>
         </div>
         <div class="product-wrapper">
             <el-form :inline="true" :model="form" size="small">
                 <el-form-item label="产品名称">
                     <el-input v-model="form.productName"></el-input>
                 </el-form-item>
-                <el-form-item label="产品编码">
-                    <el-input v-model="form.productCode"></el-input>
+                <el-form-item label="产品ID">
+                    <el-input v-model="form.productID"></el-input>
+                </el-form-item>
+                <el-form-item label="产品状态">
+                    <el-select v-model="form.productStatus">
+                        <el-option label="开发中" value="0"></el-option>
+                        <el-option label="已发布" value="1"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                 </el-form-item>
             </el-form>
             <el-button type="primary" @click="$router.push('/product/create')" size="small">+新建产品</el-button>
+            <!-- 开发中的产品 -->
             <el-table :data="productList" style="width: 100%; margin-top: 12px">
-                <el-table-column prop="pid" label="产品编码"></el-table-column>
-                <el-table-column prop="model" label="产品型号"></el-table-column>
+                <el-table-column prop="pid" label="产品ID"></el-table-column>
                 <el-table-column prop="name" label="产品名称"></el-table-column>
                 <el-table-column prop="category" label="产品分组"></el-table-column>
                 <el-table-column label="创建时间">
@@ -28,6 +34,15 @@
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.updatedAt) }}</template>
                 </el-table-column>
                 <el-table-column label="操作" width="180">
+                    <template slot-scope="scope">
+                        <el-button @click="openDetails(scope.row)" type="text" size="small">发布</el-button>
+                        <el-button @click="openDetails(scope.row)" type="text" size="small">编辑</el-button>
+                        <el-button
+                            @click="deleteRow(scope.$index, tableData4)"
+                            type="text"
+                            size="small"
+                        >删除</el-button>
+                    </template>
                     <template slot-scope="scope">
                         <el-button
                             @click.native.prevent="openDetails(scope.row)"
@@ -69,14 +84,14 @@
 import { getProductList } from "@/api/product/product";
 import { formatDate } from "@/utils/format";
 
-
 export default {
     name: "ProductDeveloping",
     data() {
         return {
             form: {
                 productName: "",
-                productCode: "",
+                productID: "",
+                productStatus: "1",
                 page: 1,
                 pageSize: 10,
                 isPage: true
@@ -131,11 +146,7 @@ export default {
             console.log("删除产品");
         },
         openDetails(row) {
-            // console.log(row.pid)
-            this.$router.push({
-                name: "/createProduct",
-                params: { pid: row.pid }
-            });
+            this.$router.push({ path: `/product/${row.pid}/detail` });
         },
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");

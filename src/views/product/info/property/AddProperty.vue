@@ -1,6 +1,6 @@
 <template>
 <el-main>
-    <el-form ref="propertForm" :model="propertForm" label-width="100px" :rules="formRules" v-model="labelPosition" class="form-box" size="mini">
+    <el-form ref="propertForm" :model="propertForm" label-width="100px" :rules="formRules" v-model="labelPosition" class="form-box" size="small">
       <el-form-item label="属性名称" prop="name">
         <el-input v-model="propertForm.name"></el-input>
       </el-form-item>
@@ -17,9 +17,9 @@
       </el-form-item>
       <el-form-item label="读写属性" prop="permission">
         <el-radio-group v-model="propertForm.permission">
-          <el-radio label="RW">RW</el-radio>
-          <el-radio label="RO">RO</el-radio>
-          <el-radio label="WO">WO</el-radio>
+          <el-radio label="RW">可读写</el-radio>
+          <el-radio label="RO">可读</el-radio>
+          <el-radio label="WO">可写</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="历史数据" prop="history" >
@@ -37,8 +37,7 @@
       <el-form-item label="默认值">
         <el-input v-model="propertForm.default"></el-input>
       </el-form-item>
-      <div class="rain-box">
-          <el-form-item label="枚举项：">
+          <el-form-item label="枚举项" v-if="propertForm.propType === 'ENUM'">
               <div>
                 <span style="display: inline-block; width: 43%">属性值: </span>
                 <span style="display: inline-block; width: 40%">属性描述:</span>
@@ -51,7 +50,6 @@
               </div>
               <el-button type="text" @click="addEnumerate">+ 添加枚举</el-button>
           </el-form-item>
-      </div>
       <el-form-item label="描述">
         <el-input type="textarea" v-model="propertForm.desc"></el-input>
       </el-form-item>
@@ -135,7 +133,7 @@ export default {
 </script>
 <style lang="less" scoped>
   .form-box {
-        // width: 60%;
+        width: 90%;
         margin: auto;
   }
   .small-width {

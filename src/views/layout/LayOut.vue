@@ -55,6 +55,9 @@ export default {
     text-align: left;
     min-height: 85vh;
 }
+.el-dialog__body {
+    padding: 20px;
+}
 .el-card__header {
     box-sizing: border-box;
     padding: 18px 20px;
@@ -71,6 +74,9 @@ export default {
 }
 .el-card__body {
     padding: 20px 20px 40px 20px;
+}
+.el-form-item__label {
+    color: #333;
 }
 </style>
 

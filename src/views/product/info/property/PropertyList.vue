@@ -5,11 +5,16 @@
     </div>
     <el-table :data="propertList" style="width: 100%; margin-top: 12px">
         <el-table-column prop="label" label="属性名称"></el-table-column>
+        <el-table-column prop="label" label="标识符"></el-table-column>
         <el-table-column prop="type" label="属性类型"></el-table-column>
         <el-table-column prop="permission" label="属性读写"></el-table-column>
-        <el-table-column prop="desc" label="属性描述"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="100">
             <template slot-scope="scope">
+                <el-button
+                    type="text"
+                    size="small"
+                    @click="handleDeletePropert(scope.row)"
+                >修改</el-button>
                 <el-button
                     type="text"
                     size="small"
@@ -20,7 +25,7 @@
     </el-table>
 
     <!-- 添加属性对话框 -->
-    <el-dialog title="添加属性" :visible.sync="dialogVisible" width="60%" :before-close="cancelAddFireware">
+    <el-dialog title="添加属性" center :visible.sync="dialogVisible" width="60%" :before-close="cancelAddFireware">
         <add-property ref="addPropertyFrom"></add-property>
         <span slot="footer" class="dialog-footer">
             <el-button @click="cancelAddFireware">取 消</el-button>
@@ -34,7 +39,7 @@
 import AddProperty from "./AddProperty";
 
 export default {
-  props:{},
+  name: 'PropertyList',
   data(){
     return {
         propertList: [{
