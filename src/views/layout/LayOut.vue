@@ -63,11 +63,11 @@ export default {
     padding: 18px 20px;
     border-bottom: 1px solid rgb(235, 238, 245);
 }
-.el-table th {
-    font-weight: normal;
-    color: rgba(0, 0, 0, 0.85);
-    background: rgb(250, 250, 250);
-}
+// .el-table th {
+//     font-weight: normal;
+//     color: rgba(0, 0, 0, 0.85);
+//     background: rgb(250, 250, 250);
+// }
 .pagination-box {
     display: block;
     text-align: right;
