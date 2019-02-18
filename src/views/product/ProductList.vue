@@ -21,25 +21,13 @@
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-button type="primary" @click="$router.push('/product/create')" size="small">+新建产品</el-button>
+            <el-button type="primary" @click="dialogVisible=true" size="small">+新建产品</el-button>
             <!-- 开发中的产品 -->
             <el-table :data="productList" style="width: 100%; margin-top: 12px" border size="small">
                 <el-table-column prop="pid" label="产品ID"></el-table-column>
                 <el-table-column prop="name" label="产品名称"></el-table-column>
-                <el-table-column prop="category" label="产品分组"></el-table-column>
-                <el-table-column prop="fwVersion" label="固件版本">
-                    <template slot-scope="scope">
-                        <span>v1.0.0.3</span>
-                        <i
-                            class="el-icon-refresh"
-                            style="margin-left: 10px"
-                            @click="updateFwProgress(scope.row)"
-                        ></i>
-                        <div>
-                            <el-progress :percentage="70"></el-progress>
-                        </div>
-                    </template>
-                </el-table-column>
+                <el-table-column prop="category" label="产品分类"></el-table-column>
+                <el-table-column prop="group" label="产品分组"></el-table-column>
                 <el-table-column label="创建时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
                 </el-table-column>
@@ -48,8 +36,8 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
-                        <div v-if="!scope.row.productStatus">
-                            <el-button @click="releaseProduct(scope.row)" type="text" size="small">
+                        <div>
+                            <el-button @click="releaseProduct(scope.row)" type="text" size="small" v-if="!scope.row.productStatus">
                                 <svg-icon icon-class="release"></svg-icon>发布
                             </el-button>
                             <el-button
@@ -57,25 +45,13 @@
                                 type="text"
                                 size="small"
                                 icon="el-icon-edit"
-                            >编辑</el-button>
+                            >详情</el-button>
                             <el-button
                                 @click="deleteProduct(scope.row)"
                                 type="text"
                                 size="small"
                                 icon="el-icon-delete"
                             >删除</el-button>
-                        </div>
-                        <div v-else>
-                            <el-button
-                                @click.native.prevent="openDetails(scope.row)"
-                                type="text"
-                                size="small"
-                            >产品详情</el-button>
-                            <el-button
-                                @click.native.prevent="upgradeFireware(scope.row)"
-                                type="text"
-                                size="small"
-                            >固件升级</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -93,12 +69,8 @@
         </div>
 
         <!-- 添加产品对话框 -->
-        <el-dialog title="添加产品" :visible.sync="dialogVisible" width="60%">
-            <add-product ref="product"></add-product>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addProductFrom()">确 定</el-button>
-            </span>
+        <el-dialog title="添加产品" :visible.sync="dialogVisible" center>
+            <product-create></product-create>
         </el-dialog>
     </el-card>
 </template>
@@ -129,11 +101,9 @@ export default {
         this.getProductList();
     },
 
-    computed: {},
-
-    beforeMount() {},
-
-    mounted() {},
+    components: {
+        ProductCreate: () => import("@/views/product/ProductCreate")
+    },
 
     methods: {
         addProductFrom() {
@@ -182,12 +152,11 @@ export default {
             this.$confirm(
                 `此操作将发布产品${
                     product.productName
-                }, 产品发布后将不允许修改操作，是否发布?`,
+                }, 产品发布后将不允许属性编辑，是否发布?`,
                 "提示",
                 {
                     confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
+                    cancelButtonText: "取消"
                 }
             ).then(() => {
                 this.$message({

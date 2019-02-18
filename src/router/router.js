@@ -21,10 +21,6 @@ const routes = [
                 component: () => import("@/views/product/ProductList"),
             },
             {
-                path: "product/create",
-                component: () => import("@/views/product/ProductCreate")
-            },
-            {
                 path: "product/:id",
                 component: () => import("@/views/product/info"),
                 children: [
@@ -52,16 +48,6 @@ const routes = [
         component: LayOut,
         children: [
             { path: "", component: () => import("@/views/device/DeviceList") }
-        ]
-    },
-    {
-        path: "/fireware",
-        component: LayOut,
-        children: [
-            {
-                path: "",
-                component: () => import("@/views/fireware/FirewareList")
-            }
         ]
     },
     {

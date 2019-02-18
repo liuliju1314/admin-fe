@@ -39,6 +39,7 @@ export default {
 .el-aside {
     max-width: 200px !important;
     width: auto!important;
+    overflow: hidden;
     text-align: left;
     &>.el-menu {
         height: 100vh;
@@ -53,7 +54,7 @@ export default {
 }
 .box-card {
     text-align: left;
-    min-height: 85vh;
+    min-height: calc(100vh - 76px);
 }
 .el-dialog__body {
     padding: 20px;
@@ -81,6 +82,9 @@ export default {
 }
 .el-progress__text {
     font-size: 12px!important;
+}
+.el-icon-refresh:hover {
+    color: @baseColor;
 }
 </style>
 

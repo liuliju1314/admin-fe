@@ -64,11 +64,11 @@
                     @current-change="handlePage"
                 ></el-pagination>
             </div>
-            <el-dialog title="设备升级" :visible.sync="dialogVisible" width="80%">
+            <el-dialog title="设备升级" :visible.sync="dialogVisible">
                 <device-upgrade></device-upgrade>
-                <span slot="footer" class="dialog-footer">
+                <!-- <span slot="footer" class="dialog-footer">
                     <el-button @click="dialogVisible = false">取 消</el-button>
-                </span>
+                </span> -->
             </el-dialog>
         </div>
     </el-card>
