@@ -10,13 +10,7 @@ const routes = [
         component: LayOut,
         redirect: "/home/index",
         name: "home",
-        meta: { title: "home" },
-        children: [
-            {
-                path: "index",
-                component: () => import("@/views/example/ExampleVue")
-            }
-        ]
+        meta: { title: "home" }
     },
     {
         path: "",

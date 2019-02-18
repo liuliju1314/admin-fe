@@ -63,11 +63,12 @@ export default {
     padding: 18px 20px;
     border-bottom: 1px solid rgb(235, 238, 245);
 }
-// .el-table th {
-//     font-weight: normal;
-//     color: rgba(0, 0, 0, 0.85);
-//     background: rgb(250, 250, 250);
-// }
+.el-button [class*="el-icon-"] + span {
+    margin-left: 2px;
+}
+.el-button + .el-button {
+    margin-left: 10px;
+}
 .pagination-box {
     display: block;
     text-align: right;
@@ -77,6 +78,9 @@ export default {
 }
 .el-form-item__label {
     color: #333;
+}
+.el-progress__text {
+    font-size: 12px!important;
 }
 </style>
 

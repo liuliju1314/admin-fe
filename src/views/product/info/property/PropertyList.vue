@@ -3,23 +3,25 @@
     <div class="btn-box">
         <el-button type="primary" size="small" @click="addPropert()">+ 添加属性</el-button>
     </div>
-    <el-table :data="propertList" style="width: 100%; margin-top: 12px">
+    <el-table :data="propertList" style="width: 100%; margin-top: 12px"  border size="small">
         <el-table-column prop="label" label="属性名称"></el-table-column>
         <el-table-column prop="label" label="标识符"></el-table-column>
         <el-table-column prop="type" label="属性类型"></el-table-column>
         <el-table-column prop="permission" label="属性读写"></el-table-column>
-        <el-table-column label="操作" width="100">
+        <el-table-column label="操作" width="120">
             <template slot-scope="scope">
-                <el-button
-                    type="text"
-                    size="small"
-                    @click="handleDeletePropert(scope.row)"
-                >修改</el-button>
-                <el-button
-                    type="text"
-                    size="small"
-                    @click="handleDeletePropert(scope.row)"
-                >删除</el-button>
+                    <el-button
+                        type="text"
+                        size="small"
+                        @click="handleDeleteFireware(scope.row)"
+                        icon="el-icon-edit"
+                    >编辑</el-button>
+                    <el-button
+                        type="text"
+                        size="small"
+                        @click="handleDeleteFireware(scope.row)"
+                        icon="el-icon-delete"
+                    >删除</el-button>
             </template>
         </el-table-column>
     </el-table>

@@ -23,10 +23,23 @@
             </el-form>
             <el-button type="primary" @click="$router.push('/product/create')" size="small">+新建产品</el-button>
             <!-- 开发中的产品 -->
-            <el-table :data="productList" style="width: 100%; margin-top: 12px">
+            <el-table :data="productList" style="width: 100%; margin-top: 12px" border size="small">
                 <el-table-column prop="pid" label="产品ID"></el-table-column>
                 <el-table-column prop="name" label="产品名称"></el-table-column>
                 <el-table-column prop="category" label="产品分组"></el-table-column>
+                <el-table-column prop="fwVersion" label="固件版本">
+                    <template slot-scope="scope">
+                        <span>v1.0.0.3</span>
+                        <i
+                            class="el-icon-refresh"
+                            style="margin-left: 10px"
+                            @click="updateFwProgress(scope.row)"
+                        ></i>
+                        <div>
+                            <el-progress :percentage="70"></el-progress>
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column label="创建时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
                 </el-table-column>
@@ -35,25 +48,35 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
-                        <el-button @click="openDetails(scope.row)" type="text" size="small">发布</el-button>
-                        <el-button @click="openDetails(scope.row)" type="text" size="small">编辑</el-button>
-                        <el-button
-                            @click="deleteRow(scope.$index, tableData4)"
-                            type="text"
-                            size="small"
-                        >删除</el-button>
-                    </template>
-                    <template slot-scope="scope">
-                        <el-button
-                            @click.native.prevent="openDetails(scope.row)"
-                            type="text"
-                            size="small"
-                        >产品详情</el-button>
-                        <el-button
-                            @click.native.prevent="openDetails(scope.row)"
-                            type="text"
-                            size="small"
-                        >固件升级</el-button>
+                        <div v-if="!scope.row.productStatus">
+                            <el-button @click="releaseProduct(scope.row)" type="text" size="small">
+                                <svg-icon icon-class="release"></svg-icon>发布
+                            </el-button>
+                            <el-button
+                                @click="openDetails(scope.row)"
+                                type="text"
+                                size="small"
+                                icon="el-icon-edit"
+                            >编辑</el-button>
+                            <el-button
+                                @click="deleteProduct(scope.row)"
+                                type="text"
+                                size="small"
+                                icon="el-icon-delete"
+                            >删除</el-button>
+                        </div>
+                        <div v-else>
+                            <el-button
+                                @click.native.prevent="openDetails(scope.row)"
+                                type="text"
+                                size="small"
+                            >产品详情</el-button>
+                            <el-button
+                                @click.native.prevent="upgradeFireware(scope.row)"
+                                type="text"
+                                size="small"
+                            >固件升级</el-button>
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -142,9 +165,39 @@ export default {
             console.log("编辑产品");
         },
         // 删除产品
-        handleDeleteProduct() {
-            console.log("删除产品");
+        deleteProduct(product) {
+            this.$confirm(`是否确认删除产品${product.productName}?`, "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                this.$message({
+                    type: "success",
+                    message: "删除成功!"
+                });
+            });
         },
+        // 发布产品
+        releaseProduct(product) {
+            this.$confirm(
+                `此操作将发布产品${
+                    product.productName
+                }, 产品发布后将不允许修改操作，是否发布?`,
+                "提示",
+                {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                }
+            ).then(() => {
+                this.$message({
+                    type: "success",
+                    message: "发布成功!"
+                });
+            });
+        },
+        // 产品固件升级
+        upgradeFireware() {},
         openDetails(row) {
             this.$router.push({ path: `/product/${row.pid}/detail` });
         },
@@ -156,5 +209,9 @@ export default {
     watch: {}
 };
 </script>
-<style lang='' scoped>
+<style lang='less' scoped>
+.svg-icon {
+    width: 14px;
+    height: 13px;
+}
 </style>
