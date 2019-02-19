@@ -23,8 +23,8 @@
             <el-table :data="productList" style="width: 100%; margin-top: 12px" border size="small">
                 <el-table-column prop="pid" label="产品ID"></el-table-column>
                 <el-table-column prop="name" label="产品名称"></el-table-column>
-                <el-table-column prop="category" label="产品分类"></el-table-column>
-                <el-table-column prop="group" label="产品分组"></el-table-column>
+                <el-table-column prop="group" label="产品分类"></el-table-column>
+                <el-table-column prop="category" label="产品分组"></el-table-column>
                 <el-table-column label="创建时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
                 </el-table-column>
@@ -34,7 +34,12 @@
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
                         <div>
-                            <el-button @click="releaseProduct(scope.row)" type="text" size="small" v-if="!scope.row.productStatus">
+                            <el-button
+                                @click="releaseProduct(scope.row)"
+                                type="text"
+                                size="small"
+                                v-if="!scope.row.productStatus"
+                            >
                                 <svg-icon icon-class="release"></svg-icon>发布
                             </el-button>
                             <el-button

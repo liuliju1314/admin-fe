@@ -4,7 +4,7 @@
             <el-button type="primary" size="small" @click="addPropert()">+ 添加属性</el-button>
         </div>
         <el-table :data="propertList" style="width: 100%; margin-top: 12px" border size="small">
-            <el-table-column prop="label" label="属性名称"></el-table-column>
+            <el-table-column prop="propertyName" label="属性名称"></el-table-column>
             <el-table-column prop="label" label="标识符"></el-table-column>
             <el-table-column prop="type" label="属性类型"></el-table-column>
             <el-table-column prop="permission" label="属性读写"></el-table-column>
