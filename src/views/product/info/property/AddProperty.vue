@@ -10,9 +10,10 @@
       <el-form-item label="属性类型" prop="propType">
         <el-select v-model="propertForm.propType" placeholder="请选择类型">
           <el-option label="布尔型" value="BOOL"></el-option>
-          <el-option label="数值型" value="NUMBER"></el-option>
           <el-option label="字符型" value="STRING"></el-option>
           <el-option label="枚举型" value="ENUM"></el-option>
+          <el-option label="浮点型" value="FLOAT"></el-option>
+          <el-option label="整数型" value="INT"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="读写属性" prop="permission">

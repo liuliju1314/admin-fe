@@ -11,8 +11,8 @@
                         <el-option label="遥测雨量计" value="YL3800"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="绑定状态">
-                    <el-select v-model="form.online" placeholder="请选择绑定状态">
+                <el-form-item label="在线状态">
+                    <el-select v-model="form.online" placeholder="请选择在线状态">
                         <el-option label="在线" value="true"></el-option>
                         <el-option label="离线" value="false"></el-option>
                     </el-select>

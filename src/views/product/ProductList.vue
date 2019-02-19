@@ -8,9 +8,6 @@
                 <el-form-item label="产品名称">
                     <el-input v-model="form.productName"></el-input>
                 </el-form-item>
-                <el-form-item label="产品ID">
-                    <el-input v-model="form.productID"></el-input>
-                </el-form-item>
                 <el-form-item label="产品状态">
                     <el-select v-model="form.productStatus">
                         <el-option label="开发中" value="0"></el-option>
