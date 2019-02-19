@@ -23,6 +23,7 @@
             <el-table :data="productList" style="width: 100%; margin-top: 12px" border size="small">
                 <el-table-column prop="pid" label="产品ID"></el-table-column>
                 <el-table-column prop="name" label="产品名称"></el-table-column>
+                <el-table-column prop="model" label="产品型号"></el-table-column>
                 <el-table-column prop="group" label="产品分类"></el-table-column>
                 <el-table-column prop="category" label="产品分组"></el-table-column>
                 <el-table-column label="创建时间">

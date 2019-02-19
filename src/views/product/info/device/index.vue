@@ -3,9 +3,9 @@
         <!-- 循环的固件列表 -->
         <div class="btn-box">
             <div style=" display: flex;justify-content: space-between;">
-                <el-button type="primary" size="small" @click="dialogVisible=true">+ 添加固件</el-button>
+                <div class="device-log">当前设备总数： 134，其中在线：130，离线：4 .</div>
                 <el-input
-                    placeholder="请输入固件ID或版本"
+                    placeholder="请输入设备编号"
                     v-model="firewareSearch"
                     class="input-with-select"
                     size="small"
@@ -14,32 +14,31 @@
                 </el-input>
             </div>
         </div>
+
         <el-table :data="firewareList" style="width: 100%; margin-top: 12px" border size="small">
-            <el-table-column prop="fwID" label="固件ID"></el-table-column>
-            <el-table-column prop="version" label="固件版本"></el-table-column>
-            <el-table-column prop="group" label="固件分组"></el-table-column>
-            <el-table-column prop="upgrade" label="升级方式"></el-table-column>
-            <el-table-column prop="desc" label="描述" width="300"></el-table-column>
-            <el-table-column label="操作" width="170">
+            <el-table-column prop="hwID" label="设备编号" width="125"></el-table-column>
+            <el-table-column prop="props.batVolt" label="电池电压"></el-table-column>
+            <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
+            <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
+            <el-table-column prop="props.count" label="计数传感器"></el-table-column>
+            <el-table-column label="软件版本号" :formatter="removeBlock">
                 <template slot-scope="scope">
-                    <el-button
-                        type="text"
-                        size="small"
-                        @click="upgradeFireware(scope.row)"
-                        icon="el-icon-upload"
-                    >升级</el-button>
-                    <el-button
-                        type="text"
-                        size="small"
-                        @click="editFw(scope.row)"
-                        icon="el-icon-edit"
-                    >编辑</el-button>
-                    <el-button
-                        type="text"
-                        size="small"
-                        @click="deleteFireware(scope.row)"
-                        icon="el-icon-delete"
-                    >删除</el-button>
+                    <span>v1.0.0.3</span>
+                    <i
+                        class="el-icon-refresh"
+                        style="margin-left: 10px"
+                        @click="updateFwProgress(scope.row)"
+                    ></i>
+                    <div>
+                        <el-progress :percentage="70"></el-progress>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
+            <el-table-column prop="online" label="在线状态" :formatter="isOnline"></el-table-column>
+            <el-table-column label="操作" width="160">
+                <template slot-scope="scope">
+                    <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -88,12 +87,7 @@
 </template>
 
 <script>
-import AddFireware from "./AddFireware";
 export default {
-    components: {
-        AddFireware
-    },
-    props: {},
     data() {
         return {
             firewareList: [
@@ -210,5 +204,9 @@ export default {
 }
 .input-with-select {
     width: 320px;
+}
+.device-log {
+    margin-top: 20px;
+    font-size: 14px;
 }
 </style>

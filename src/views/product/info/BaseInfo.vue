@@ -1,6 +1,6 @@
 <template>
     <div class="base-info-box">
-        <table>
+        <table class="table-box">
             <tr>
                 <td class="label">产品名称:</td>
                 <td class="value">智能遥感水位传感器</td>
@@ -21,7 +21,7 @@
                 <td class="label">产品描述:</td>
                 <td class="value">该产品主要用于水利方向的图像检测和水位检测</td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td class="label">设备数量:</td>
                 <td class="value">
                     <ve-pie
@@ -42,16 +42,24 @@
                         }"
                     ></ve-pie>
                 </td>
-            </tr>
+            </tr>-->
         </table>
-        <el-button @click="createProduct" style="padding: 10px 22px; margin: 30px 0 0 100px;">编辑</el-button>
+        <el-button
+            @click="dialogVisible=true"
+            style="padding: 10px 22px; margin: 30px 0 0 100px;"
+        >编辑</el-button>
+        <!-- 编辑产品对话框 -->
+        <el-dialog title="信息编辑" :visible.sync="dialogVisible" center>
+            <product-create :product="product"></product-create>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 import VePie from "v-charts/lib/pie.common";
+import ProductCreate from "@/views/product/ProductCreate";
 export default {
-    name: "ProductCreate",
+    name: "BaseInfo",
     data() {
         return {
             categoryOptions: [{ value: "100", label: "智能家居" }],
@@ -86,7 +94,8 @@ export default {
         };
     },
     components: {
-        VePie
+        VePie,
+        ProductCreate
     },
     created() {
         console.log("this.$router: " + JSON.stringify(this.$route.params.pid));
@@ -106,12 +115,20 @@ export default {
     }
 };
 </script>
-
+<style lang="less">
+// .base-info-box {
+//     .notEdit {
+//         input {
+//             border: 0;
+//             padding: 0;
+//             height: 30px;
+//             font-size: 16px;
+//             color: #333;
+//         }
+//     }
+// }
+</style>
 <style lang='less' scoped>
-.form-box {
-    width: 60%;
-    // margin: 20px auto;
-}
 .ve-pie {
     height: 190px !important;
 }
@@ -125,17 +142,16 @@ export default {
     padding-right: 22px;
 }
 .base-info-box {
+    width: 60%;
+    margin: 20px auto;
     .label {
-        vertical-align: top;
         width: 100px;
         color: #797979;
         padding: 12px 10px;
         box-sizing: border-box;
     }
     .value {
-        padding: 12px 10px;
-        vertical-align: top;
-        padding-left: 10px;
+        padding: 12px 0;
     }
 }
 </style>

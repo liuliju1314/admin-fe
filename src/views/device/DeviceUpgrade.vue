@@ -11,7 +11,7 @@
         <el-table :data="firmwareList" style="width: 100%; margin-top: 12px">
             <el-table-column prop="fwID" label="固件ID"></el-table-column>
             <el-table-column prop="version" label="版本"></el-table-column>
-            <el-table-column prop="desc" label="正式版"></el-table-column>
+            <el-table-column prop="desc" label="分组"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button @click="handleUpgrade(scope.row)" type="text" size="small" v-if="!(scope.row.fwID == UpgradeFw)">升级</el-button>

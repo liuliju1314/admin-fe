@@ -25,15 +25,33 @@
             </el-select>
         </el-form-item>
         <el-form-item label="产品分组" prop="group">
-            <el-select
-                v-model="form.group"
-                filterable
-                default-first-option
-                placeholder="请选择分组"
-            >
+            <el-select v-model="form.group" filterable default-first-option placeholder="请选择分组">
                 <el-option label="正式版" value="0"></el-option>
                 <el-option label="测试版" value="1"></el-option>
             </el-select>
+        </el-form-item>
+        <el-form-item label="固件名称">
+            <div>
+                <span style="display: inline-block; width: 43%">标识符:</span>
+                <span style="display: inline-block; width: 40%">描述:</span>
+            </div>
+            <div
+                class="rain-item"
+                v-for="(item,index) in form.fw"
+                :key="index"
+                style="margin: 0px 0px 10px 0px;"
+            >
+                <el-input v-model.number="item.name" class="small-width"></el-input>
+                <span class="span" style="display: inline-block;width: 3%;text-align: center">~</span>
+                <el-input v-model.number="item.tag" class="small-width"></el-input>
+                <el-button
+                    type="text"
+                    @click="deleteFw(index)"
+                    style="display: inline-block;margin-left: 10px"
+                    v-if="index > 0"
+                >删除</el-button>
+            </div>
+            <el-button type="text" @click="form.fw.push({name: '', tag: ''})">+ 添加固件名称</el-button>
         </el-form-item>
         <el-form-item label="产品描述">
             <el-input type="textarea" v-model="form.desc"></el-input>
@@ -54,7 +72,8 @@ export default {
                 productName: "",
                 productModel: "",
                 category: [],
-                desc: ""
+                desc: "",
+                fw: [{ name: "", tag: "" }]
             },
             formRules: {
                 productName: [
@@ -97,6 +116,9 @@ export default {
                     this.$router.push("/product/1z0zbfe0db5/info");
                 }
             });
+        },
+        deleteFw(index) {
+            this.fw.splice(index, 1);
         }
     }
 };
@@ -116,6 +138,9 @@ export default {
     .link-item {
         text-decoration: none;
         padding-right: 22px;
+    }
+    .small-width {
+        width: 40%;
     }
 }
 </style>
