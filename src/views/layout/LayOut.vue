@@ -42,7 +42,7 @@ export default {
     overflow: hidden;
     text-align: left;
     &>.el-menu {
-        height: 100vh;
+        height: 100%;
     }
 }
 .el-container > .el-header {

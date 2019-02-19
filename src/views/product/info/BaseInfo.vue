@@ -1,43 +1,55 @@
 <template>
-    <el-form ref="form" :model="form" label-width="90px" :rules="formRules" class="form-box" size="small">
-        <el-form-item label="产品名称" prop="productName">
-            <el-input v-model="form.productName"></el-input>
-        </el-form-item>
-        <el-form-item label="产品ID">
-            <div>{{form.projectID}}12424355</div>
-        </el-form-item>
-        <el-form-item label="产品分类" prop="category">
-            <el-select
-                v-model="form.category"
-                filterable
-                allow-create
-                default-first-option
-                placeholder="请输入或选择分类"
-            >
-                <el-option label="智能家居" value="电冰箱"></el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item label="产品分组" prop="group">
-            <el-select
-                v-model="form.group"
-                filterable
-                default-first-option
-                placeholder="请选择分组"
-            >
-                <el-option label="正式版" value="0"></el-option>
-                <el-option label="测试版" value="1"></el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item label="产品描述">
-            <el-input type="textarea" v-model="form.desc"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @click="createProduct" style="padding: 10px 22px">更新并保存</el-button>
-        </el-form-item>
-    </el-form>
+    <div class="base-info-box">
+        <table>
+            <tr>
+                <td class="label">产品名称:</td>
+                <td class="value">智能遥感水位传感器</td>
+            </tr>
+            <tr>
+                <td class="label">产品型号:</td>
+                <td class="value">Y2435464g</td>
+            </tr>
+            <tr>
+                <td class="label">产品分类:</td>
+                <td class="value">水利 / 图像水位传感器</td>
+            </tr>
+            <tr>
+                <td class="label">产品分组:</td>
+                <td class="value">测试组</td>
+            </tr>
+            <tr>
+                <td class="label">产品描述:</td>
+                <td class="value">该产品主要用于水利方向的图像检测和水位检测</td>
+            </tr>
+            <tr>
+                <td class="label">设备数量:</td>
+                <td class="value">
+                    <ve-pie
+                        :data="deviceData"
+                        :tooltip-visible="false"
+                        :legend-visible="false"
+                        :colors="['#49f','#999']"
+                        :extend="{
+                            series: {
+                                label: {
+                                    position: 'inner',
+                                    formatter: '{b}: {@c}'
+                                },     
+                                radius : '50%',
+                                center: ['25%', '25%']               
+                            },
+
+                        }"
+                    ></ve-pie>
+                </td>
+            </tr>
+        </table>
+        <el-button @click="createProduct" style="padding: 10px 22px; margin: 30px 0 0 100px;">编辑</el-button>
+    </div>
 </template>
 
 <script>
+import VePie from "v-charts/lib/pie.common";
 export default {
     name: "ProductCreate",
     data() {
@@ -46,7 +58,7 @@ export default {
             form: {
                 productName: "",
                 category: [],
-                group: '',
+                group: "",
                 desc: "",
                 productID: ""
             },
@@ -66,8 +78,15 @@ export default {
                     }
                 ]
             },
+            deviceData: {
+                columns: ["label", "num"],
+                rows: [{ label: "发布版", num: 0 }, { label: "测试版", num: 0 }]
+            },
             dialogVisible: false
         };
+    },
+    components: {
+        VePie
     },
     created() {
         console.log("this.$router: " + JSON.stringify(this.$route.params.pid));
@@ -93,6 +112,9 @@ export default {
     width: 60%;
     // margin: 20px auto;
 }
+.ve-pie {
+    height: 190px !important;
+}
 .add-category {
     margin-left: 90px;
     padding-top: 0 !important;
@@ -101,5 +123,19 @@ export default {
 .link-item {
     text-decoration: none;
     padding-right: 22px;
-}   
+}
+.base-info-box {
+    .label {
+        vertical-align: top;
+        width: 100px;
+        color: #797979;
+        padding: 12px 10px;
+        box-sizing: border-box;
+    }
+    .value {
+        padding: 12px 10px;
+        vertical-align: top;
+        padding-left: 10px;
+    }
+}
 </style>
