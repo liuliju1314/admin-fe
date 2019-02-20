@@ -21,7 +21,7 @@
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/product/'+productID+'/fireware'"
+                :to="'/product/'+productID+'/firmware'"
             >固件升级</router-link>
                         <router-link
                 class="link-item"

@@ -179,7 +179,5 @@ export default {
     width: 90%;
     margin: auto;
 }
-.small-width {
-    width: 40%;
-}
+
 </style>

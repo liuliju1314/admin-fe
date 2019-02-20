@@ -6,7 +6,7 @@
                 <div class="device-log">当前设备总数： 134，其中在线：130，离线：4 .</div>
                 <el-input
                     placeholder="请输入设备编号"
-                    v-model="firewareSearch"
+                    v-model="firmwareSearch"
                     class="input-with-select"
                     size="small"
                 >
@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <el-table :data="firewareList" style="width: 100%; margin-top: 12px" border size="small">
+        <el-table :data="firmwareList" style="width: 100%; margin-top: 12px" border size="small">
             <el-table-column prop="hwID" label="设备编号" width="125"></el-table-column>
             <el-table-column prop="props.batVolt" label="电池电压"></el-table-column>
             <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
@@ -45,7 +45,7 @@
         <div></div>
         <!-- 添加固件对话框 -->
         <el-dialog title="添加固件" :visible.sync="dialogVisible" center>
-            <add-fireware ref="addForm"></add-fireware>
+            <add-firmware ref="addForm"></add-firmware>
         </el-dialog>
         <el-dialog title="固件编辑" :visible.sync="editVisible" center>
             <el-form
@@ -90,7 +90,7 @@
 export default {
     data() {
         return {
-            firewareList: [
+            firmwareList: [
                 {
                     fwID: "1q23440",
                     group: "测试组",
@@ -100,7 +100,7 @@ export default {
                     createdAt: "2018-03-04 11:11"
                 }
             ],
-            firewareSearch: "",
+            firmwareSearch: "",
             dialogVisible: false,
             editVisible: false,
             editFwForm: {
@@ -138,7 +138,7 @@ export default {
     watch: {},
     computed: {},
     methods: {
-        deleteFireware(fw) {
+        deletefirmware(fw) {
             this.$confirm(`该固件已升级，无法删除！`, "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
@@ -159,7 +159,7 @@ export default {
             //     });
             // });
         },
-        upgradeFireware(fw) {
+        upgradefirmware(fw) {
             this.$confirm(
                 `此操作将升级该产品下所有设备固件版本，是否确认升级?`,
                 "提示",

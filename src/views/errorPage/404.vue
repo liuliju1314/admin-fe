@@ -1,7 +1,6 @@
 <template>
    <div class="error-box">
-       <img src="@/assets/images/error404.svg" alt="404">
-       
+       <img src="@/assets/images/error404.svg" alt="404">  
    </div>
 </template>
 
@@ -18,5 +17,6 @@ export default {
 <style scoped>
 .error-box {
     margin: auto;
+    min-height: calc(100vh - 76px);
 }
 </style>
