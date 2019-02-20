@@ -7,7 +7,7 @@
         :rules="rules"
         size="small"
     >
-        <div style="display: flex"   v-for="(item,index) in upload" :key="index">
+        <div style="display: flex" v-for="(item,index) in upload" :key="index">
             <el-form-item label="选择固件">
                 <el-upload
                     class="upload-demo"
@@ -18,11 +18,15 @@
                 </el-upload>
             </el-form-item>
             <div style="vertical-align: top; margin-left: 10px;">
-                <el-button type="text" icon="el-icon-delete" size="small" v-if="index > 0" @click="upload.splice(index, 1)">删除</el-button>                
+                <el-button
+                    type="text"
+                    icon="el-icon-delete"
+                    size="small"
+                    v-if="index > 0"
+                    @click="upload.splice(index, 1)"
+                >删除</el-button>
             </div>
-
         </div>
-
 
         <div style="margin-left: 100px">
             <el-button
@@ -32,12 +36,19 @@
                 @click="upload.push( { index: '' })"
             >+ 新增固件</el-button>
         </div>
+        <el-form-item label="固件名称" prop="fwName">
+            <el-select v-model="form.fwName" filterable default-first-option placeholder="请选择分组">
+                <el-option label="正式版" value="0"></el-option>
+                <el-option label="测试版" value="1"></el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item label="固件分组" prop="group">
             <el-radio-group v-model="form.group" placeholder="请选择">
                 <el-radio label="0">正式版</el-radio>
                 <el-radio label="1">测试版</el-radio>
             </el-radio-group>
         </el-form-item>
+
         <el-form-item label="升级方式" prop="upgrade">
             <el-radio-group v-model="form.upgrade">
                 <el-radio :label="3">手动升级</el-radio>
@@ -50,9 +61,9 @@
         <el-form-item label="描述" prop="desc" style="width: 500px">
             <el-input type="textarea" v-model="form.desc"></el-input>
         </el-form-item>
-         <el-form-item>
-                <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-                <el-button type="primary" @click="addFireware" size="small">确 定</el-button>
+        <el-form-item>
+            <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+            <el-button type="primary" @click="addFireware" size="small">确 定</el-button>
         </el-form-item>
     </el-form>
 </template>
@@ -65,13 +76,14 @@ export default {
     name: "AddFireware",
     data() {
         return {
-            upload: [{ index: '' }],
+            upload: [{ index: "" }],
             form: {
                 upgrade: "",
                 group: "",
                 name: "",
                 version: "",
-                desc: ""
+                desc: "",
+                fwName: ""
             },
             rules: {
                 group: [
@@ -99,12 +111,9 @@ export default {
         };
     },
 
-
     methods: {
         // 文件上传成功后返回值
-        getFile(response, file, fileList) {
-
-        },
+        getFile(response, file, fileList) {},
         getProList() {
             getProductList(this.form)
                 .then(res => {

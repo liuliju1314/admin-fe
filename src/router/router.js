@@ -18,7 +18,7 @@ const routes = [
         children: [
             {
                 path: "product",
-                component: () => import("@/views/product/ProductList"),
+                component: () => import("@/views/product/ProductList")
             },
             {
                 path: "product/:id",
@@ -26,8 +26,7 @@ const routes = [
                 children: [
                     {
                         path: "detail",
-                        component: () =>
-                            import("@/views/product/info/BaseInfo")
+                        component: () => import("@/views/product/info/BaseInfo")
                     },
                     {
                         path: "property",
@@ -38,6 +37,11 @@ const routes = [
                         path: "fireware",
                         component: () =>
                             import("@/views/product/info/fireware/FirewareList")
+                    },
+                    {
+                        path: "device",
+                        component: () =>
+                            import("@/views/product/info/device")
                     }
                 ]
             }

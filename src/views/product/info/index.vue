@@ -17,12 +17,17 @@
                 class="link-item"
                 active-class="active"
                 :to="'/product/'+productID+'/property'"
-            >属性</router-link>
+            >属性管理</router-link>
             <router-link
                 class="link-item"
                 active-class="active"
                 :to="'/product/'+productID+'/fireware'"
-            >固件</router-link>
+            >固件升级</router-link>
+                        <router-link
+                class="link-item"
+                active-class="active"
+                :to="'/product/'+productID+'/device'"
+            >设备管理</router-link>
         </div>
 
         <router-view></router-view>
@@ -53,7 +58,7 @@ export default {
     }
     .card-breadcrumb {
         font-size: 14px;
-        margin-bottom: 16px;
+        margin-bottom: 24px;
     }
     .card-title {
         color: rgba(0, 0, 0, 0.85);
@@ -66,7 +71,7 @@ export default {
         text-decoration: none;
         color: #333;
         margin-right: 32px;
-        padding: 24px 10px 10px 10px;
+        padding: 24px 10px 8px 10px;
     }
     .link-item.active {
         color: @baseColor;
