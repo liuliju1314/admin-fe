@@ -37,7 +37,7 @@
             >+ 新增固件</el-button>
         </div>
         <el-form-item label="固件名称" prop="fwName">
-            <el-select v-model="form.fwName" filterable default-first-option placeholder="请选择分组">
+            <el-select v-model="form.fwName" filterable default-first-option placeholder="请选择固件名称">
                 <el-option label="正式版" value="0"></el-option>
                 <el-option label="测试版" value="1"></el-option>
             </el-select>
@@ -63,17 +63,17 @@
         </el-form-item>
         <el-form-item>
             <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-            <el-button type="primary" @click="addFireware" size="small">确 定</el-button>
+            <el-button type="primary" @click="addfirmware" size="small">确 定</el-button>
         </el-form-item>
     </el-form>
 </template>
 
 <script>
 import { getProductList } from "@/api/product/product";
-import { updateFirmware } from "@/api/fireware/fireware";
+import { updateFirmware } from "@/api/firmware/firmware";
 
 export default {
-    name: "AddFireware",
+    name: "Addfirmware",
     data() {
         return {
             upload: [{ index: "" }],
@@ -135,10 +135,10 @@ export default {
                 }
             });
         },
-        addFireware() {
+        addfirmware() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    updateFirmware(this.addfirewareForm)
+                    updateFirmware(this.addfirmwareForm)
                         .then(() => {
                             console.log("添加成功");
                         })

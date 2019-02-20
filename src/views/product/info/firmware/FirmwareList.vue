@@ -6,7 +6,7 @@
                 <el-button type="primary" size="small" @click="dialogVisible=true">+ 添加固件</el-button>
                 <el-input
                     placeholder="请输入固件ID或版本"
-                    v-model="firewareSearch"
+                    v-model="firmwareSearch"
                     class="input-with-select"
                     size="small"
                 >
@@ -14,7 +14,7 @@
                 </el-input>
             </div>
         </div>
-        <el-table :data="firewareList" style="width: 100%; margin-top: 12px" border size="small">
+        <el-table :data="firmwareList" style="width: 100%; margin-top: 12px" border size="small">
             <el-table-column prop="fwID" label="固件ID"></el-table-column>
             <el-table-column prop="version" label="固件版本"></el-table-column>
             <el-table-column prop="group" label="固件分组"></el-table-column>
@@ -25,7 +25,7 @@
                     <el-button
                         type="text"
                         size="small"
-                        @click="upgradeFireware(scope.row)"
+                        @click="upgradefirmware(scope.row)"
                         icon="el-icon-upload"
                     >升级</el-button>
                     <el-button
@@ -37,7 +37,7 @@
                     <el-button
                         type="text"
                         size="small"
-                        @click="deleteFireware(scope.row)"
+                        @click="deletefirmware(scope.row)"
                         icon="el-icon-delete"
                     >删除</el-button>
                 </template>
@@ -46,7 +46,7 @@
         <div></div>
         <!-- 添加固件对话框 -->
         <el-dialog title="添加固件" :visible.sync="dialogVisible" center>
-            <add-fireware ref="addForm"></add-fireware>
+            <add-firmware ref="addForm"></add-firmware>
         </el-dialog>
         <el-dialog title="固件编辑" :visible.sync="editVisible" center>
             <el-form
@@ -88,15 +88,15 @@
 </template>
 
 <script>
-import AddFireware from "./AddFireware";
+import AddFirmware from "./AddFirmware";
 export default {
     components: {
-        AddFireware
+        AddFirmware
     },
     props: {},
     data() {
         return {
-            firewareList: [
+            firmwareList: [
                 {
                     fwID: "1q23440",
                     group: "测试组",
@@ -106,7 +106,7 @@ export default {
                     createdAt: "2018-03-04 11:11"
                 }
             ],
-            firewareSearch: "",
+            firmwareSearch: "",
             dialogVisible: false,
             editVisible: false,
             editFwForm: {
@@ -144,7 +144,7 @@ export default {
     watch: {},
     computed: {},
     methods: {
-        deleteFireware(fw) {
+        deletefirmware(fw) {
             this.$confirm(`该固件已升级，无法删除！`, "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
@@ -165,7 +165,7 @@ export default {
             //     });
             // });
         },
-        upgradeFireware(fw) {
+        upgradefirmware(fw) {
             this.$confirm(
                 `此操作将升级该产品下所有设备固件版本，是否确认升级?`,
                 "提示",

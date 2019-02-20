@@ -1,7 +1,7 @@
 import service from "@/utils/request";
 
 // 获得固件列表
-export function getFirewareList(data) {
+export function getfirmwareList(data) {
     return service({
         url: '/api/web/all_firmwares',
         method: 'get',

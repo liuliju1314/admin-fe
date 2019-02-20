@@ -34,9 +34,9 @@ const routes = [
                             import("@/views/product/info/property/PropertyList")
                     },
                     {
-                        path: "fireware",
+                        path: "firmware",
                         component: () =>
-                            import("@/views/product/info/fireware/FirewareList")
+                            import("@/views/product/info/firmware/FirmwareList")
                     },
                     {
                         path: "device",

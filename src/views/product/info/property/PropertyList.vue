@@ -13,13 +13,13 @@
                     <el-button
                         type="text"
                         size="small"
-                        @click="handleDeleteFireware(scope.row)"
+                        @click="handleDeletefirmware(scope.row)"
                         icon="el-icon-edit"
                     >编辑</el-button>
                     <el-button
                         type="text"
                         size="small"
-                        @click="handleDeleteFireware(scope.row)"
+                        @click="handleDeletefirmware(scope.row)"
                         icon="el-icon-delete"
                     >删除</el-button>
                 </template>
@@ -32,11 +32,11 @@
             center
             :visible.sync="dialogVisible"
             width="60%"
-            :before-close="cancelAddFireware"
+            :before-close="cancelAddfirmware"
         >
             <add-property ref="addPropertyFrom"></add-property>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelAddFireware">取 消</el-button>
+                <el-button @click="cancelAddfirmware">取 消</el-button>
                 <el-button type="primary" @click="addProperty()">确 定</el-button>
             </span>
         </el-dialog>
@@ -71,7 +71,7 @@ export default {
             this.dialogVisible = true;
         },
         // 关闭前清除表单
-        cancelAddFireware() {
+        cancelAddfirmware() {
             this.$refs.addPropertyFrom.resetForm();
             this.dialogVisible = false;
         },
@@ -79,7 +79,7 @@ export default {
         addProperty() {
             this.$refs.addPropertyFrom.validate(valid => {
                 if (valid) {
-                    this.cancelAddFireware();
+                    this.cancelAddfirmware();
                     this.$message({
                         type: "success",
                         message: "添加成功!"

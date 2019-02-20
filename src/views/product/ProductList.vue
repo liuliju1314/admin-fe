@@ -169,7 +169,7 @@ export default {
             });
         },
         // 产品固件升级
-        upgradeFireware() {},
+        upgradefirmware() {},
         openDetails(row) {
             this.$router.push({ path: `/product/${row.pid}/detail` });
         },
