@@ -14,10 +14,6 @@
                 <td class="value">水利 / 图像水位传感器</td>
             </tr>
             <tr>
-                <td class="label">产品分组:</td>
-                <td class="value">测试组</td>
-            </tr>
-            <tr>
                 <td class="label">产品描述:</td>
                 <td class="value">该产品主要用于水利方向的图像检测和水位检测</td>
             </tr>

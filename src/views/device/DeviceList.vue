@@ -29,6 +29,19 @@
                 <el-table-column prop="model" label="产品型号"></el-table-column>
                 <el-table-column prop="name" label="产品名称"></el-table-column>
                 <el-table-column prop="hwID" label="设备编号" width="125"></el-table-column>
+                <el-table-column prop="group" label="设备分组" width="110">
+                    <template slot-scope="scope">
+                        <el-select
+                            v-model="scope.row.group"
+                            placeholder="请选择分组"
+                            size="mini"
+                            @change="updateDeviceGroup(scope.row)"
+                        >
+                            <el-option label="正式组" value="release"></el-option>
+                            <el-option label="测试组" value="0"></el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="props.batVolt" label="电池电压"></el-table-column>
                 <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
                 <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
@@ -51,7 +64,7 @@
                 <el-table-column label="操作" width="160">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
-                    </template> 
+                    </template>
                 </el-table-column>
             </el-table>
             <!-- 分页逻辑 -->
@@ -66,9 +79,6 @@
             </div>
             <el-dialog title="设备升级" :visible.sync="dialogVisible">
                 <device-upgrade></device-upgrade>
-                <!-- <span slot="footer" class="dialog-footer">
-                    <el-button @click="dialogVisible = false">取 消</el-button>
-                </span> -->
             </el-dialog>
         </div>
     </el-card>
@@ -90,8 +100,10 @@ export default {
                 online: "",
                 isPage: true
             },
+            group: "",
             deviceList: [],
             dialogVisible: false,
+            groupVisible: false,
             title: "",
             value: "",
             count: "",
@@ -134,12 +146,13 @@ export default {
         handleTest() {
             console.log("测试");
         },
-        handleUpgrade() {
+        handleUpgrade(device) {
             this.dialogVisible = true;
             console.log("升级");
         },
-        handleMore() {
-            console.log("更多");
+        //更新设备分组  
+        updateDeviceGroup( device ) {
+            console.log(device);
         },
         isOnline(val) {
             if (val.online == true) {
