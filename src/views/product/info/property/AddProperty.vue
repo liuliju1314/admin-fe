@@ -71,6 +71,10 @@
             <el-form-item label="描述">
                 <el-input type="textarea" v-model="propertForm.desc"></el-input>
             </el-form-item>
+            <el-form-item>
+                <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="addfirmware" size="small">确 定</el-button>
+            </el-form-item>
         </el-form>
     </el-main>
 </template>
@@ -79,6 +83,7 @@
 import { addProperty } from "@/api/property/property";
 
 export default {
+    props: ["property", "isEdit"],
     data() {
         return {
             labelPosition: "right",
@@ -168,6 +173,18 @@ export default {
                 }
             });
         },
+        // 添加属性
+        addProperty() {
+            this.$refs.addPropertyFrom.validate(valid => {
+                if (valid) {
+                    this.cancelAddfirmware();
+                    this.$message({
+                        type: "success",
+                        message: "添加成功!"
+                    });
+                }
+            });
+        },
         resetForm() {
             this.$refs.propertForm.resetFields();
         }
@@ -179,5 +196,4 @@ export default {
     width: 90%;
     margin: auto;
 }
-
 </style>
