@@ -66,6 +66,17 @@
                         <el-radio label="1">测试版</el-radio>
                     </el-radio-group>
                 </el-form-item>
+                <el-form-item label="固件名称" prop="fwName">
+                    <el-select
+                        v-model="editFwForm.fwName"
+                        filterable
+                        default-first-option
+                        placeholder="请选择固件名称"
+                    >
+                        <el-option label="正式版" value="0"></el-option>
+                        <el-option label="测试版" value="1"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="升级方式" prop="upgrade">
                     <el-radio-group v-model="editFwForm.upgrade">
                         <el-radio :label="3">手动升级</el-radio>
@@ -104,6 +115,7 @@ export default {
                     version: "v1.0.0.1",
                     desc: "主要用于测试功能",
                     createdAt: "2018-03-04 11:11"
+                    
                 }
             ],
             firmwareSearch: "",
@@ -114,7 +126,8 @@ export default {
                 group: "",
                 upgrade: "",
                 version: "",
-                desc: ""
+                desc: "",
+                fwName: ""
             },
             rules: {
                 group: [

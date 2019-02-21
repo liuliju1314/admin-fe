@@ -1,6 +1,6 @@
+
 <template>
-    <el-main>
-        <!-- 循环的固件列表 -->
+    <div class="box-card create-station-wrapper" shadow="never">
         <div class="btn-box">
             <div style=" display: flex;justify-content: space-between;">
                 <div class="device-log">当前设备总数： 134，其中在线：130，离线：4 .</div>
@@ -9,204 +9,168 @@
                     v-model="firmwareSearch"
                     class="input-with-select"
                     size="small"
+
                 >
                     <el-button slot="append" icon="el-icon-search"></el-button>
                 </el-input>
             </div>
         </div>
-
-        <el-table :data="firmwareList" style="width: 100%; margin-top: 12px" border size="small">
-            <el-table-column prop="hwID" label="设备编号" width="125"></el-table-column>
-            <el-table-column prop="props.batVolt" label="电池电压"></el-table-column>
-            <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
-            <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
-            <el-table-column prop="props.count" label="计数传感器"></el-table-column>
-            <el-table-column label="软件版本号" :formatter="removeBlock">
-                <template slot-scope="scope">
-                    <span>v1.0.0.3</span>
-                    <i
-                        class="el-icon-refresh"
-                        style="margin-left: 10px"
-                        @click="updateFwProgress(scope.row)"
-                    ></i>
-                    <div>
-                        <el-progress :percentage="70"></el-progress>
-                    </div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
-            <el-table-column prop="online" label="在线状态" :formatter="isOnline"></el-table-column>
-            <el-table-column label="操作" width="160">
-                <template slot-scope="scope">
-                    <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-        <div></div>
-        <!-- 添加固件对话框 -->
-        <el-dialog title="添加固件" :visible.sync="dialogVisible" center>
-            <add-firmware ref="addForm"></add-firmware>
-        </el-dialog>
-        <el-dialog title="固件编辑" :visible.sync="editVisible" center>
-            <el-form
-                :model="editFwForm"
-                ref="editFwForm"
-                label-width="100px"
-                class="form-box"
-                :rules="rules"
-                size="small"
-            >
-                <el-form-item label="固件ID" prop="version" style="width: 500px">
-                    <el-input v-model="editFwForm.fwID" placeholder="建议采用版本递增进行管理" disabled="true"></el-input>
-                </el-form-item>
-                <el-form-item label="固件分组" prop="group">
-                    <el-radio-group v-model="editFwForm.group" placeholder="请选择">
-                        <el-radio label="0">正式版</el-radio>
-                        <el-radio label="1">测试版</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="升级方式" prop="upgrade">
-                    <el-radio-group v-model="editFwForm.upgrade">
-                        <el-radio :label="3">手动升级</el-radio>
-                        <el-radio :label="6">静默升级</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="固件版本" prop="version" style="width: 500px">
-                    <el-input v-model="editFwForm.version" placeholder="建议采用版本递增进行管理"></el-input>
-                </el-form-item>
-                <el-form-item label="描述" prop="desc" style="width: 500px">
-                    <el-input type="textarea" v-model="editFwForm.desc"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button @click="editVisible = false" size="small">取 消</el-button>
-                    <el-button type="primary" @click="submitEidtFw" size="small">确 定</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-    </el-main>
+        <div class="device-wrapper">
+            <el-table :data="deviceList" style="width: 100%; margin-top: 12px" border size="small">
+                <el-table-column prop="hwID" label="设备编号" width="125"></el-table-column>
+                <el-table-column prop="group" label="设备分组" width="110">
+                    <template slot-scope="scope">
+                        <el-select
+                            v-model="scope.row.group"
+                            placeholder="请选择分组"
+                            size="mini"
+                            @change="updateDeviceGroup(scope.row)"
+                        >
+                            <el-option label="正式组" value="release"></el-option>
+                            <el-option label="测试组" value="0"></el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="props.batVolt" label="电池电压"></el-table-column>
+                <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
+                <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
+                <el-table-column prop="props.count" label="计数传感器"></el-table-column>
+                <el-table-column label="软件版本号" :formatter="removeBlock">
+                    <template slot-scope="scope">
+                        <span>v1.0.0.3</span>
+                        <i
+                            class="el-icon-refresh"
+                            style="margin-left: 10px"
+                            @click="updateFwProgress(scope.row)"
+                        ></i>
+                        <div>
+                            <el-progress :percentage="70"></el-progress>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
+                <el-table-column prop="online" label="在线状态" :formatter="isOnline"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页逻辑 -->
+            <div class="pagination-box" v-if="form.pageSize < count">
+                <el-pagination
+                    :page-size="form.pageSize"
+                    :page="form.page"
+                    layout="prev, pager, next"
+                    :total="count"
+                    @current-change="handlePage"
+                ></el-pagination>
+            </div>
+            <el-dialog title="设备升级" :visible.sync="dialogVisible">
+                <device-upgrade></device-upgrade>
+            </el-dialog>
+        </div>
+    </div>
 </template>
 
 <script>
+import DeviceUpgrade from "@/views/device/DeviceUpgrade";
+import { getDeviceList } from "@/api/device/device";
 export default {
+    name: "",
+    props: [""],
     data() {
         return {
-            firmwareList: [
-                {
-                    fwID: "1q23440",
-                    group: "测试组",
-                    upgrade: "手动升级",
-                    version: "v1.0.0.1",
-                    desc: "主要用于测试功能",
-                    createdAt: "2018-03-04 11:11"
-                }
-            ],
-            firmwareSearch: "",
-            dialogVisible: false,
-            editVisible: false,
-            editFwForm: {
-                fwID: "",
-                group: "",
-                upgrade: "",
-                version: "",
-                desc: ""
+            form: {
+                page: 1,
+                pageSize: 6,
+                model: "",
+                code: "",
+                online: "",
+                isPage: true
             },
-            rules: {
-                group: [
-                    {
-                        required: true,
-                        message: "请选择固件分组",
-                        trigger: "blur"
-                    }
-                ],
-                upgrade: [
-                    {
-                        required: true,
-                        message: "请选择升级方式",
-                        trigger: "blur"
-                    }
-                ],
-                version: [
-                    {
-                        required: true,
-                        message: "请填写固件版本",
-                        trigger: "blur"
-                    }
-                ]
-            }
+            group: "",
+            deviceList: [],
+            dialogVisible: false,
+            groupVisible: false,
+            title: "",
+            value: "",
+            count: "",
+            btnShow: false
         };
     },
-    watch: {},
+
+    components: { DeviceUpgrade },
+
     computed: {},
+
+    beforeMount() {},
+
+    mounted() {},
+
+    created() {
+        this.getDevice();
+    },
+
     methods: {
-        deletefirmware(fw) {
-            this.$confirm(`该固件已升级，无法删除！`, "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            });
-            // this.$confirm(
-            //     `是否确认删除该固件?`,
-            //     "提示",
-            //     {
-            //         confirmButtonText: "确定",
-            //         cancelButtonText: "取消",
-            //         type: "warning"
-            //     }
-            // ).then(() => {
-            //     this.$message({
-            //         type: "success",
-            //         message: "升级成功!"
-            //     });
-            // });
-        },
-        upgradefirmware(fw) {
-            this.$confirm(
-                `此操作将升级该产品下所有设备固件版本，是否确认升级?`,
-                "提示",
-                {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                }
-            ).then(() => {
-                this.$message({
-                    type: "success",
-                    message: "升级成功!"
+        //获取设备列表
+        getDevice() {
+            getDeviceList(this.form)
+                .then(res => {
+                    this.deviceList = res.payload.result;
+                    this.count = res.payload.count;
+                })
+                .catch(error => {
+                    return error;
                 });
-            });
         },
-        editFw(fw) {
-            this.editVisible = true;
-            this.editFwForm = {
-                ...this.editFwForm,
-                ...fw
-            };
+        //分页
+        handlePage(value) {
+            this.form.page = value;
+            this.getDevice();
         },
-        // 提交固件编辑
-        submitEidtFw() {
-            this.$refs.editFwForm.validate(valid => {
-                if (valid) {
-                    this.$message({
-                        type: "success",
-                        message: "固件更新成功!"
-                    });
-                    this.editVisible = false;
-                }
-            });
+        handleeEquipment() {
+            this.getDevice();
+        },
+        handleTest() {
+            console.log("测试");
+        },
+        handleUpgrade(device) {
+            this.dialogVisible = true;
+            console.log("升级");
+        },
+        //更新设备分组
+        updateDeviceGroup(device) {
+            console.log(device);
+        },
+        isOnline(val) {
+            if (val.online == true) {
+                return "在线";
+            } else if (val.online == false) {
+                return "离线";
+            }
+        },
+        //去除大括号
+        removeBlock(str) {
+            if (str) {
+                var reg = /^\{/gi;
+                var reg2 = /\}$/gi;
+                str = str.replace(reg, "");
+                str = str.replace(reg2, "");
+            }
+            return str;
         }
-    }
+    },
+
+    watch: {}
 };
 </script>
-
-<style lang="less" scoped>
-.el-main {
-    background-color: #fff;
-}
+<style lang='less' scoped>
 .input-with-select {
     width: 320px;
 }
 .device-log {
+    font-size:  14px;
     margin-top: 20px;
-    font-size: 14px;
 }
 </style>

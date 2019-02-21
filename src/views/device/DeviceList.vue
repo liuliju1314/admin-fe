@@ -61,7 +61,7 @@
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
                 <el-table-column prop="online" label="在线状态" :formatter="isOnline"></el-table-column>
-                <el-table-column label="操作" width="160">
+                <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
                     </template>

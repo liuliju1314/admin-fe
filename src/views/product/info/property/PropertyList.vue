@@ -13,7 +13,7 @@
                     <el-button
                         type="text"
                         size="small"
-                        @click="handleDeletefirmware(scope.row)"
+                        @click="editProperty(scope.row)"
                         icon="el-icon-edit"
                     >编辑</el-button>
                     <el-button
@@ -28,17 +28,17 @@
 
         <!-- 添加属性对话框 -->
         <el-dialog
-            title="添加属性"
+            title="title"
             center
             :visible.sync="dialogVisible"
             width="60%"
             :before-close="cancelAddfirmware"
         >
-            <add-property ref="addPropertyFrom"></add-property>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelAddfirmware">取 消</el-button>
-                <el-button type="primary" @click="addProperty()">确 定</el-button>
-            </span>
+            <add-property
+                :property="property"
+                :isEdit="isEdit"
+                @listenPropertyOp="listenPropertyOp"
+            ></add-property>
         </el-dialog>
     </el-main>
 </template>
@@ -58,6 +58,9 @@ export default {
                     desc: ""
                 }
             ],
+            isEdit: "",
+            title: "添加属性",
+            property: "",
             dialogVisible: false
         };
     },
@@ -67,26 +70,19 @@ export default {
     watch: {},
     computed: {},
     methods: {
-        addPropert() {
+        editProperty(attr) {
+            this.title = "属性编辑";
+            this.isEdit = true;
+            this.property = attr;
             this.dialogVisible = true;
         },
-        // 关闭前清除表单
-        cancelAddfirmware() {
-            this.$refs.addPropertyFrom.resetForm();
-            this.dialogVisible = false;
-        },
-        // 添加属性
         addProperty() {
-            this.$refs.addPropertyFrom.validate(valid => {
-                if (valid) {
-                    this.cancelAddfirmware();
-                    this.$message({
-                        type: "success",
-                        message: "添加成功!"
-                    });
-                }
-            });
+            this.title = "添加属性";
+            this.isEdit = false;
+            this.property = "";
+            this.dialogVisible = true;
         },
+
         //   删除属性
         handleDeletePropert() {
             console.log("删除属性");
