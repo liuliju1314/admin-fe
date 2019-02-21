@@ -55,10 +55,10 @@
                 <el-radio :label="6">静默升级</el-radio>
             </el-radio-group>
         </el-form-item>
-        <el-form-item label="固件版本" prop="version" style="width: 500px">
+        <el-form-item label="固件版本" prop="version">
             <el-input v-model="form.version" placeholder="建议采用版本递增进行管理"></el-input>
         </el-form-item>
-        <el-form-item label="描述" prop="desc" style="width: 500px">
+        <el-form-item label="描述" prop="desc">
             <el-input type="textarea" v-model="form.desc"></el-input>
         </el-form-item>
         <el-form-item>

@@ -25,12 +25,6 @@
                     <el-option label="智能家居" value="电冰箱"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="产品分组" prop="group">
-                <el-select v-model="form.group" filterable default-first-option placeholder="请选择分组">
-                    <el-option label="正式版" value="0"></el-option>
-                    <el-option label="测试版" value="1"></el-option>
-                </el-select>
-            </el-form-item>
             <el-form-item label="固件名称">
                 <div>
                     <span style="display: inline-block; width: 43%">标识符:</span>
@@ -96,13 +90,6 @@ export default {
                     {
                         required: true,
                         message: "请添加或选择产品分类",
-                        trigger: "blur"
-                    }
-                ],
-                group: [
-                    {
-                        required: true,
-                        message: "请选择产品分组",
                         trigger: "blur"
                     }
                 ]

@@ -57,7 +57,7 @@
                 :rules="rules"
                 size="small"
             >
-                <el-form-item label="固件ID" prop="version" style="width: 500px">
+                <el-form-item label="固件ID" prop="version">
                     <el-input v-model="editFwForm.fwID" placeholder="建议采用版本递增进行管理" disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="固件分组" prop="group">
@@ -72,10 +72,10 @@
                         <el-radio :label="6">静默升级</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="固件版本" prop="version" style="width: 500px">
+                <el-form-item label="固件版本" prop="version">
                     <el-input v-model="editFwForm.version" placeholder="建议采用版本递增进行管理"></el-input>
                 </el-form-item>
-                <el-form-item label="描述" prop="desc" style="width: 500px">
+                <el-form-item label="描述" prop="desc">
                     <el-input type="textarea" v-model="editFwForm.desc"></el-input>
                 </el-form-item>
                 <el-form-item>
