@@ -2,6 +2,7 @@
     <el-main>
         <div class="btn-box">
             <el-button type="primary" size="small" @click="addProperty">+ 添加属性</el-button>
+            <el-button type="primary" size="small" @click="checkProperty">查看属性文件</el-button>
         </div>
         <el-table :data="propertList" style="width: 100%; margin-top: 12px" border size="small">
             <el-table-column prop="propertyName" label="属性名称"></el-table-column>
@@ -28,7 +29,7 @@
 
         <!-- 添加属性对话框 -->
         <el-dialog
-            title="title"
+            :title="title"
             center
             :visible.sync="dialogVisible"
             width="60%"
@@ -40,11 +41,23 @@
                 @listenPropertyOp="listenPropertyOp"
             ></add-property>
         </el-dialog>
+
+        <!-- 查看属性文件对话框 -->
+        <el-dialog
+            :title="title"
+            center
+            :visible.sync="dialogVisibleProperty"
+            width="60%"
+            :before-close="cancelAddfirmware"
+        >
+            <check-property></check-property>
+        </el-dialog>
     </el-main>
 </template>
 
 <script>
 import AddProperty from "./AddProperty";
+import CheckProperty from "./CheckProperty";
 
 export default {
     name: "PropertyList",
@@ -61,11 +74,13 @@ export default {
             isEdit: "",
             title: "添加属性",
             property: "",
-            dialogVisible: false
+            dialogVisible: false,
+            dialogVisibleProperty: false
         };
     },
     components: {
-        AddProperty
+        AddProperty,
+        CheckProperty
     },
     watch: {},
     computed: {},
@@ -82,7 +97,10 @@ export default {
             this.property = "";
             this.dialogVisible = true;
         },
-
+        checkProperty() {
+            this.title = "查看属性文件";
+            this.dialogVisibleProperty = true;
+        },
         //   删除属性
         handleDeletePropert() {
             console.log("删除属性");
