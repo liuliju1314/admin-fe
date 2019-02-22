@@ -14,7 +14,12 @@
             <el-table-column prop="desc" label="分组"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="handleUpgrade(scope.row)" type="text" size="small" v-if="!(scope.row.fwID == UpgradeFw)">升级</el-button>
+                    <el-button
+                        @click="handleUpgrade(scope.row)"
+                        type="text"
+                        size="small"
+                        v-if="!(scope.row.fwID == UpgradeFw)"
+                    >升级</el-button>
                     <div v-else>
                         <i
                             class="el-icon-refresh"
@@ -23,9 +28,8 @@
                         ></i>
                         <div>
                             <el-progress :percentage="70"></el-progress>
-                        </div>                        
+                        </div>
                     </div>
-
                 </template>
             </el-table-column>
         </el-table>
@@ -39,7 +43,7 @@ export default {
     data() {
         return {
             did: 1,
-            UpgradeFw: '',
+            UpgradeFw: "",
             fwVersion: [
                 { default: "0.0.2" },
                 { default: "0.0.3" },
@@ -90,7 +94,7 @@ export default {
 
     methods: {
         handleUpgrade(fw) {
-            this.UpgradeFw = fw.fwID
+            this.UpgradeFw = fw.fwID;
         }
     },
 

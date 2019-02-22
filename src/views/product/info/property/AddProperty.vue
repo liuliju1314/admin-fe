@@ -17,34 +17,44 @@
             </el-form-item>
             <el-form-item label="属性类型" prop="propType">
                 <el-select v-model="propertForm.propType" placeholder="请选择类型">
-                    <el-option label="布尔型" value="BOOL"></el-option>
-                    <el-option label="字符型" value="STRING"></el-option>
-                    <el-option label="枚举型" value="ENUM"></el-option>
-                    <el-option label="浮点型" value="FLOAT"></el-option>
-                    <el-option label="整数型" value="INT"></el-option>
+                    <el-option label="bool (布尔型)" value="BOOL"></el-option>
+                    <el-option label="string (字符型)" value="STRING"></el-option>
+                    <el-option label="enum (枚举型)" value="ENUM"></el-option>
+                    <el-option label="float (浮点型)" value="FLOAT"></el-option>
+                    <el-option label="int (整数型)" value="INT"></el-option>
+                    <el-option label="data (时间型)" value="DATA"></el-option>
+                    <el-option label="array (数组型)" value="ARRAY"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="读写属性" prop="permission">
-                <el-radio-group v-model="propertForm.permission">
-                    <el-radio label="RW">可读写</el-radio>
-                    <el-radio label="RO">可读</el-radio>
-                    <el-radio label="WO">可写</el-radio>
-                </el-radio-group>
+            <el-form-item label="布尔值" v-if="propertForm.propType === 'BOOL'">
+                <div>
+                    <span style="display: inline-block; width: 43%">0:</span>
+                    <span style="display: inline-block; width: 40%">1:</span>
+                </div>
+                <div
+                    class="rain-item"
+                    v-for="(item,index) in propertForm.bool"
+                    :key="index"
+                    style="margin: 0px 0px 10px 0px;"
+                >
+                    <el-input v-model.number="item.true" class="small-width"></el-input>
+                    <span class="span" style="display: inline-block;width: 3%;text-align: center">~</span>
+                    <el-input v-model.number="item.false" class="small-width"></el-input>
+                </div>
             </el-form-item>
-            <el-form-item label="历史数据" prop="history">
-                <el-radio-group v-model="propertForm.history">
-                    <el-radio :label="true">保存</el-radio>
-                    <el-radio :label="false">丢弃</el-radio>
-                </el-radio-group>
+            <el-form-item label="数据长度" v-if="propertForm.propType === 'STRING'">
+                <el-input v-model="propertForm.bytes" style="width:80%"></el-input>
+                <span>&nbsp;字节</span>
             </el-form-item>
-            <el-form-item label="采样值" prop="instant">
-                <el-radio-group v-model="propertForm.instant">
-                    <el-radio :label="true">瞬时采样</el-radio>
-                    <el-radio :label="false">时间段累积采样</el-radio>
-                </el-radio-group>
+            <el-form-item label="时间格式" v-if="propertForm.propType === 'DATA'">
+                <span>String类型的UTC时间戳（秒）</span>
             </el-form-item>
-            <el-form-item label="默认值">
-                <el-input v-model="propertForm.default"></el-input>
+            <el-form-item label="元素类型" v-if="propertForm.propType === 'ARRAY'">
+                <el-radio-group v-model="propertForm.elemenType">
+                    <el-radio label="int">int</el-radio>
+                    <el-radio label="float">float</el-radio>
+                    <el-radio label="string">string</el-radio>
+                </el-radio-group>
             </el-form-item>
             <el-form-item label="枚举项" v-if="propertForm.propType === 'ENUM'">
                 <div>
@@ -68,6 +78,29 @@
                 </div>
                 <el-button type="text" @click="addEnumerate">+ 添加枚举</el-button>
             </el-form-item>
+            <el-form-item label="读写属性" prop="permission">
+                <el-radio-group v-model="propertForm.permission">
+                    <el-radio label="RW">可读写</el-radio>
+                    <el-radio label="RO">可读</el-radio>
+                    <el-radio label="WO">可写</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="历史数据" prop="history">
+                <el-radio-group v-model="propertForm.history">
+                    <el-radio :label="true">保存</el-radio>
+                    <el-radio :label="false">丢弃</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="采样值" prop="instant">
+                <el-radio-group v-model="propertForm.instant">
+                    <el-radio :label="true">瞬时采样</el-radio>
+                    <el-radio :label="false">时间段累积采样</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="默认值">
+                <el-input v-model="propertForm.default"></el-input>
+            </el-form-item>
+
             <el-form-item label="描述">
                 <el-input type="textarea" v-model="propertForm.desc"></el-input>
             </el-form-item>
@@ -96,8 +129,11 @@ export default {
                 history: "",
                 instant: "",
                 desc: "",
+                bytes: "",
                 default: "",
-                metadata: [{ propertyValue: "", propertyDesc: "" }]
+                elemenType: "",
+                metadata: [{ propertyValue: "", propertyDesc: "" }],
+                bool: [{ true: "", false: "" }]
             },
             formRules: {
                 name: [
@@ -195,5 +231,8 @@ export default {
 .form-box {
     width: 90%;
     margin: auto;
+}
+.small-width {
+    width: 40%;
 }
 </style>
