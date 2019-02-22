@@ -8,15 +8,15 @@
             <el-table-column prop="label" label="标识符"></el-table-column>
             <el-table-column prop="type" label="属性类型"></el-table-column>
             <el-table-column prop="permission" label="属性读写"></el-table-column>
-            <el-table-column label="操作" width="120">
+            <el-table-column label="操作" width="160">
                 <template slot-scope="scope">
+                    <el-button type="text" size="small" @click="checkProperty">详情</el-button>
                     <el-button
                         type="text"
                         size="small"
                         @click="editProperty(scope.row)"
                         icon="el-icon-edit"
                     >编辑</el-button>
-                    <el-button type="primary" size="small" @click="checkProperty">查看属性</el-button>
                     <el-button
                         type="text"
                         size="small"
