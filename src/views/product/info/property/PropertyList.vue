@@ -1,7 +1,7 @@
 <template>
     <el-main>
         <div class="btn-box">
-            <el-button type="primary" size="small" @click="addPropert()">+ 添加属性</el-button>
+            <el-button type="primary" size="small" @click="addProperty()">+ 添加属性</el-button>
         </div>
         <el-table :data="propertList" style="width: 100%; margin-top: 12px" border size="small">
             <el-table-column prop="propertyName" label="属性名称"></el-table-column>
