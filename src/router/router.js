@@ -40,8 +40,7 @@ const routes = [
                     },
                     {
                         path: "device",
-                        component: () =>
-                            import("@/views/product/info/device")
+                        component: () => import("@/views/product/info/device")
                     }
                 ]
             }
@@ -52,6 +51,17 @@ const routes = [
         component: LayOut,
         children: [
             { path: "", component: () => import("@/views/device/DeviceList") }
+        ]
+    },
+    {
+        path: "",
+        component: LayOut,
+        children: [
+            {
+                path: "rule/:id",
+                component: () => import("@/views/rule/EngineInfo")
+            },
+            { path: "rule", component: () => import("@/views/rule/RuleEngine") }
         ]
     },
     {

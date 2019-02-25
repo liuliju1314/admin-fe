@@ -1,46 +1,34 @@
 <template>
     <el-card class="box-card create-station-wrapper" shadow="never">
         <div slot="header" class="clearfix">
-            <span class="card-title">产品列表</span>
+            <span class="card-title">规则引擎</span>
         </div>
         <div class="product-wrapper">
             <el-form :inline="true" :model="form" size="small">
-                <el-form-item label="产品名称">
+                <el-form-item label="规则名称">
                     <el-input v-model="form.productName"></el-input>
-                </el-form-item>
-                <el-form-item label="产品状态">
-                    <el-select v-model="form.productStatus">
-                        <el-option label="开发中" value="0"></el-option>
-                        <el-option label="已发布" value="1"></el-option>
-                    </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-button type="primary" @click="dialogVisible=true" size="small">+新建产品</el-button>
+            <el-button type="primary" @click="dialogVisible=true" size="small">+新建规则</el-button>
             <!-- 开发中的产品 -->
-            <el-table :data="productList" style="width: 100%; margin-top: 12px" border size="small" @row-click="expandDetail">
-                <el-table-column prop="pid" label="产品ID"></el-table-column>
-                <el-table-column prop="name" label="产品名称"></el-table-column>
-                <el-table-column prop="model" label="产品型号"></el-table-column>
-                <el-table-column prop="category" label="产品分类"></el-table-column>
+            <el-table :data="ruleList" style="width: 100%; margin-top: 12px" border size="small" @row-click="expandDetail">
+                <el-table-column prop="deep" label="规则名称"></el-table-column>
+                <el-table-column prop="desc" label="规则描述"></el-table-column>
                 <el-table-column label="创建时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
                 </el-table-column>
-                <!-- <el-table-column label="更新时间">
-                    <template slot-scope="scope">{{ changeTimeFormater(scope.row.updatedAt) }}</template>
-                </el-table-column> -->
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
                         <div>
                             <el-button
-                                @click="releaseProduct(scope.row)"
+                                @click="edit(scope.row)"
                                 type="text"
                                 size="small"
-                                v-if="!scope.row.productStatus"
                             >
-                                <svg-icon icon-class="release"></svg-icon>发布
+                                <svg-icon icon-class="edit"></svg-icon>编辑
                             </el-button>
                             <!-- <el-button
                                 @click="openDetails(scope.row)"
@@ -71,18 +59,18 @@
         </div>
 
         <!-- 添加产品对话框 -->
-        <el-dialog title="添加产品" :visible.sync="dialogVisible" center>
-            <product-create></product-create>
+        <el-dialog title="规则创建" :visible.sync="dialogVisible" center>
+            <add-engine></add-engine>
         </el-dialog>
     </el-card>
 </template>
 
 <script>
-import { getProductList } from "@/api/product/product";
+import { addRule, deleRule, upadateRule, getRuleList } from "@/api/rule/rule";
 import { formatDate } from "@/utils/format";
 
 export default {
-    name: "ProductDeveloping",
+    name: "RuleEngine",
     data() {
         return {
             form: {
@@ -93,18 +81,20 @@ export default {
                 pageSize: 10,
                 isPage: true
             },
-            count: "",
-            productList: [],
+            ruleList: [{
+                deep: '1',
+                desc: '2324'
+            }],
             dialogVisible: false
         };
     },
 
     created() {
-        this.getProductList();
+        this.handleRuleList();
     },
 
     components: {
-        ProductCreate: () => import("@/views/product/ProductCreate")
+        AddEngine: () => import("@/views/rule/AddEngine")
     },
 
     methods: {
@@ -120,11 +110,11 @@ export default {
                 }
             });
         },
-        getProductList() {
-            getProductList(this.form)
+        handleRuleList() {
+            getRuleList(this.form)
                 .then(res => {
-                    this.productList = res.payload.result;
-                    this.count = res.payload.count;
+                    console.log(res);
+                    this.ruleList = res.payload.items;
                 })
                 .catch(error => {
                     return error;
@@ -133,7 +123,7 @@ export default {
         //分页
         handlePage(value) {
             this.form.page = value;
-            this.getProductList();
+            this.handleRuleList();
         },
         // 编辑产品
         handleEditProduct() {

@@ -148,7 +148,6 @@ export default {
         },
         handleUpgrade(device) {
             this.dialogVisible = true;
-            console.log("升级");
         },
         //更新设备分组  
         updateDeviceGroup( device ) {

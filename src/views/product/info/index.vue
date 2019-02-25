@@ -3,7 +3,7 @@
         <div slot="header" class="clearfix">
             <div class="card-breadcrumb">
                 <router-link to="/product" style="color: rgba(0,0,0,.45);text-decoration: none;">产品管理</router-link>
-                <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>1b38dfe343y
+                <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>{{productID}}
             </div>
             <div class="card-title">
                 智能遥感水位传感器
@@ -38,8 +38,11 @@
 export default {
     data() {
         return {
-            productID: "1z0zbfe0db5"
+            productID: ""
         };
+    },
+    created() {
+        this.productID = this.$route.params.id;
     },
     components: {}
 };
