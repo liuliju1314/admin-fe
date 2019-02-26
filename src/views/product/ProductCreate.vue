@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { addProduct } from "@/api/product/product";
 export default {
     name: "ProductCreate",
     data() {
@@ -104,12 +105,17 @@ export default {
         createProduct() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    this.$message({
-                        type: "success",
-                        message: "产品创建成功",
-                        duration: 500
-                    });
-                    this.$router.push("/product/1z0zbfe0db5/info");
+                    addProduct(this.form).then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "产品创建成功",
+                            duration: 500
+                        });
+                        this.$router.push("/product/1z0zbfe0db5/info");
+                    }).catch(() => {
+
+                    })
+
                 }
             });
         },

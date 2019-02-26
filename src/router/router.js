@@ -58,10 +58,29 @@ const routes = [
         component: LayOut,
         children: [
             {
-                path: "rule/:id",
-                component: () => import("@/views/rule/EngineInfo")
+                path: "rule",
+                component: () => import("@/views/rule/RuleEngine")
             },
-            { path: "rule", component: () => import("@/views/rule/RuleEngine") }
+            {
+                path: "rule/:id",
+                component: () => import("@/views/rule/info"),
+                children: [
+                    {
+                        path: "detail",
+                        component: () => import("@/views/rule/info/BaseInfo")
+                    },
+                    {
+                        path: "event",
+                        component: () =>
+                            import("@/views/rule/info/events/EventList")
+                    },
+                    {
+                        path: "action",
+                        component: () =>
+                            import("@/views/rule/info/action/ActionList")
+                    }
+                ]
+            }
         ]
     },
     {

@@ -20,7 +20,13 @@
             </el-form>
             <el-button type="primary" @click="dialogVisible=true" size="small">+新建产品</el-button>
             <!-- 开发中的产品 -->
-            <el-table :data="productList" style="width: 100%; margin-top: 12px" border size="small" @row-click="expandDetail">
+            <el-table
+                :data="productList"
+                style="width: 100%; margin-top: 12px"
+                border
+                size="small"
+                @row-click="expandDetail"
+            >
                 <el-table-column prop="pid" label="产品ID"></el-table-column>
                 <el-table-column prop="name" label="产品名称"></el-table-column>
                 <el-table-column prop="model" label="产品型号"></el-table-column>
@@ -30,7 +36,7 @@
                 </el-table-column>
                 <!-- <el-table-column label="更新时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.updatedAt) }}</template>
-                </el-table-column> -->
+                </el-table-column>-->
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
                         <div>
@@ -47,9 +53,9 @@
                                 type="text"
                                 size="small"
                                 icon="el-icon-edit"
-                            >详情</el-button> -->
+                            >详情</el-button>-->
                             <el-button
-                                @click="deleteProduct(scope.row)"
+                                @click.stop="deleteProduct(scope.row)"
                                 type="text"
                                 size="small"
                                 icon="el-icon-delete"
@@ -78,7 +84,7 @@
 </template>
 
 <script>
-import { getProductList } from "@/api/product/product";
+import { getProductList, deleteProduct } from "@/api/product/product";
 import { formatDate } from "@/utils/format";
 
 export default {
@@ -100,7 +106,7 @@ export default {
     },
 
     created() {
-        this.getProductList();
+        this.handleProductList();
     },
 
     components: {
@@ -120,7 +126,7 @@ export default {
                 }
             });
         },
-        getProductList() {
+        handleProductList() {
             getProductList(this.form)
                 .then(res => {
                     this.productList = res.payload.result;
@@ -146,10 +152,19 @@ export default {
                 cancelButtonText: "取消",
                 type: "warning"
             }).then(() => {
-                this.$message({
-                    type: "success",
-                    message: "删除成功!"
-                });
+                deleteProduct({ pID: product.pid })
+                    .then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "删除成功!"
+                        });
+                    })
+                    .catch(() => {
+                        this.$message({
+                            type: "success",
+                            message: "删除失败!"
+                        });
+                    });
             });
         },
         // 发布产品

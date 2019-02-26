@@ -65,7 +65,7 @@ export default {
                         message: "产品创建成功",
                         duration: 500
                     });
-                    this.$router.push("/rule/1z0zbfe0db5");
+                    this.$router.push("/rule/1z0zbfe0db5/detail");
                 }
             });
         },
