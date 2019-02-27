@@ -5,29 +5,18 @@
 </template>
 
 <script>
+import { getPropertyList, deleteProduce } from "@/api/property/property";
+
 export default {
+    props: ["propertyJson"],
     data() {
         return {
-            data: {
-                properties: [
-                    {
-                        identifier: "PowerSwitch"
-                    }
-                ],
-                events: [
-                    {
-                        outputData: [
-                            {
-                                identifier: "ErrorCode"
-                            }
-                        ],
-                        identifier: "Error"
-                    }
-                ]
-            }
+            data: {}
         };
     },
-    created() {},
+    created() {
+        this.data = this.propertyJson;
+    },
     methods: {}
 };
 </script>

@@ -66,16 +66,16 @@ module.exports = {
         hotOnly: false,
         proxy: {
             "/api": {
-                target: "http://47.107.91.58:11021/", // 设置调用的接口域名和端口号
+                target: "http://47.107.91.58:11021/", // 设置你调用的接口域名和端口号
                 changeOrigin: true // 跨域
             },
         }
     },
 
     pluginOptions: {
-      'style-resources-loader': {
-        preProcessor: 'less',
-          patterns: [ path.resolve(__dirname, './src/assets/css/style.less') ]
-      }
+        'style-resources-loader': {
+            preProcessor: 'less',
+            patterns: [path.resolve(__dirname, './src/assets/css/style.less')]
+        }
     }
 }

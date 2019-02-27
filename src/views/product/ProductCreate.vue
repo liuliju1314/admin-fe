@@ -123,7 +123,6 @@ export default {
         createProduct() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    console.log(this.product);
                     if (this.product) {
                         editProduct(this.form)
                             .then(() => {
