@@ -3,7 +3,7 @@ import service from "@/utils/request";
 // 获得固件列表
 export function getfirmwareList(data) {
     return service({
-        url: '/api/web/all_firmwares',
+        url: '/apifirmware',
         method: 'get',
         params: data
     })
@@ -21,8 +21,17 @@ export function updateFirmware(data) {
 // 更新固件
 export function uploadFirmware(data) {
     return service({
-        url: '/web/update_firmware',
-        method: 'post',
+        url: '/api/firmware',
+        method: 'PATCH',
+        data
+    })
+}
+
+// 删除固件
+export function deleteFirmware(data) {
+    return service({
+        url: '/api/firmware',
+        method: 'DELETE',
         data
     })
 }

@@ -7,7 +7,7 @@
                 {{ruleID}}
             </div>
             <div class="card-title">智能遥感水位传感器</div>
-            <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tabs v-model="activeName">
                 <el-tab-pane label="基本信息" name="first">
                     <base-info></base-info>
                 </el-tab-pane>
@@ -47,7 +47,7 @@ export default {
     name: "RuleInfo",
     data() {
         return {
-            activeName: "first",
+            activeName: "second",
             ruleID: ""
         };
     },

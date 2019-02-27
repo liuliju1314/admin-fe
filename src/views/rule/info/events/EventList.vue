@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import eventVue from '@/components/commonEvent'
+import eventVue from "@/components/commonEvent";
 export default {
     name: "RuleInfo",
     data() {
@@ -81,23 +81,28 @@ export default {
                             logic: "and",
                             children: [{ id: 16 }, { id: 17 }]
                         },
-                        { id: 18 }
+                        {
+                            logic: "and",
+                            children: [
+                                {
+                                    logic: "and",
+                                    children: [{ id: 18 }, { id: 19 }]
+                                },
+                                {
+                                    logic: "and",
+                                    children: [{ id: 20 }, { id: 21 }]
+                                }
+                            ]
+                        }
                     ]
-                },
-                {
-                    logic: "and",
-                    children: [{ id: 19 }, { id: 20 }]
-                },
-                {
-                    id: 21
                 }
             ],
             logicForm: {
                 logic: ""
             },
             event: {
-                conArray: [],
-                logic: "(16 and 17) or 18, 19 and 20, 21"
+                conArray: [{ id: 16 }, { id: 17 }, { id: 18 }, { id: 19 }],
+                logic: "( (16 and 17) or (18 and 19) )"
             },
             conditionForm: {
                 id: "",
@@ -111,35 +116,47 @@ export default {
             title: "",
             isLogic: false,
             isEdit: false,
-            dialogVisible: false,
-            i:0
+            dialogVisible: false
         };
     },
     created() {
         this.ruleID = this.$route.params.id;
+        this.handleFormatToArr(this.event.logic);
     },
     mounted() {
-        eventVue.$on("listenRuleChange",() => {
-                this.handleEventFormat(this.ruleEvent);     
-            })
+        eventVue.$on("listenRuleChange", () => {
+            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
+        });
     },
     watch: {
         ruleEvent() {
-            this.event.logic = this.handleEventFormat(this.ruleEvent).join(",");
+            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
         }
     },
     components: {
         RuleEvent: () => import("./RuleEvent")
     },
     methods: {
-        handleEventFormat(list) {
+        handleFormatToArr(logic) {
+            const reg = /([^()]+)/i;
+            let list = logic.match(reg);
+            console.log(list);
+            list.map(item => {});
+        },
+        handleFormatToStr(list) {
             let arr = [];
             list.forEach(item => {
                 if (item.id) {
                     this.event.conArray.push(item);
                     arr.push(item.id);
                 } else if (item.logic && item.children) {
-                    arr.push( "(" + this.handleEventFormat(item.children).join( item.logic ) + ")" );
+                    arr.push(
+                        "( " +
+                            this.handleEventFormat(item.children).join(
+                                " " + item.logic + " "
+                            ) +
+                            " )"
+                    );
                 }
             });
             return arr;
@@ -166,6 +183,7 @@ export default {
                 this.beforeClose();
             }
         },
+        handleConditionOp() {},
         beforeClose() {
             this.$refs.logicForm.resetFields();
             this.dialogVisible = false;

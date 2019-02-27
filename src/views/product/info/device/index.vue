@@ -3,7 +3,7 @@
     <div class="box-card create-station-wrapper" shadow="never">
         <div class="btn-box">
             <div style=" display: flex;justify-content: space-between;">
-                <div class="device-log">当前设备总数： 134，其中在线：130，离线：4 .</div>
+                <div class="device-log">当前设备总数： {{count}}，其中在线：{{online}}，离线：{{offline}}.</div>
                 <el-input
                     placeholder="请输入设备编号"
                     v-model="firmwareSearch"
@@ -94,8 +94,9 @@ export default {
             dialogVisible: false,
             groupVisible: false,
             title: "",
-            value: "",
-            count: "",
+            count: 0,
+            online: 0,
+            offline: 0,
             btnShow: false
         };
     },
@@ -117,8 +118,10 @@ export default {
         getDevice() {
             getDeviceList(this.form)
                 .then(res => {
-                    this.deviceList = res.payload.result;
+                    this.deviceList = res.payload.items;
                     this.count = res.payload.count;
+                    this.online = res.payload.online;
+                    this.offline = res.payload.offline;
                 })
                 .catch(error => {
                     return error;
