@@ -98,24 +98,21 @@ export default {
             dialogVisible: false
         };
     },
-    created() {
-        console.log("this.$router: " + JSON.stringify(this.$route.params.pid));
-    },
+    created() {},
     methods: {
         createProduct() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    addProduct(this.form).then(() => {
-                        this.$message({
-                            type: "success",
-                            message: "产品创建成功",
-                            duration: 500
-                        });
-                        this.$router.push("/product/1z0zbfe0db5/info");
-                    }).catch(() => {
-
-                    })
-
+                    addProduct(this.form)
+                        .then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "产品创建成功",
+                                duration: 500
+                            });
+                            this.$router.push("/product/1z0zbfe0db5/info");
+                        })
+                        .catch(() => {});
                 }
             });
         },

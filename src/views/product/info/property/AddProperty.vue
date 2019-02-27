@@ -94,7 +94,7 @@
             <el-form-item label="采样值" prop="instant">
                 <el-radio-group v-model="propertForm.instant">
                     <el-radio :label="true">瞬时采样</el-radio>
-                    <el-radio :label="false">时间段累积采样</el-radio>
+                    <el-radio :label="true">时间段累积采样</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="默认值">
@@ -104,16 +104,17 @@
             <el-form-item label="描述">
                 <el-input type="textarea" v-model="propertForm.desc"></el-input>
             </el-form-item>
+
             <el-form-item>
-                <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-                <el-button type="primary" @click="addfirmware" size="small">确 定</el-button>
+                <el-button @click="closeProperty">取消</el-button>
+                <el-button type="primary" @click="submitProperty">确定</el-button>
             </el-form-item>
         </el-form>
     </el-main>
 </template>
 
 <script>
-import { addProperty } from "@/api/property/property";
+import { addProperty, editProperty } from "@/api/property/property";
 
 export default {
     props: ["property", "isEdit"],
@@ -126,6 +127,7 @@ export default {
                 label: "",
                 propType: "",
                 permission: "",
+                dialogVisible: "",
                 history: "",
                 instant: "",
                 desc: "",
@@ -153,28 +155,28 @@ export default {
                 propType: [
                     {
                         required: true,
-                        message: "请输入属性名称",
+                        message: "请选择属性类型",
                         trigger: "blur"
                     }
                 ],
                 permission: [
                     {
                         required: true,
-                        message: "请输入属性名称",
+                        message: "请选择读写属性",
                         trigger: "blur"
                     }
                 ],
                 history: [
                     {
                         required: true,
-                        message: "请输入属性名称",
+                        message: "请选择是否保存历史数据",
                         trigger: "blur"
                     }
                 ],
                 instant: [
                     {
                         required: true,
-                        message: "请输入属性名称",
+                        message: "请选择采样值",
                         trigger: "blur"
                     }
                 ]
@@ -182,7 +184,10 @@ export default {
         };
     },
     created() {
-        this.propertForm.pid = this.$route.params.pid;
+        this.propertForm.pid = this.$route.params.id;
+        if (this.isEdit == true) {
+            this.propertForm = this.property;
+        }
     },
     methods: {
         handleNext(value) {
@@ -197,32 +202,51 @@ export default {
         deleteEnumerate(index) {
             this.propertForm.metadata.splice(index, 1);
         },
-        //验证表单信息是否为空
-        submitForm() {
-            this.$refs.propertForm.validate(valid => {
-                if (valid) {
-                    addProperty(this.propertForm)
-                        .then(() => {})
-                        .catch(() => {});
-                } else {
-                    return false;
-                }
-            });
+        // 点击确定按钮
+        submitProperty() {
+            if (this.isEdit == false) {
+                this.$refs.propertForm.validate(valid => {
+                    if (valid) {
+                        addProperty(this.propertForm)
+                            .then(() => {
+                                this.$message({
+                                    type: "success",
+                                    message: "添加成功!"
+                                });
+                                this.dialogVisible = false;
+                                this.$emit("listenDialog", this.dialogVisible);
+                            })
+                            .catch(() => {});
+                    }
+                });
+            } else if (this.isEdit == true) {
+                this.$refs.propertForm.validate(valid => {
+                    if (valid) {
+                        editProperty(this.propertForm)
+                            .then(() => {
+                                this.$message({
+                                    type: "success",
+                                    message: "修改成功!"
+                                });
+                                this.dialogVisible = false;
+                                this.$emit("listenDialog", this.dialogVisible);
+                            })
+                            .catch(() => {});
+                    }
+                });
+            }
         },
-        // 添加属性
-        addProperty() {
-            this.$refs.addPropertyFrom.validate(valid => {
-                if (valid) {
-                    this.cancelAddfirmware();
-                    this.$message({
-                        type: "success",
-                        message: "添加成功!"
-                    });
-                }
-            });
-        },
-        resetForm() {
+        // 清空内容
+        clearForm() {
+            this.dialogVisible = false;
             this.$refs.propertForm.resetFields();
+            this.$emit("listenDialog", this.dialogVisible);
+        },
+        // 点击取消
+        closeProperty() {
+            this.dialogVisible = false;
+            this.$refs.propertForm.resetFields();
+            this.$emit("listenDialog", this.dialogVisible);
         }
     }
 };
