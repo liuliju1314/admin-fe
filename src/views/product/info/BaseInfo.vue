@@ -3,19 +3,25 @@
         <table class="table-box">
             <tr>
                 <td class="label">产品名称:</td>
-                <td class="value">智能遥感水位传感器</td>
+                <td class="value">{{productInfo.name}}</td>
             </tr>
             <tr>
                 <td class="label">产品型号:</td>
-                <td class="value">Y2435464g</td>
+                <td class="value">{{productInfo.model}}</td>
             </tr>
             <tr>
                 <td class="label">产品分类:</td>
-                <td class="value">水利 / 图像水位传感器</td>
+                <td class="value">{{productInfo.category}}</td>
+            </tr>
+            <tr>
+                <td class="label"><span style="letter-space: 16px;"></span> 固&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件:</td>
+                <td class="value">
+                    <div v-for="(item,index) in productInfo.fwTypes" :key="index">{{item.name}} - {{item.desc}}</div>
+                </td>
             </tr>
             <tr>
                 <td class="label">产品描述:</td>
-                <td class="value">该产品主要用于水利方向的图像检测和水位检测</td>
+                <td class="value">{{productInfo.desc}}</td>
             </tr>
             <!-- <tr>
                 <td class="label">设备数量:</td>
@@ -41,72 +47,53 @@
             </tr>-->
         </table>
         <el-button
-            @click="dialogVisible=true"
+            @click="productOp"
             style="padding: 10px 22px; margin: 30px 0 0 100px;"
         >编辑</el-button>
-        <!-- 编辑产品对话框 -->
-        <el-dialog title="信息编辑" :visible.sync="dialogVisible" center>
-            <product-create :product="product"></product-create>
-        </el-dialog>
+        <product-create :product="product" :visible="visible" @listenOp="listenOp" ></product-create>
     </div>
 </template>
 
 <script>
-import VePie from "v-charts/lib/pie.common";
+import { getProductInfo } from "@/api/product/product";
 import ProductCreate from "@/views/product/ProductCreate";
 export default {
     name: "BaseInfo",
     data() {
         return {
-            categoryOptions: [{ value: "100", label: "智能家居" }],
-            form: {
-                productName: "",
-                category: [],
-                group: "",
-                desc: "",
-                productID: ""
-            },
-            formRules: {
-                productName: [
-                    {
-                        required: true,
-                        message: "请输入产品名称",
-                        trigger: "blur"
-                    }
-                ],
-                category: [
-                    {
-                        required: true,
-                        message: "请添加或选择产品分类",
-                        trigger: "blur"
-                    }
-                ]
-            },
-            deviceData: {
-                columns: ["label", "num"],
-                rows: [{ label: "发布版", num: 0 }, { label: "测试版", num: 0 }]
-            },
-            dialogVisible: false
+            pid: "",
+            productInfo: "",
+            visible: false,
+            product: ''
         };
     },
     components: {
-        VePie,
         ProductCreate
     },
     created() {
-        console.log("this.$router: " + JSON.stringify(this.$route.params.pid));
+        this.pid = { pid: this.$route.params.id };
+        this.handleProductOp();
     },
     methods: {
-        createProduct() {
-            this.$refs.form.validate(valid => {
-                if (valid) {
+        handleProductOp() {
+            getProductInfo(this.pid)
+                .then(res => {
+                    this.productInfo = res.payload;
+                })
+                .catch(err => {
                     this.$message({
-                        type: "success",
-                        message: "更新成功",
-                        duration: 500
+                        message: err.msg
                     });
-                }
-            });
+                });
+        },
+        productOp() {
+            this.visible = true;
+            this.product = this.productInfo;
+        },
+        listenOp(value) {
+            this.product = '';
+            this.visible = value;
+            this.handleProductOp();
         }
     }
 };

@@ -6,7 +6,7 @@
                 <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>{{productID}}
             </div>
             <div class="card-title">
-                智能遥感水位传感器
+                {{productName}}
             </div>
             <router-link
                 class="link-item"
@@ -35,14 +35,18 @@
 </template>
 
 <script>
+
 export default {
     data() {
         return {
-            productID: ""
+            productID: "",
+            productName: ''
         };
     },
     created() {
         this.productID = this.$route.params.id;
+        this.productName = localStorage.getItem("productName");
+
     },
     components: {}
 };

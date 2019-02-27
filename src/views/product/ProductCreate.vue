@@ -1,86 +1,93 @@
 <template>
-    <div class="create-product-wrapper">
-        <el-form
-            ref="form"
-            :model="form"
-            label-width="90px"
-            :rules="formRules"
-            class="form-box"
-            size="small"
-        >
-            <el-form-item label="产品名称" prop="productName">
-                <el-input v-model="form.productName"></el-input>
-            </el-form-item>
-            <el-form-item label="产品型号" prop="productModel">
-                <el-input v-model="form.productModel"></el-input>
-            </el-form-item>
-            <el-form-item label="产品分类" prop="category">
-                <el-select
-                    v-model="form.category"
-                    filterable
-                    allow-create
-                    default-first-option
-                    placeholder="请输入或选择分类"
-                >
-                    <el-option label="智能家居" value="电冰箱"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="固件名称">
-                <div>
-                    <span style="display: inline-block; width: 43%">标识符:</span>
-                    <span style="display: inline-block; width: 40%">描述:</span>
-                </div>
-                <div
-                    class="rain-item"
-                    v-for="(item,index) in form.fw"
-                    :key="index"
-                    style="margin: 0px 0px 10px 0px;"
-                >
-                    <el-input v-model.number="item.name" class="small-width"></el-input>
-                    <span class="span" style="display: inline-block;width: 3%;text-align: center">~</span>
-                    <el-input v-model.number="item.tag" class="small-width"></el-input>
-                    <el-button
-                        type="text"
-                        @click="deleteFw(index)"
-                        style="display: inline-block;margin-left: 10px"
-                        v-if="index > 0"
-                    >删除</el-button>
-                </div>
-                <el-button type="text" @click="form.fw.push({name: '', tag: ''})">+ 添加固件名称</el-button>
-            </el-form-item>
-            <el-form-item label="产品描述">
-                <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="createProduct" style="padding: 10px 22px">确定</el-button>
-            </el-form-item>
-        </el-form>
-    </div>
+    <el-dialog title="添加产品" :visible.sync="visible" center @before-close="beforeClose">
+        <div class="create-product-wrapper">
+            <el-form
+                ref="form"
+                :model="form"
+                label-width="90px"
+                :rules="formRules"
+                class="form-box"
+                size="small"
+            >
+                <el-form-item label="产品名称" prop="name">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="产品型号" prop="model">
+                    <el-input v-model="form.model"></el-input>
+                </el-form-item>
+                <el-form-item label="产品分类" prop="category">
+                    <el-select
+                        v-model="form.category"
+                        filterable
+                        allow-create
+                        default-first-option
+                        placeholder="请输入或选择分类"
+                    >
+                        <el-option label="智能家居" value="smartHome"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="固件名称">
+                    <div>
+                        <span style="display: inline-block; width: 43%">标识符:</span>
+                        <span style="display: inline-block; width: 40%">描述:</span>
+                    </div>
+                    <div
+                        class="rain-item"
+                        v-for="(item,index) in form.fwGroup"
+                        :key="index"
+                        style="margin: 0px 0px 10px 0px;"
+                    >
+                        <el-input v-model.number="item.name" class="small-width"></el-input>
+                        <span
+                            class="span"
+                            style="display: inline-block;width: 3%;text-align: center"
+                        >~</span>
+                        <el-input v-model.number="item.tag" class="small-width"></el-input>
+                        <el-button
+                            type="text"
+                            @click="deleteFw(index)"
+                            style="display: inline-block;margin-left: 10px"
+                            v-if="index > 0"
+                        >删除</el-button>
+                    </div>
+                    <el-button type="text" @click="form.fw.push({name: '', tag: ''})">+ 添加固件名称</el-button>
+                </el-form-item>
+                <el-form-item label="产品描述">
+                    <el-input type="textarea" v-model="form.desc"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="beforeClose" style="padding: 10px 22px">取消</el-button>
+                    <el-button type="primary" @click="createProduct" style="padding: 10px 22px">确定</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
-import { addProduct } from "@/api/product/product";
+import { addProduct, editProduct } from "@/api/product/product";
 export default {
     name: "ProductCreate",
+    props: ["product", "visible"],
     data() {
         return {
             categoryOptions: [{ value: "100", label: "智能家居" }],
             form: {
-                productName: "",
-                productModel: "",
-                category: [],
+                name: "",
+                model: "",
+                category: "",
                 desc: "",
-                fw: [{ name: "", tag: "" }]
+                fwGroup: [{ name: "", tag: "" }]
             },
             formRules: {
-                productName: [
+                name: [
                     {
                         required: true,
                         message: "请输入产品名称",
                         trigger: "blur"
                     }
                 ],
-                productModel: [
+                model: [
                     {
                         required: true,
                         message: "请输入产品型号",
@@ -98,24 +105,58 @@ export default {
             dialogVisible: false
         };
     },
-    created() {
-        console.log("this.$router: " + JSON.stringify(this.$route.params.pid));
+    watch: {
+        product() {
+            this.$nextTick(() => {
+                if (this.product) {
+                    this.form = { ...this.form, ...this.product };
+                }
+            });
+        }
     },
     methods: {
+        beforeClose() {
+            this.form = '';
+            this.$emit("listenOp", false);
+        },
+
         createProduct() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    addProduct(this.form).then(() => {
-                        this.$message({
-                            type: "success",
-                            message: "产品创建成功",
-                            duration: 500
-                        });
-                        this.$router.push("/product/1z0zbfe0db5/info");
-                    }).catch(() => {
-
-                    })
-
+                    console.log(this.product);
+                    if (this.product) {
+                        editProduct(this.form)
+                            .then(() => {
+                                this.$message({
+                                    type: "success",
+                                    message: "更新成功",
+                                    duration: 500
+                                });
+                                this.beforeClose();
+                            })
+                            .catch(() => {
+                                this.$message({
+                                    message: "更新失败",
+                                    duration: 500
+                                });
+                            });
+                    } else {
+                        addProduct(this.form)
+                            .then(() => {
+                                this.$message({
+                                    type: "success",
+                                    message: "产品创建成功",
+                                    duration: 500
+                                });
+                                this.beforeClose();
+                            })
+                            .catch(() => {
+                                this.$message({
+                                    message: "产品创建失败",
+                                    duration: 500
+                                });
+                            });
+                    }
                 }
             });
         },

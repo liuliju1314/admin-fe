@@ -15,10 +15,10 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">查询</el-button>
+                    <el-button type="primary" @click="handleProductList()">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-button type="primary" @click="dialogVisible=true" size="small">+新建产品</el-button>
+            <el-button type="primary" @click="productOp" size="small">+新建产品</el-button>
             <!-- 开发中的产品 -->
             <el-table
                 :data="productList"
@@ -41,7 +41,7 @@
                     <template slot-scope="scope">
                         <div>
                             <el-button
-                                @click="releaseProduct(scope.row)"
+                                @click.stop="releaseProduct(scope.row)"
                                 type="text"
                                 size="small"
                                 v-if="!scope.row.productStatus"
@@ -75,11 +75,7 @@
                 ></el-pagination>
             </div>
         </div>
-
-        <!-- 添加产品对话框 -->
-        <el-dialog title="添加产品" :visible.sync="dialogVisible" center>
-            <product-create></product-create>
-        </el-dialog>
+        <product-create :visible="visible" :product="opProduct" @listenOp="listenOp"></product-create>
     </el-card>
 </template>
 
@@ -93,7 +89,6 @@ export default {
         return {
             form: {
                 productName: "",
-                productID: "",
                 productStatus: "1",
                 page: 1,
                 pageSize: 10,
@@ -101,7 +96,8 @@ export default {
             },
             count: "",
             productList: [],
-            dialogVisible: false
+            visible: false,
+            opProduct: ''
         };
     },
 
@@ -114,19 +110,14 @@ export default {
     },
 
     methods: {
+        // 进入产品详情
         expandDetail(row) {
+            localStorage.setItem("productName", row.name)
             this.$router.push({ path: `/product/${row.pid}/detail` });
         },
-        addProductFrom() {
-            this.$refs.product.$refs.addProductForm.validate(valid => {
-                if (valid) {
-                    this.dialogVisible = false;
-                } else {
-                    return false;
-                }
-            });
-        },
-        handleProductList() {
+        // 获取产品列表
+        handleProductList(value) {
+            this.form.page = value ? value : 1;
             getProductList(this.form)
                 .then(res => {
                     this.productList = res.payload.result;
@@ -138,30 +129,36 @@ export default {
         },
         //分页
         handlePage(value) {
-            this.form.page = value;
-            this.getProductList();
+            this.getProductList(value);
         },
-        // 编辑产品
-        handleEditProduct() {
-            console.log("编辑产品");
+        // 产品添加
+        productOp() {
+            this.opProduct = '';
+            this.visible = true;
+        },
+        // 对话框关闭
+        listenOp() {
+            this.opProduct = '';
+            this.visible = false;
+            this.handleProductList();
         },
         // 删除产品
         deleteProduct(product) {
-            this.$confirm(`是否确认删除产品${product.productName}?`, "提示", {
+            this.$confirm(`是否确认删除产品  ${product.name} ?`, "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
-                type: "warning"
             }).then(() => {
-                deleteProduct({ pID: product.pid })
+                deleteProduct({ pid: product.pid })
                     .then(() => {
+                        console.log("删除成功")
                         this.$message({
                             type: "success",
                             message: "删除成功!"
                         });
+                        this.handleProductList();
                     })
                     .catch(() => {
                         this.$message({
-                            type: "success",
                             message: "删除失败!"
                         });
                     });
@@ -170,9 +167,9 @@ export default {
         // 发布产品
         releaseProduct(product) {
             this.$confirm(
-                `此操作将发布产品${
-                    product.productName
-                }, 产品发布后将不允许属性编辑，是否发布?`,
+                `此操作将发布产品 ${
+                    product.name
+                } , 产品发布后将不允许属性编辑，是否发布?`,
                 "提示",
                 {
                     confirmButtonText: "确定",
@@ -185,6 +182,7 @@ export default {
                 });
             });
         },
+
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");
         }

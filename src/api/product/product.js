@@ -3,7 +3,7 @@ import service from "@/utils/request";
 // 获取产品列表
 export function getProductList(data) {
     return service({
-        url: '/api/web/product_list',
+        url: '/api/product',
         method: 'GET',
         params: data
     })
@@ -12,7 +12,7 @@ export function getProductList(data) {
 // 获取产品信息
 export function getProductInfo(data) {
     return service({
-        url: '/api/web/get_product_info',
+        url: '/api/product_info',
         method: 'GET',
         params: data
     })
@@ -21,7 +21,7 @@ export function getProductInfo(data) {
 // 添加产品
 export function addProduct(data) {
     return service({
-        url: '/api/web/add_product',
+        url: '/api/product',
         method: 'POST',
         data
     })
@@ -30,7 +30,7 @@ export function addProduct(data) {
 // 删除产品
 export function deleteProduct(data) {
     return service({
-        url: '/api/product/'+ data.pID,
+        url: '/api/product',
         method: 'DELETE',
         data
     })
@@ -40,8 +40,8 @@ export function deleteProduct(data) {
 // 编辑产品
 export function editProduct(data) {
     return service({
-        url: '/api/web/edit_product',
-        method: 'POST',
+        url: '/api/product',
+        method: 'PATCH',
         data
     })
 }

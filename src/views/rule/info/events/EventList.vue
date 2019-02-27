@@ -120,21 +120,21 @@ export default {
     },
     mounted() {
         eventVue.$on("listenRuleChange",() => {
-                this.handleEventFormat();     
+                this.handleEventFormat(this.ruleEvent);     
             })
     },
     watch: {
         ruleEvent() {
-            this.event.logic = this.handleEventFormat().join(",");
+            this.event.logic = this.handleEventFormat(this.ruleEvent).join(",");
         }
     },
     components: {
         RuleEvent: () => import("./RuleEvent")
     },
     methods: {
-        handleEventFormat() {
-            const arr = [];
-            this.ruleEvent.forEach(item => {
+        handleEventFormat(list) {
+            let arr = [];
+            list.forEach(item => {
                 if (item.id) {
                     this.event.conArray.push(item);
                     arr.push(item.id);
