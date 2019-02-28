@@ -15,6 +15,10 @@
                 <div class="rule-event-logic">
                     <rule-event :ruleEvent="ruleEvent"></rule-event>
                 </div>
+                <div v-if="isDrag">
+                    <el-button @click="cancelDrag">取消</el-button>
+                    <el-button type="primary" @click="updateEvent">保存编辑</el-button>
+                </div>
             </el-col>
         </el-row>
         <el-dialog :title="title" :visible.sync="dialogVisible" center>
@@ -68,11 +72,14 @@
 
 <script>
 import eventVue from "@/components/commonEvent";
+import { updateRule, getRuleInfo } from "@/api/rule/rule";
 export default {
     name: "RuleInfo",
     data() {
         return {
             ruleID: "",
+            isDrag: false,
+            base: "",
             ruleEvent: [
                 {
                     logic: "or",
@@ -101,8 +108,8 @@ export default {
                 logic: ""
             },
             event: {
-                conArray: [{ id: 16 }, { id: 17 }, { id: 18 }, { id: 19 }],
-                logic: "( (16 and 17) or (18 and 19) )"
+                conArray: [],
+                logic: ""
             },
             conditionForm: {
                 id: "",
@@ -121,28 +128,54 @@ export default {
     },
     created() {
         this.ruleID = this.$route.params.id;
-        this.handleFormatToArr(this.event.logic);
     },
     mounted() {
         eventVue.$on("listenRuleChange", () => {
-            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
+            this.isDrag = true;
         });
     },
     watch: {
         ruleEvent() {
-            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
+            this.isDrag = true;
         }
     },
     components: {
         RuleEvent: () => import("./RuleEvent")
     },
     methods: {
-        handleFormatToArr(logic) {
-            const reg = /([^()]+)/i;
-            let list = logic.match(reg);
-            console.log(list);
-            list.map(item => {});
+        // 获取Rule信息
+        handleRuleInfo() {
+            getRuleInfo({ id: this.ruleId })
+                .then(res => {
+                    this.base = res.payload.items;
+                    this.ruleEvent = this._deepClone(this.base).event.ruleEvent;
+                })
+                .catch(() => {});
         },
+        // 取消event编辑
+        cancelDrag() {
+            this.isDrag = false;
+            this.handleRuleInfo();
+        },
+        // 更新event编辑
+        updateEvent() {
+            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
+            const event = {
+                ruleEvent: this.ruleEvent,
+                ...this.event
+            };
+            const data = {
+                ...this.base,
+                event: event
+            };
+            updateRule(data).then(() => {
+                this.$message({
+                    type: 'success',
+                    message: '更新成功'
+                })
+            })
+        },
+        // 将编辑数组转为后台所需格式
         handleFormatToStr(list) {
             let arr = [];
             list.forEach(item => {
@@ -161,6 +194,7 @@ export default {
             });
             return arr;
         },
+        // 打开对话框，并且处理是编辑对话框还是添加对话框
         openDialog(value) {
             this.isEdit = value.action === "add" ? false : true;
             this.dialogVisible = true;
@@ -172,9 +206,7 @@ export default {
                 this.isLogic = false;
             }
         },
-        cancelOp() {
-            this.dialogVisible = false;
-        },
+        // 编辑与添加逻辑
         handleLogicOp() {
             if (this.isEdit) {
             } else {
@@ -183,9 +215,12 @@ export default {
                 this.beforeClose();
             }
         },
+        // 编辑与添加条件
         handleConditionOp() {},
+        // 关闭对话框
         beforeClose() {
             this.$refs.logicForm.resetFields();
+            this.$refs.conditionForm.resetFields();
             this.dialogVisible = false;
         }
     }

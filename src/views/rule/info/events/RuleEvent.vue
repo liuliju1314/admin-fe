@@ -17,6 +17,7 @@
             <div style="margin-left: 28px" v-if="item.children">
                 <rule-event :ruleEvent="item.children"></rule-event>
             </div>
+
         </div>
     </draggable>
 </template>

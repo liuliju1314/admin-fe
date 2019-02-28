@@ -8,8 +8,8 @@ import '@/assets/css/reset.css'
 import './icons'
 import './mock'
 import './permission'
-
-
+import _ from 'lodash.clonedeep';
+Vue.prototype._deepClone = _;
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 new Vue({
