@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="添加产品" :visible.sync="visible" center @before-close="beforeClose">
+    <el-dialog title="添加产品" :visible.sync="visible" center :before-close="beforeClose">
         <div class="create-product-wrapper">
             <el-form
                 ref="form"
@@ -116,7 +116,7 @@ export default {
     },
     methods: {
         beforeClose() {
-            this.form = "";
+            this.$refs.form.resetFields();
             this.$emit("listenOp", false);
         },
 

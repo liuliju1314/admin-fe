@@ -1,95 +1,105 @@
 <template>
-    <el-form
-        :model="form"
-        ref="form"
-        label-width="100px"
-        class="form-box"
-        :rules="rules"
-        size="small"
-    >
-        <div style="display: flex" v-for="(item,index) in upload" :key="index">
-            <el-form-item label="选择固件">
-                <div class="upload-demo">
-                    <div tabindex="0" class="el-upload el-upload--text">
-                        <button type="button" class="el-button el-button--primary el-button--small">
-                            <i class="el-icon-upload"></i>
-                            <span>选择文件</span>
-                        </button>
-                        <input
-                            type="file"
-                            name="file"
-                            class="el-upload__input"
-                            accept=".js"
-                            @change="addFile(index,$event)"
-                        >
+    <el-dialog title="添加固件" :visible.sync="visible" center :before-close="beforeClose">
+        <el-form
+            :model="form"
+            ref="form"
+            label-width="100px"
+            class="form-box"
+            :rules="rules"
+            size="small"
+        >
+            <div v-if="!isEdit">
+                <div style="display: flex" v-for="(item,index) in upload" :key="index">
+                    <el-form-item label="选择固件">
+                        <div class="upload-demo">
+                            <div tabindex="0" class="el-upload el-upload--text">
+                                <button
+                                    type="button"
+                                    class="el-button el-button--primary el-button--small"
+                                >
+                                    <i class="el-icon-upload"></i>
+                                    <span>选择文件</span>
+                                </button>
+                                <input
+                                    type="file"
+                                    name="file"
+                                    class="el-upload__input"
+                                    accept=".js"
+                                    @change="addFile(index,$event)"
+                                >
+                            </div>
+                            <span
+                                class="el-upload-list el-upload-list--text"
+                                v-if="files[index]"
+                            >{{files[index].fileName}}</span>
+                        </div>
+                    </el-form-item>
+                    <div style="vertical-align: top; margin-left: 10px;">
+                        <el-button
+                            type="text"
+                            icon="el-icon-delete"
+                            size="small"
+                            v-if="index > 0"
+                            @click="deleteUpload(index)"
+                        >删除</el-button>
                     </div>
-                    <span class="el-upload-list el-upload-list--text" v-if="files[index]">
-                        {{files[index].fileName}}
-                        <i
-                            class="el-icon-close"
-                            style="margin-left: 10px"
-                            @click="clearFile(index)"
-                        ></i>
-                    </span>
                 </div>
-            </el-form-item>
-            <div style="vertical-align: top; margin-left: 10px;">
-                <el-button
-                    type="text"
-                    icon="el-icon-delete"
-                    size="small"
-                    v-if="index > 0"
-                    @click="deleteUpload(index)"
-                >删除</el-button>
+
+                <div style="margin-left: 100px">
+                    <el-button
+                        type="text"
+                        size="small"
+                        style="padding-top: 0"
+                        @click="upload.push( { index: '' })"
+                        v-if="upload.length <= 1"
+                    >+ 新增固件</el-button>
+                </div>
             </div>
-        </div>
 
-        <div style="margin-left: 100px">
-            <el-button
-                type="text"
-                size="small"
-                style="padding-top: 0"
-                @click="upload.push( { index: '' })"
-                v-if="upload.length <= 2"
-            >+ 新增固件</el-button>
-        </div>
-        <el-form-item label="固件名称" prop="name">
-            <el-select v-model="form.name" filterable default-first-option placeholder="请选择固件名称">
-                <el-option label="正式版" value="0"></el-option>
-                <el-option label="测试版" value="1"></el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item label="固件分组" prop="group">
-            <el-radio-group v-model="form.group" placeholder="请选择">
-                <el-radio label="0">正式版</el-radio>
-                <el-radio label="1">测试版</el-radio>
-            </el-radio-group>
-        </el-form-item>
+            <el-form-item label="固件名称" prop="name">
+                <el-select
+                    v-model="form.name"
+                    filterable
+                    default-first-option
+                    placeholder="请选择固件名称"
+                >
+                    <el-option label="正式版" value="0"></el-option>
+                    <el-option label="测试版" value="1"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="固件分组" prop="group">
+                <el-radio-group v-model="form.group" placeholder="请选择">
+                    <el-radio label="0">正式版</el-radio>
+                    <el-radio label="1">测试版</el-radio>
+                </el-radio-group>
+            </el-form-item>
 
-        <el-form-item label="升级方式" prop=" upMethod">
-            <el-radio-group v-model="form. upMethod">
-                <el-radio :label="3">手动升级</el-radio>
-                <el-radio :label="6">静默升级</el-radio>
-            </el-radio-group>
-        </el-form-item>
-        <el-form-item label="固件版本" prop="version">
-            <el-input v-model="form.version" placeholder="建议采用版本递增进行管理"></el-input>
-        </el-form-item>
-        <el-form-item label="描述" prop="desc">
-            <el-input type="textarea" v-model="form.desc"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-            <el-button type="primary" @click="addfirmware" size="small">确 定</el-button>
-        </el-form-item>
-    </el-form>
+            <el-form-item label="升级方式" prop="upMethod">
+                <el-radio-group v-model="form.upMethod">
+                    <el-radio :label="3">手动升级</el-radio>
+                    <el-radio :label="6">静默升级</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="固件版本" prop="version">
+                <el-input v-model="form.version" placeholder="建议采用版本递增进行管理"></el-input>
+            </el-form-item>
+            <el-form-item label="描述" prop="desc">
+                <el-input type="textarea" v-model="form.desc"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button @click="beforeClose" size="small">取 消</el-button>
+                <el-button type="primary" @click="addfirmware" size="small">确 定</el-button>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
 </template>
 
 <script>
 import { getProductList } from "@/api/product/product";
-import { updateFirmware } from "@/api/firmware/firmware";
+import { updateFirmware, addFirmware } from "@/api/firmware/firmware";
 export default {
     name: "Addfirmware",
+    props: ["visible", "fw"],
     data() {
         return {
             upload: [{ index: "" }],
@@ -101,6 +111,7 @@ export default {
                 version: "",
                 desc: ""
             },
+            isEdit: false,
             files: [],
             fileList: [],
             rules: {
@@ -130,8 +141,30 @@ export default {
     },
     created() {
         this.form.pid = { pid: this.$route.params.id };
+        this.handleOp();
+    },
+    watch: {
+        fw() {
+            this.handleOp();
+        }
     },
     methods: {
+        handleOp() {
+            if (this.fw) {
+                console.log(this.fw);
+                this.isEdit = true;
+                this.$nextTick(() => {
+                    this.form = { ...this.form, ...this.fw };
+                });
+            } else {
+                this.isEdit = false;
+            }
+        },
+        beforeClose() {
+            this.files = this.fileList = [];
+            this.$refs.form.resetFields();
+            this.$emit("listenAdd", false);
+        },
         clearFile(index) {
             this.fileList.splice(index, 1, "");
             this.files.splice(index, 1, "");
@@ -153,77 +186,64 @@ export default {
                 this.$message.error("文件太大了，请上传小于10M的文件");
                 return;
             }
-            const file = {
-                size: files[0].size,
-                fileName: files[0].name
-            };
-            if (index <= files.length) {
-                this.files[index] = file;
-                this.fileList[index] = files[0];
-            } else {
-                this.files.push({
-                    size: files[0].size,
-                    fileName: files[0].name
-                });
-                this.fileList.push(files[0]);
-            }
             let reader = new FileReader();
             reader.onerror = function() {
                 console.error("Could not read the file");
                 this.$message.error("读取文件失败");
             };
-            reader.onload = function(event) {
-                console.log(event.target.result);
+            reader.onload = event => {
+                if (this.files.length > 0 && index < this.files.length) {
+                    this.files[index].size = files[0].size;
+                    this.files[index].fileName = files[0].name;
+                    this.fileList[index] = event.target.result;
+                } else {
+                    this.files.push({
+                        size: files[0].size,
+                        fileName: files[0].name
+                    });
+                    this.fileList.push(event.target.result);
+                }
             };
             reader.readAsArrayBuffer(files[0]);
-        },
-        getProList() {
-            getProductList(this.form)
-                .then(res => {
-                    this.productList = res.payload.result;
-                })
-                .catch(error => {
-                    return error;
-                });
-        },
-        handlerPid(value) {
-            this.productList.find(item => {
-                if (item.pid === value) {
-                    console.log("item: " + JSON.stringify(item));
-                    this.fwTypesList = item.fwTypes;
-                    console.log(
-                        "fwTypesList: " + JSON.stringify(this.fwTypesList)
-                    );
-                    return item;
-                }
-            });
         },
         addfirmware() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    const files = {};
-                    this.fileList.forEach((item, index) => {
-                        files["file" + (index + 1)] = item;
-                    });
-                    const data = {
-                        fw: { ...this.form },
-                        ...files
-                    };
-                    updateFirmware(data)
-                        .then(() => {
-                            console.log("添加成功");
-                        })
-                        .catch(() => {
-                            console.log("添加失败");
+                    if (!this.isEdit) {
+                        const files = {};
+                        this.fileList.forEach((item, index) => {
+                            files["file" + (index + 1)] = item;
                         });
+                        const data = {
+                            fw: { ...this.form },
+                            ...files
+                        };
+                        addFirmware(data)
+                            .then(() => {
+                                this.$message({
+                                    type: "success",
+                                    message: "添加成功"
+                                });
+                                this.beforClose();
+                            })
+                            .catch(() => {
+                                console.log("添加失败");
+                            });
+                    } else {
+                        updateFirmware().then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "更新成功"
+                            });
+                            this.beforClose();
+                        });
+                    }
                 } else {
                     return false;
                 }
             });
         }
-    },
-
-    watch: {}
+    }
 };
 </script>
 <style lang='less' scoped>
