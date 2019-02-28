@@ -5,14 +5,17 @@
 </template>
 
 <script>
-import { getPropertyList, deleteProduce } from "@/api/property/property";
-
 export default {
     props: ["propertyJson"],
     data() {
         return {
             data: {}
         };
+    },
+    watch: {
+        propertyJson(newValue) {
+            this.data = newValue;
+        }
     },
     created() {
         this.data = this.propertyJson;

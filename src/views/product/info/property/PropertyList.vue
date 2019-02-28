@@ -119,20 +119,16 @@ export default {
         },
         //   添加属性
         addProperty() {
-            alert("2");
+            this.isEdit = false;
+            this.dialogVisible = true;
             this.title = "添加属性";
-            this.$nextTick(() => {
-                this.isEdit = false;
-                this.dialogVisible = true;
-            });
         },
         //   编辑属性
         editProperty(attr) {
-            alert("1");
+            this.isEdit = true;
+            this.dialogVisible = true;
             this.title = "属性编辑";
             this.$nextTick(() => {
-                this.isEdit = true;
-                this.dialogVisible = true;
                 this.property = attr;
             });
         },
@@ -169,9 +165,9 @@ export default {
                 })
                 .catch(() => {});
         },
+        // 清空表单元素
         clearForm() {
-            this.$refs.propertyParam.clearForm();
-            this.getProperty();
+            this.$refs.propertyParam.handleClose();
         }
     },
     mounted() {}

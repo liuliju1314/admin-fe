@@ -25,4 +25,3 @@ export function getManagerList(data) {
         params: data
     })
 }
-

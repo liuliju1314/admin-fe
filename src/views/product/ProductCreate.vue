@@ -50,7 +50,7 @@
                             v-if="index > 0"
                         >删除</el-button>
                     </div>
-                    <el-button type="text" @click="form.fw.push({name: '', tag: ''})">+ 添加固件名称</el-button>
+                    <el-button type="text" @click="form.fwGroup.push({name: '', tag: ''})">+ 添加固件名称</el-button>
                 </el-form-item>
                 <el-form-item label="产品描述">
                     <el-input type="textarea" v-model="form.desc"></el-input>
@@ -116,7 +116,7 @@ export default {
     },
     methods: {
         beforeClose() {
-            this.form = '';
+            this.form = "";
             this.$emit("listenOp", false);
         },
 
@@ -160,7 +160,7 @@ export default {
             });
         },
         deleteFw(index) {
-            this.form.fw.splice(index, 1);
+            this.form.fwGroup.splice(index, 1);
         }
     }
 };

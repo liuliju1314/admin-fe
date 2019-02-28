@@ -94,19 +94,19 @@
             <el-form-item label="采样值" prop="instant">
                 <el-radio-group v-model="propertForm.instant">
                     <el-radio :label="true">瞬时采样</el-radio>
-                    <el-radio :label="true">时间段累积采样</el-radio>
+                    <el-radio :label="false">时间段累积采样</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="默认值">
+            <el-form-item label="默认值" prop="default">
                 <el-input v-model="propertForm.default"></el-input>
             </el-form-item>
 
-            <el-form-item label="描述">
+            <el-form-item label="描述" prop="desc">
                 <el-input type="textarea" v-model="propertForm.desc"></el-input>
             </el-form-item>
 
             <el-form-item>
-                <el-button @click="closeProperty">取消</el-button>
+                <el-button @click="handleClose">取消</el-button>
                 <el-button type="primary" @click="submitProperty">确定</el-button>
             </el-form-item>
         </el-form>
@@ -185,26 +185,20 @@ export default {
     },
     created() {
         this.propertForm.pid = this.$route.params.id;
-        if (this.isEdit == true) {
+        if (this.isEdit === true) {
             this.propertForm = this.property;
         }
     },
+    watch: {
+        property(newValue) {
+            console.log(JSON.stringify(newValue));
+            this.propertForm = newValue;
+        }
+    },
     methods: {
-        handleNext(value) {
-            this.$emit("listenNext", value);
-        },
-        addEnumerate() {
-            this.propertForm.metadata.push({
-                propertyValue: "",
-                propertyDesc: ""
-            });
-        },
-        deleteEnumerate(index) {
-            this.propertForm.metadata.splice(index, 1);
-        },
         // 点击确定按钮
         submitProperty() {
-            if (this.isEdit == false) {
+            if (this.isEdit === false) {
                 this.$refs.propertForm.validate(valid => {
                     if (valid) {
                         addProperty(this.propertForm)
@@ -216,10 +210,12 @@ export default {
                                 this.dialogVisible = false;
                                 this.$emit("listenDialog", this.dialogVisible);
                             })
-                            .catch(() => {});
+                            .catch(() => {
+                                this.$message.error("添加失败!");
+                            });
                     }
                 });
-            } else if (this.isEdit == true) {
+            } else if (this.isEdit === true) {
                 this.$refs.propertForm.validate(valid => {
                     if (valid) {
                         editProperty(this.propertForm)
@@ -231,22 +227,28 @@ export default {
                                 this.dialogVisible = false;
                                 this.$emit("listenDialog", this.dialogVisible);
                             })
-                            .catch(() => {});
+                            .catch(() => {
+                                this.$message.error("修改失败!");
+                            });
                     }
                 });
             }
         },
-        // 清空内容
-        clearForm() {
-            this.dialogVisible = false;
+        // 关闭表单，清空内容
+        handleClose() {
             this.$refs.propertForm.resetFields();
             this.$emit("listenDialog", this.dialogVisible);
         },
-        // 点击取消
-        closeProperty() {
-            this.dialogVisible = false;
-            this.$refs.propertForm.resetFields();
-            this.$emit("listenDialog", this.dialogVisible);
+        // 添加枚举
+        addEnumerate() {
+            this.propertForm.metadata.push({
+                propertyValue: "",
+                propertyDesc: ""
+            });
+        },
+        // 删除枚举项
+        deleteEnumerate(index) {
+            this.propertForm.metadata.splice(index, 1);
         }
     }
 };
