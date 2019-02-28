@@ -3,18 +3,23 @@
         <!-- 循环的固件列表 -->
         <div class="btn-box">
             <div style=" display: flex;justify-content: space-between;">
-                <el-button type="primary" size="small" @click="dialogVisible=true">+ 添加固件</el-button>
+                <el-button type="primary" size="small" @click="showFwDialog('')">+ 添加固件</el-button>
                 <el-input
-                    placeholder="请输入固件ID或版本"
-                    v-model="firmwareSearch"
+                    placeholder="请输入固件版本"
+                    v-model="form.fwVersion"
                     class="input-with-select"
                     size="small"
                 >
-                    <el-button slot="append" icon="el-icon-search"></el-button>
+                    <el-button slot="append" icon="el-icon-search" @click="handlefirmwareList"></el-button>
                 </el-input>
             </div>
         </div>
-        <el-table :data="firmwareList" style="width: 100%; margin-top: 12px" border size="small">
+        <el-table
+            :data="firmwareList.items"
+            style="width: 100%; margin-top: 12px"
+            border
+            size="small"
+        >
             <el-table-column prop="fwID" label="固件ID"></el-table-column>
             <el-table-column prop="version" label="固件版本"></el-table-column>
             <el-table-column prop="group" label="固件分组"></el-table-column>
@@ -31,7 +36,7 @@
                     <el-button
                         type="text"
                         size="small"
-                        @click="editFw(scope.row)"
+                        @click="showFwDialog(scope.row)"
                         icon="el-icon-edit"
                     >编辑</el-button>
                     <el-button
@@ -43,55 +48,35 @@
                 </template>
             </el-table-column>
         </el-table>
-        <div></div>
+        <div class="pagination-box" v-if="form.pageSize < firmwareList.count">
+            <el-pagination
+                :page-size="form.pageSize"
+                :page="form.page"
+                layout="prev, pager, next"
+                :total="firmwareList.count"
+                @current-change="handlePage"
+            ></el-pagination>
+        </div>
         <!-- 添加固件对话框 -->
-        <el-dialog title="添加固件" :visible.sync="dialogVisible" center>
-            <add-firmware ref="addForm"></add-firmware>
-        </el-dialog>
-        <el-dialog title="固件编辑" :visible.sync="editVisible" center>
+        <add-firmware @listenAdd="listenAdd" :visible="visible" :fw="opFw"></add-firmware>
+        <el-dialog title="固件升级" :visible.sync="upVisible" center :before-close="beforeCloseUp">
             <el-form
-                :model="editFwForm"
-                ref="editFwForm"
-                label-width="100px"
+                :model="upForm"
+                ref="upForm"
+                label-width="180px"
                 class="form-box"
                 :rules="rules"
                 size="small"
             >
-                <el-form-item label="固件ID" prop="version">
-                    <el-input v-model="editFwForm.fwID" placeholder="建议采用版本递增进行管理" disabled="true"></el-input>
-                </el-form-item>
-                <el-form-item label="固件分组" prop="group">
-                    <el-radio-group v-model="editFwForm.group" placeholder="请选择">
+                <el-form-item label="请选择需升级的设备分组" prop="group">
+                    <el-radio-group v-model="upForm.deviceGroup" placeholder="请选择">
                         <el-radio label="0">正式版</el-radio>
                         <el-radio label="1">测试版</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="固件名称" prop="fwName">
-                    <el-select
-                        v-model="editFwForm.fwName"
-                        filterable
-                        default-first-option
-                        placeholder="请选择固件名称"
-                    >
-                        <el-option label="正式版" value="0"></el-option>
-                        <el-option label="测试版" value="1"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="升级方式" prop="upgrade">
-                    <el-radio-group v-model="editFwForm.upgrade">
-                        <el-radio :label="3">手动升级</el-radio>
-                        <el-radio :label="6">静默升级</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="固件版本" prop="version">
-                    <el-input v-model="editFwForm.version" placeholder="建议采用版本递增进行管理"></el-input>
-                </el-form-item>
-                <el-form-item label="描述" prop="desc">
-                    <el-input type="textarea" v-model="editFwForm.desc"></el-input>
-                </el-form-item>
                 <el-form-item>
-                    <el-button @click="editVisible = false" size="small">取 消</el-button>
-                    <el-button type="primary" @click="submitEidtFw" size="small">确 定</el-button>
+                    <el-button @click="beforeCloseUp" size="small">取 消</el-button>
+                    <el-button type="primary" @click="submitUpFw" size="small">确 定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -100,6 +85,11 @@
 
 <script>
 import AddFirmware from "./AddFirmware";
+import {
+    getfirmwareList,
+    upgradeFirmware,
+    deleteFirmware
+} from "@/api/firmware/firmware";
 export default {
     components: {
         AddFirmware
@@ -107,20 +97,20 @@ export default {
     props: {},
     data() {
         return {
-            firmwareList: [
-                {
-                    fwID: "1q23440",
-                    group: "测试组",
-                    upgrade: "手动升级",
-                    version: "v1.0.0.1",
-                    desc: "主要用于测试功能",
-                    createdAt: "2018-03-04 11:11"
-                    
-                }
-            ],
-            firmwareSearch: "",
-            dialogVisible: false,
-            editVisible: false,
+            firmwareList: [],
+            form: {
+                page: 1,
+                pageSize: 10,
+                fwVersion: "",
+                pid: ""
+            },
+            opFw: "",
+            visible: false,
+            upVisible: false,
+            upForm: {
+                fw: "",
+                deviceGroup: ""
+            },
             editFwForm: {
                 fwID: "",
                 group: "",
@@ -154,52 +144,68 @@ export default {
             }
         };
     },
-    watch: {},
-    computed: {},
+    created() {
+        this.form.pid = { pid: this.$route.params.id };
+        this.handlefirmwareList();
+    },
     methods: {
+        beforeCloseUp() {
+            this.$refs.upForm.resetFields();
+            this.upVisible = false;
+        },
+        listenAdd(value) {
+            this.opFw = "";
+            this.visible = value;
+            this.handlefirmwareList();
+        },
+        handlePage(value) {
+            this.handlefirmwareList(value);
+        },
+        // 获取固件列表
+        handlefirmwareList(value) {
+            this.form.page = value ? value : 1;
+            getfirmwareList(this.form).then(res => {
+                console.log(res);
+                this.firmwareList = res.payload;
+            });
+        },
         deletefirmware(fw) {
-            this.$confirm(`该固件已升级，无法删除！`, "提示", {
+            this.$confirm(`是否确认删除该固件?`, "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning"
+            }).then(() => {
+                deleteFirmware(fw)
+                    .then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "删除成功!"
+                        });
+                    })
+                    .catch(() => {
+                        this.$confirm(`该固件已升级，无法删除！`, "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        });
+                    });
             });
-            // this.$confirm(
-            //     `是否确认删除该固件?`,
-            //     "提示",
-            //     {
-            //         confirmButtonText: "确定",
-            //         cancelButtonText: "取消",
-            //         type: "warning"
-            //     }
-            // ).then(() => {
-            //     this.$message({
-            //         type: "success",
-            //         message: "升级成功!"
-            //     });
-            // });
         },
         upgradefirmware(fw) {
-            this.$confirm(
-                `此操作将升级该产品下所有设备固件版本，是否确认升级?`,
-                "提示",
-                {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                }
-            ).then(() => {
+            this.upVisible = true;
+            this.upForm.fw = fw;
+        },
+        submitUpFw() {
+            upgradeFirmware(this.upForm).then(() => {
                 this.$message({
                     type: "success",
-                    message: "升级成功!"
+                    message: "升级成功"
                 });
             });
         },
-        editFw(fw) {
-            this.editVisible = true;
-            this.editFwForm = {
-                ...this.editFwForm,
-                ...fw
-            };
+        showFwDialog(fw) {
+            this.visible = true;
+            this.opFw = fw;
         },
         // 提交固件编辑
         submitEidtFw() {
@@ -209,7 +215,7 @@ export default {
                         type: "success",
                         message: "固件更新成功!"
                     });
-                    this.editVisible = false;
+                    this.beforeClose();
                 }
             });
         }
