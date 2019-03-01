@@ -31,7 +31,7 @@
                             <span
                                 class="el-upload-list el-upload-list--text"
                                 v-if="files[index]"
-                            >{{files[index].fileName}}</span>
+                            >{{files[index].filename}}</span>
                         </div>
                     </el-form-item>
                     <div style="vertical-align: top; margin-left: 10px;">
@@ -58,7 +58,7 @@
 
             <el-form-item label="固件名称" prop="name">
                 <el-select
-                    v-model="form.name"
+                    v-model="form.fwName"
                     filterable
                     default-first-option
                     placeholder="请选择固件名称"
@@ -76,8 +76,8 @@
 
             <el-form-item label="升级方式" prop="upMethod">
                 <el-radio-group v-model="form.upMethod">
-                    <el-radio :label="3">手动升级</el-radio>
-                    <el-radio :label="6">静默升级</el-radio>
+                    <el-radio label="3">手动升级</el-radio>
+                    <el-radio label="6">静默升级</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="固件版本" prop="version">
@@ -95,7 +95,6 @@
 </template>
 
 <script>
-import { getProductList } from "@/api/product/product";
 import { updateFirmware, addFirmware } from "@/api/firmware/firmware";
 export default {
     name: "Addfirmware",
@@ -107,7 +106,7 @@ export default {
                 pid: "",
                 upMethod: "",
                 group: "",
-                name: "",
+                fwName: "",
                 version: "",
                 desc: ""
             },
@@ -140,7 +139,7 @@ export default {
         };
     },
     created() {
-        this.form.pid = { pid: this.$route.params.id };
+        this.form.pid = this.$route.params.id ;
         this.handleOp();
     },
     watch: {
@@ -151,7 +150,6 @@ export default {
     methods: {
         handleOp() {
             if (this.fw) {
-                console.log(this.fw);
                 this.isEdit = true;
                 this.$nextTick(() => {
                     this.form = { ...this.form, ...this.fw };
@@ -193,13 +191,16 @@ export default {
             };
             reader.onload = event => {
                 if (this.files.length > 0 && index < this.files.length) {
+                    this.files[index].zoom = index + 1;
                     this.files[index].size = files[0].size;
-                    this.files[index].fileName = files[0].name;
+                    this.files[index].filename = files[0].name;
+                    
                     this.fileList[index] = event.target.result;
                 } else {
                     this.files.push({
+                        zoom: index + 1,
                         size: files[0].size,
-                        fileName: files[0].name
+                        filename: files[0].name
                     });
                     this.fileList.push(event.target.result);
                 }
@@ -214,10 +215,12 @@ export default {
                         this.fileList.forEach((item, index) => {
                             files["file" + (index + 1)] = item;
                         });
+
                         const data = {
-                            fw: { ...this.form },
+                            ...this.form,  files: this.files,
                             ...files
                         };
+                        console.log(data);
                         addFirmware(data)
                             .then(() => {
                                 this.$message({
