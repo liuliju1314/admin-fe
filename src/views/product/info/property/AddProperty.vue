@@ -38,7 +38,7 @@
                 </div>
             </el-form-item>
             <el-form-item label="数据长度" v-if="propertForm.dataType.type === 'text'">
-                <el-input v-model="propertForm.dataType.specs.bytes" style="width:80%"></el-input>
+                <el-input v-model="propertForm.dataType.specs.length" style="width:80%"></el-input>
                 <span>&nbsp;字节</span>
             </el-form-item>
             <el-form-item label="时间格式" v-if="propertForm.dataType.type === 'data'">
@@ -80,6 +80,13 @@
                 </div>
                 <el-button type="text" @click="addEnumerate">+ 添加枚举</el-button>
             </el-form-item>
+            <el-form-item
+                label="小数点位数"
+                prop="arraySize"
+                v-if="propertForm.dataType.type === 'float'"
+            >
+                <el-input v-model="propertForm.dataType.specs.places"></el-input>
+            </el-form-item>
             <el-form-item label="读写属性" prop="permission">
                 <el-radio-group v-model="propertForm.permission">
                     <el-radio label="RW">可读写</el-radio>
@@ -117,7 +124,7 @@
 
 <script>
 import { addProperty, editProperty } from "@/api/property/property";
-import { nextTick } from "q";
+// import { nextTick } from "q";
 
 export default {
     props: ["property", "isEdit"],
