@@ -6,20 +6,7 @@
                 <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>
                 {{ruleID}}
             </div>
-            <div class="card-title">智能遥感水位传感器</div>
-            <el-tabs v-model="activeName">
-                <el-tab-pane label="基本信息" name="first">
-                    <base-info></base-info>
-                </el-tab-pane>
-                <el-tab-pane label="Event" name="second">
-                    <event-list></event-list>
-                </el-tab-pane>
-                <el-tab-pane label="Action" name="third">
-                    <action-list></action-list>
-                </el-tab-pane>
-            </el-tabs>
-        </div>
-        <!-- <div>
+            <div class="card-title">{{base.name}}</div>
             <router-link
                 class="link-item"
                 active-class="active"
@@ -35,29 +22,35 @@
                 active-class="active"
                 :to="'/rule/'+ruleID+'/action'"
             >Action</router-link>
-        </div>-->
-        <!-- <div class="rule-detail-box">
+        </div>
+        <div class="rule-detail-box">
             <router-view></router-view>
-        </div>-->
+        </div>
     </el-card>
 </template>
 
 <script>
+import { getRuleInfo } from "@/api/rule/rule";
 export default {
     name: "RuleInfo",
     data() {
         return {
-            activeName: "second",
-            ruleID: ""
+            activeName: "first",
+            ruleID: "",
+            base: ""
         };
-    },
-    components: {
-        BaseInfo: () => import("./BaseInfo"),
-        EventList: () => import("./events/EventList"),
-        ActionList: () => import("./action/ActionList")
     },
     created() {
         this.ruleID = this.$route.params.id;
+    },
+    methods: {
+        handleRuleInfo() {
+            getRuleInfo({ id: this.ruleId })
+                .then(res => {
+                    this.base = res.payload.items;
+                })
+                .catch(() => {});
+        }
     }
 };
 </script>
@@ -65,14 +58,6 @@ export default {
 .rule-detail-wrapper {
     .el-card__header {
         padding-bottom: 0 !important;
-        border-bottom: 0;
-    }
-    .el-tabs__item {
-        font-size: 16px;
-        padding: 24px 20px 8px 20px;
-        height: auto;
-        line-height: 1.5;
-        box-sizing: content-box;
     }
 }
 </style>

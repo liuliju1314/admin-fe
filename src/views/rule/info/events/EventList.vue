@@ -5,144 +5,135 @@
                 <div>
                     <el-button
                         size="small"
-                        @click="openDialog({name: 'condition',action: 'add'})"
+                        @click="openDialog({name: 'condition', action: 'add'})"
                     >+ 添加条件</el-button>
                     <el-button
                         size="small"
-                        @click="openDialog({name: 'logic',action: 'add'})"
+                        @click="openDialog({name: 'logic', action: 'add'})"
                     >+ 添加逻辑</el-button>
                 </div>
                 <div class="rule-event-logic">
                     <rule-event :ruleEvent="ruleEvent"></rule-event>
                 </div>
+                <div v-if="isDrag">
+                    <el-button @click="cancelDrag">取消</el-button>
+                    <el-button type="primary" @click="updateEvent">保存编辑</el-button>
+                </div>
             </el-col>
         </el-row>
-        <el-dialog :title="title" :visible.sync="dialogVisible" center>
-            <el-form class="form" ref="logicForm" :model="logicForm" v-if="isLogic" size="small">
-                <el-form-item label="逻辑">
-                    <el-select v-model="logicForm.logic">
-                        <el-option label="and" value="and"></el-option>
-                        <el-option label="or" value="or"></el-option>
-                        <el-option label="not" value="not"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-button size="small" @click="cancelOp">取消</el-button>
-                    <el-button type="primary" size="small" @click="handleLogicOp">确定</el-button>
-                </el-form-item>
-            </el-form>
-            <el-form
-                class="form"
-                ref="conditionForm"
-                :model="conditionForm"
-                v-else
-                size="small"
-                label-width="120px"
-            >
-                <el-form-item label="ID">
-                    <el-input v-model="conditionForm.id" placeholder="由数字组成,不可重复"></el-input>
-                </el-form-item>
-                <el-form-item label="KEY">
-                    <el-input v-model="conditionForm.key"></el-input>
-                </el-form-item>
-                <el-form-item label="描述">
-                    <el-input v-model="conditionForm.msg"></el-input>
-                </el-form-item>
-                <el-form-item label="操作">
-                    <el-input v-model="conditionForm.op"></el-input>
-                </el-form-item>
-                <el-form-item label="条件值">
-                    <el-input v-model="conditionForm.value"></el-input>
-                </el-form-item>
-                <el-form-item label="设备ID">
-                    <el-input v-model="conditionForm.did"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button size="small" @click="cancelOp">取消</el-button>
-                    <el-button type="primary" size="small" @click="handleConditionOp">确定</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
+        <op-rule :visible="visible" :action="action" @listenRuleOp="listenRuleOp"></op-rule>
     </div>
 </template>
 
 <script>
 import eventVue from "@/components/commonEvent";
+import { updateRule, getRuleInfo } from "@/api/rule/rule";
 export default {
     name: "RuleInfo",
     data() {
         return {
             ruleID: "",
+            isDrag: false,
+            base: "",
             ruleEvent: [
                 {
-                    logic: "or",
-                    children: [
-                        {
-                            logic: "and",
-                            children: [{ id: 16 }, { id: 17 }]
-                        },
-                        {
-                            logic: "and",
-                            children: [
-                                {
-                                    logic: "and",
-                                    children: [{ id: 18 }, { id: 19 }]
-                                },
-                                {
-                                    logic: "and",
-                                    children: [{ id: 20 }, { id: 21 }]
-                                }
-                            ]
-                        }
-                    ]
+                    logic: "and",
+                    children: [{ id: 18, key: "test" }, { id: 19, key: "test" }]
                 }
             ],
-            logicForm: {
+            event: {
+                conArray: [],
                 logic: ""
             },
-            event: {
-                conArray: [{ id: 16 }, { id: 17 }, { id: 18 }, { id: 19 }],
-                logic: "( (16 and 17) or (18 and 19) )"
-            },
-            conditionForm: {
-                id: "",
-                msg: "",
-                value: "",
-                op: "",
-                did: "",
-                key: ""
-            },
-            isChange: false,
-            title: "",
-            isLogic: false,
-            isEdit: false,
-            dialogVisible: false
+
+            visible: false,
+            action: ""
         };
     },
     created() {
         this.ruleID = this.$route.params.id;
-        this.handleFormatToArr(this.event.logic);
     },
     mounted() {
         eventVue.$on("listenRuleChange", () => {
-            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
+            this.isDrag = true;
+        });
+        eventVue.$on("listenEdit", data => {
+            this.visible = true;
+            this.action = data;
         });
     },
     watch: {
         ruleEvent() {
-            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
+            this.isDrag = true;
         }
     },
     components: {
-        RuleEvent: () => import("./RuleEvent")
+        RuleEvent: () => import("./RuleEvent"),
+        OpRule: () => import("./OpRule")
     },
     methods: {
-        handleFormatToArr(logic) {
-            const reg = /([^()]+)/i;
-            let list = logic.match(reg);
-            console.log(list);
-            list.map(item => {});
+        openDialog(action) {
+            this.action = action;
+            this.visible = true;
         },
+        replaceData(data, value) {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].id && data[i].id === value.id) {
+                    data[i] = value;
+                    console.log(this.ruleEvent)
+                    return;
+                } else {
+                    if (data[i].children) {
+                        this.replaceData(data[i].children, value);
+                    }
+                }
+            }
+        },
+        listenRuleOp(value) {
+            if (value) {
+                if (value.action === "add") {
+                    this.ruleEvent.push(value.logic);
+                } else {
+                    this.replaceData(this.ruleEvent, value.logic);
+                    this.isDrag = true;
+                }
+            }
+            this.action = "";
+            this.visible = false;
+        },
+        // 获取Rule信息
+        handleRuleInfo() {
+            getRuleInfo({ id: this.ruleId })
+                .then(res => {
+                    this.base = res.payload.items;
+                    this.ruleEvent = this._deepClone(this.base).event.ruleEvent;
+                })
+                .catch(() => {});
+        },
+        // 取消event编辑
+        cancelDrag() {
+            this.isDrag = false;
+            this.handleRuleInfo();
+        },
+        // 更新event编辑
+        updateEvent() {
+            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
+            const event = {
+                ruleEvent: this.ruleEvent,
+                ...this.event
+            };
+            const data = {
+                ...this.base,
+                event: event
+            };
+            updateRule(data).then(() => {
+                this.$message({
+                    type: "success",
+                    message: "更新成功"
+                });
+            });
+        },
+        // 将编辑数组转为后台所需格式
         handleFormatToStr(list) {
             let arr = [];
             list.forEach(item => {
@@ -160,33 +151,6 @@ export default {
                 }
             });
             return arr;
-        },
-        openDialog(value) {
-            this.isEdit = value.action === "add" ? false : true;
-            this.dialogVisible = true;
-            if (value.name === "logic") {
-                this.isLogic = true;
-                this.title = value.action === "add" ? "添加逻辑" : "逻辑编辑";
-            } else {
-                this.title = value.action === "add" ? "添加条件" : "条件编辑";
-                this.isLogic = false;
-            }
-        },
-        cancelOp() {
-            this.dialogVisible = false;
-        },
-        handleLogicOp() {
-            if (this.isEdit) {
-            } else {
-                this.ruleEvent.push({ logic: this.logicForm.logic });
-                console.log(this.ruleEvent);
-                this.beforeClose();
-            }
-        },
-        handleConditionOp() {},
-        beforeClose() {
-            this.$refs.logicForm.resetFields();
-            this.dialogVisible = false;
         }
     }
 };
@@ -202,10 +166,6 @@ export default {
 .rule-detail-wrapper {
     .rule-detail-title {
         margin-top: 8px;
-    }
-    .form {
-        width: 60%;
-        margin: auto;
     }
     .link-item {
         display: inline-block;

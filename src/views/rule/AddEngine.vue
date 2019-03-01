@@ -1,42 +1,47 @@
 <template>
-    <div class="create-product-wrapper">
-        <el-form
-            ref="form"
-            :model="form"
-            label-width="90px"
-            :rules="formRules"
-            class="form-box"
-            size="small"
-        >
-            <el-form-item label="规则名称" prop="name">
-                <el-input v-model="form.name"></el-input>
-            </el-form-item>
-            <el-form-item label="标志符" prop="value">
-                <el-input v-model="form.value"></el-input>
-            </el-form-item>
-            <el-form-item label="描述">
-                <el-input type="textarea" v-model="form.desc"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button @click="cancelAdd" style="padding: 10px 22px">取消</el-button>
-                <el-button type="primary" @click="createRule" style="padding: 10px 22px">确定</el-button>
-            </el-form-item>
-        </el-form>
-        
-    </div>
+    <el-dialog :title="title" :visible.sync="visible" center>
+        <div class="create-product-wrapper">
+            <el-form
+                ref="form"
+                :model="form"
+                label-width="90px"
+                :rules="formRules"
+                class="form-box"
+                size="small"
+            >
+                <el-form-item label="规则名称" prop="name">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="属性名称" prop="taskKey">
+                    <el-input v-model="form.taskKey"></el-input>
+                </el-form-item>
+                <el-form-item label="描述">
+                    <el-input type="textarea" v-model="form.desc"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="beforeClose" style="padding: 10px 22px">取消</el-button>
+                    <el-button type="primary" @click="createRule" style="padding: 10px 22px">确定</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
+import { addRule, updateRule } from "@/api/rule/rule";
 export default {
     name: "AddEngine",
+    props: ["rule", "visible"],
     data() {
         return {
             categoryOptions: [{ value: "100", label: "智能家居" }],
             form: {
                 name: "",
-                value: "",
+                taskKey: "",
                 desc: ""
             },
+            isEdit: false,
+            title: "",
             formRules: {
                 name: [
                     {
@@ -45,10 +50,10 @@ export default {
                         trigger: "blur"
                     }
                 ],
-                value: [
+                taskKey: [
                     {
                         required: true,
-                        message: "请输入标志符",
+                        message: "请输入属性名称",
                         trigger: "blur"
                     }
                 ]
@@ -56,16 +61,63 @@ export default {
             dialogVisible: false
         };
     },
+    created() {
+        this.handleOp();
+    },
+    watch: {
+        rule() {
+            this.handleOp();
+        }
+    },
     methods: {
+        beforeClose() {
+            this.$refs.form.resetFields();
+            this.$emit("listenAdd", false);
+        },
+        handleOp() {
+            if (this.rule) {
+                this.title = "信息编辑";
+                this.isEdit = true;
+                this.form = {
+                    ...this.form,
+                    ...{
+                        name: this.rule.name,
+                        taskKey: this.rule.taskKey,
+                        desc: this.rule.desc
+                    }
+                };
+            } else {
+                this.isEdit = false;
+                this.title = "规则创建";
+            }
+        },
         createRule() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    this.$message({
-                        type: "success",
-                        message: "产品创建成功",
-                        duration: 500
-                    });
-                    this.$router.push("/rule/1z0zbfe0db5/detail");
+                    if(!this.isEdit) {
+                        addRule(this.form)
+                            .then(() => {
+                                this.$message({
+                                    type: "success",
+                                    message: "创建成功",
+                                    duration: 500
+                                });
+                                this.$router.push("/rule");
+                            })
+                            .catch(() => {});
+                    } else {
+                        const data = {
+                            ...this.rule,
+                            ...this.form
+                        }
+                        updateRule(data).then(() => {
+                            this.$message({
+                                type: 'success',
+                                message: '更新成功'
+                            })
+                            this.$router.go(0);
+                        })
+                    }
                 }
             });
         },

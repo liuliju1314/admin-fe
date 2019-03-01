@@ -14,8 +14,15 @@
             </el-form>
             <el-button type="primary" @click="dialogVisible=true" size="small">+新建规则</el-button>
             <!-- 开发中的产品 -->
-            <el-table :data="ruleList" style="width: 100%; margin-top: 12px" border size="small" @row-click="expandDetail">
-                <el-table-column prop="deep" label="规则名称"></el-table-column>
+            <el-table
+                :data="ruleList"
+                style="width: 100%; margin-top: 12px"
+                border
+                size="small"
+                @row-click="expandDetail"
+            >
+                <el-table-column prop="name" label="规则名称"></el-table-column>
+                <el-table-column prop="value" label="规则标识符"></el-table-column>
                 <el-table-column prop="desc" label="规则描述"></el-table-column>
                 <el-table-column label="创建时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
@@ -23,21 +30,21 @@
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
                         <div>
-                            <el-button
+                            <!-- <el-button
                                 @click="edit(scope.row)"
                                 type="text"
                                 size="small"
                             >
                                 <svg-icon icon-class="edit"></svg-icon>编辑
-                            </el-button>
+                            </el-button>-->
                             <!-- <el-button
                                 @click="openDetails(scope.row)"
                                 type="text"
                                 size="small"
                                 icon="el-icon-edit"
-                            >详情</el-button> -->
+                            >详情</el-button>-->
                             <el-button
-                                @click="deleteProduct(scope.row)"
+                                @click.stop="deleteRule(scope.row)"
                                 type="text"
                                 size="small"
                                 icon="el-icon-delete"
@@ -59,14 +66,12 @@
         </div>
 
         <!-- 添加产品对话框 -->
-        <el-dialog title="规则创建" :visible.sync="dialogVisible" center>
-            <add-engine></add-engine>
-        </el-dialog>
+        <add-engine :visible="dialogVisible" @listenAdd="listenAdd"></add-engine>
     </el-card>
 </template>
 
 <script>
-import { addRule, deleRule, upadateRule, getRuleList } from "@/api/rule/rule";
+import {  deleRule, upadateRule, getRuleList } from "@/api/rule/rule";
 import { formatDate } from "@/utils/format";
 
 export default {
@@ -81,10 +86,13 @@ export default {
                 pageSize: 10,
                 isPage: true
             },
-            ruleList: [{
-                deep: '1',
-                desc: '2324'
-            }],
+            ruleList: [
+                {
+                    id: '1sdfdfc323',
+                    name: "1",
+                    desc: "2324"
+                }
+            ],
             dialogVisible: false
         };
     },
@@ -98,22 +106,15 @@ export default {
     },
 
     methods: {
-        expandDetail(row) {
-            this.$router.push({ path: `/product/${row.pid}/detail` });
+        listenAdd(value) {
+            this.dialogVisible = value;
         },
-        addProductFrom() {
-            this.$refs.product.$refs.addProductForm.validate(valid => {
-                if (valid) {
-                    this.dialogVisible = false;
-                } else {
-                    return false;
-                }
-            });
+        expandDetail(row) {
+            this.$router.push({ path: `/rule/${row.id}/detail` });
         },
         handleRuleList() {
             getRuleList(this.form)
                 .then(res => {
-                    console.log(res);
                     this.ruleList = res.payload.items;
                 })
                 .catch(error => {
@@ -125,40 +126,8 @@ export default {
             this.form.page = value;
             this.handleRuleList();
         },
-        // 编辑产品
-        handleEditProduct() {
-            console.log("编辑产品");
-        },
-        // 删除产品
-        deleteProduct(product) {
-            this.$confirm(`是否确认删除产品${product.productName}?`, "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            }).then(() => {
-                this.$message({
-                    type: "success",
-                    message: "删除成功!"
-                });
-            });
-        },
-        // 发布产品
-        releaseProduct(product) {
-            this.$confirm(
-                `此操作将发布产品${
-                    product.productName
-                }, 产品发布后将不允许属性编辑，是否发布?`,
-                "提示",
-                {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消"
-                }
-            ).then(() => {
-                this.$message({
-                    type: "success",
-                    message: "发布成功!"
-                });
-            });
+        deleteRule(rule) {
+
         },
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");
