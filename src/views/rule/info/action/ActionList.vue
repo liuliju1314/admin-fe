@@ -2,10 +2,21 @@
     <el-main>
         <div class="btn-box">
             <div style=" display: flex;justify-content: space-between;">
-                <el-button type="primary" size="small" @click="openDialog('add')">+ 添加Action</el-button>
+                <el-button
+                    type="primary"
+                    size="small"
+                    @click="openDialog({action:'add', data: ''})"
+                >+ 添加Action</el-button>
             </div>
         </div>
-        <el-table :data="actionList" style="width: 100%; margin-top: 12px" border size="small">
+        <el-table
+            :row-class-name="tableRowClassName"
+            :data="action"
+            style="width: 100%; margin-top: 12px"
+            border
+            size="small"
+        >
+            <el-table-column type="index" width="50"></el-table-column>
             <el-table-column prop="name" label="名称"></el-table-column>
             <el-table-column prop="did" label="设备ID"></el-table-column>
             <el-table-column prop="value" label="需执行的参数列表"></el-table-column>
@@ -14,13 +25,13 @@
                     <el-button
                         type="text"
                         size="small"
-                        @click="editFw(scope.row)"
+                        @click="openDialog({action:'edit', data: scope})"
                         icon="el-icon-edit"
                     >编辑</el-button>
                     <el-button
                         type="text"
                         size="small"
-                        @click="deleteAction(scope.row)"
+                        @click="deleteAction(index)"
                         icon="el-icon-delete"
                     >删除</el-button>
                 </template>
@@ -46,7 +57,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="beforClose" size="small">取 消</el-button>
-                    <el-button type="primary" @click="submitForm" size="small">确 定</el-button>
+                    <el-button type="primary" @click="AddAction" size="small">确 定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -54,36 +65,38 @@
 </template>
 
 <script>
+import { updateRule, getRuleInfo } from "@/api/rule/rule";
 export default {
     name: "ActionList",
     data() {
         return {
-            actionList: [
+            action: [
                 {
-                    name: "",
-                    did: "",
-                    value: ""
+                    name: "1",
+                    did: "1",
+                    value: "1"
                 }
             ],
-            isEdit: '',
+            isEdit: "",
+            index: 0,  //用于存放当前编辑行
             dialogVisible: false,
             form: {
                 name: "",
                 did: "",
-                value: ''
+                value: ""
             },
             rules: {
                 name: [
                     {
                         required: true,
-                        message: "请选择固件分组",
+                        message: "请输入Action名称",
                         trigger: "blur"
                     }
                 ],
                 value: [
                     {
                         required: true,
-                        message: "请选择升级方式",
+                        message: "请输入执行参数",
                         trigger: "blur"
                     }
                 ]
@@ -98,64 +111,73 @@ export default {
             this.dialogVisible = false;
         },
         openDialog(value) {
-            this.isEdir = value === 'add' ? false: true;
-            this.title = value === 'add' ? '添加Action': 'Action编辑';
+            if (value.action === "edit") {
+                this.index = value.data.$index;
+                this.$nextTick(() => {
+                    this.form = {
+                        ...this.form,
+                        ...value.data.row
+                    };
+                });
+            }
+            this.isEdit = value === "add" ? false : true;
+            this.title = value === "add" ? "添加Action" : "Action编辑";
+
             this.dialogVisible = true;
         },
-        deleteAction(fw) {
-            this.$confirm(`该固件已升级，无法删除！`, "提示", {
+        handleRuleInfo() {
+            getRuleInfo({ id: this.ruleId })
+                .then(res => {
+                    this.base = res.payload.items;
+                    this.action = this._deepClone(this.base.action);
+                })
+                .catch(() => {});
+        },
+        deleteAction(index) {
+            this.$confirm(`是否确认删除该Action?`, "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning"
+            }).then(() => {
+                this.action.splice(index, 1);
+                this.updateAction("删除");
             });
-            // this.$confirm(
-            //     `是否确认删除该固件?`,
-            //     "提示",
-            //     {
-            //         confirmButtonText: "确定",
-            //         cancelButtonText: "取消",
-            //         type: "warning"
-            //     }
-            // ).then(() => {
-            //     this.$message({
-            //         type: "success",
-            //         message: "升级成功!"
-            //     });
-            // });
         },
-        upgradeAction(fw) {
-            this.$confirm(
-                `此操作将升级该产品下所有设备固件版本，是否确认升级?`,
-                "提示",
-                {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
+        AddAction() {
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    if (this.isEdit) {
+                        this.action.forEach((item,index) => {
+                            if (index === this.index) {
+                                item = {
+                                    ...item,
+                                    ...this.form
+                                };
+                            }
+                        });
+                        this.updateAction("更新");
+                    } else {
+                        this.action.push(this.form);
+                        this.updateAction("添加");
+                    }
                 }
-            ).then(() => {
+            });
+        },
+        // 更新Action编辑
+        updateAction(event) {
+            const data = {
+                ...this.base,
+                action: this.action
+            };
+            updateRule(data).then(() => {
                 this.$message({
                     type: "success",
-                    message: "升级成功!"
+                    message: event + "成功"
                 });
-            });
-        },
-        editFw(fw) {
-            this.editVisible = true;
-            this.editFwForm = {
-                ...this.editFwForm,
-                ...fw
-            };
-        },
-        // 提交固件编辑
-        submitEidtFw() {
-            this.$refs.editFwForm.validate(valid => {
-                if (valid) {
-                    this.$message({
-                        type: "success",
-                        message: "固件更新成功!"
-                    });
-                    this.editVisible = false;
+                if(this.dialogVisible) {
+                    this.beforeClose();                    
                 }
+
             });
         }
     }
