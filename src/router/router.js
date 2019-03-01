@@ -91,6 +91,14 @@ const routes = [
         ]
     },
     {
+        path: "/monitor",
+        component: LayOut,
+        children: [
+            { path: "/log", component: () => import("@/views/monitor/Log") },
+            { path: "/Debug", component: () => import("@/views/monitor/Debug") }
+        ]
+    },
+    {
         path: "/404",
         component: LayOut,
         children: [
