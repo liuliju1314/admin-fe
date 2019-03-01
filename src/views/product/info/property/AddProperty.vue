@@ -80,6 +80,13 @@
                 </div>
                 <el-button type="text" @click="addEnumerate">+ 添加枚举</el-button>
             </el-form-item>
+            <el-form-item
+                label="小数点位数"
+                prop="arraySize"
+                v-if="propertForm.dataType.type === 'float'"
+            >
+                <el-input v-model="propertForm.dataType.specs.places"></el-input>
+            </el-form-item>
             <el-form-item label="读写属性" prop="permission">
                 <el-radio-group v-model="propertForm.permission">
                     <el-radio label="RW">可读写</el-radio>
