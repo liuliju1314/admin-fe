@@ -117,7 +117,7 @@
 
 <script>
 import { addProperty, editProperty } from "@/api/property/property";
-import { nextTick } from "q";
+// import { nextTick } from "q";
 
 export default {
     props: ["property", "isEdit"],
