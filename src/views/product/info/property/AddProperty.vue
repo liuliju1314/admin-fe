@@ -38,7 +38,7 @@
                 </div>
             </el-form-item>
             <el-form-item label="数据长度" v-if="propertForm.dataType.type === 'text'">
-                <el-input v-model="propertForm.dataType.specs.bytes" style="width:80%"></el-input>
+                <el-input v-model="propertForm.dataType.specs.length" style="width:80%"></el-input>
                 <span>&nbsp;字节</span>
             </el-form-item>
             <el-form-item label="时间格式" v-if="propertForm.dataType.type === 'data'">
