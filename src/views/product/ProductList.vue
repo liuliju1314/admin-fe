@@ -91,7 +91,7 @@ export default {
                 productName: "",
                 productStatus: "1",
                 page: 1,
-                pageSize: 3,
+                pageSize: 10,
                 isPage: true
             },
             count: "",

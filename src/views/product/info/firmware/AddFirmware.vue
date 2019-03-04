@@ -139,7 +139,7 @@ export default {
         };
     },
     created() {
-        this.form.pid = this.$route.params.id ;
+        this.form.pid = this.$route.params.id;
         this.handleOp();
     },
     watch: {
@@ -194,7 +194,7 @@ export default {
                     this.files[index].zoom = index + 1;
                     this.files[index].size = files[0].size;
                     this.files[index].filename = files[0].name;
-                    
+
                     this.fileList[index] = event.target.result;
                 } else {
                     this.files.push({
@@ -202,7 +202,7 @@ export default {
                         size: files[0].size,
                         filename: files[0].name
                     });
-                    this.fileList.push(event.target.result);
+                    this.fileList.push(files[0]);
                 }
             };
             reader.readAsArrayBuffer(files[0]);
@@ -215,9 +215,12 @@ export default {
                         this.fileList.forEach((item, index) => {
                             files["file" + (index + 1)] = item;
                         });
-
+                        let formData = new FormData();
                         const data = {
-                            ...this.form,  files: this.files,
+                            firmware: JSON.stringify({
+                                ...this.form,
+                                files: this.files
+                            }),
                             ...files
                         };
                         console.log(data);
