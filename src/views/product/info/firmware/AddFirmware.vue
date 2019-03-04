@@ -56,7 +56,7 @@
                 </div>
             </div>
 
-            <el-form-item label="固件名称" prop="name">
+            <el-form-item label="固件名称" prop="fwName">
                 <el-select
                     v-model="form.fwName"
                     filterable
@@ -73,7 +73,6 @@
                     <el-radio label="test">测试版</el-radio>
                 </el-radio-group>
             </el-form-item>
-
             <el-form-item label="升级方式" prop="upMethod">
                 <el-radio-group v-model="form.upMethod">
                     <el-radio label="manual">手动升级</el-radio>
@@ -160,9 +159,10 @@ export default {
         },
         beforeClose() {
             this.$nextTick(() => {
-                this.files = this.fileList = [];
-                this.$refs.form.resetFields();                
-            })
+                this.files = [];
+                this.fileList = [];
+                this.$refs.form.resetFields();
+            });
             this.$emit("listenAdd", false);
         },
         clearFile(index) {
@@ -180,7 +180,6 @@ export default {
             if (files.length === 0) {
                 return;
             }
-
             // 文件大小
             if (files[0].size > 10 * 1024 * 1024) {
                 this.$message.error("文件太大了，请上传小于10M的文件");
@@ -228,7 +227,7 @@ export default {
                             });
                     } else {
                         const data = {
-                            fwID: this.fwID,
+                            fwID: this.fw.fwID,
                             ...this.form
                         };
                         editFirmware(data).then(() => {
