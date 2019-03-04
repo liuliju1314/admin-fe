@@ -16,15 +16,7 @@
                     <el-input v-model="form.model"></el-input>
                 </el-form-item>
                 <el-form-item label="产品分类" prop="category">
-                    <el-select
-                        v-model="form.category"
-                        filterable
-                        allow-create
-                        default-first-option
-                        placeholder="请输入或选择分类"
-                    >
-                        <el-option label="智能家居" value="smartHome"></el-option>
-                    </el-select>
+                     <el-input v-model="form.category"></el-input>
                 </el-form-item>
                 <el-form-item label="固件名称">
                     <div>

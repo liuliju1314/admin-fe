@@ -15,7 +15,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="handleProductList()">查询</el-button>
+                    <el-button type="primary" @click="handleProductList(1)">查询</el-button>
                 </el-form-item>
             </el-form>
             <el-button type="primary" @click="productOp" size="small">+新建产品</el-button>
@@ -91,7 +91,7 @@ export default {
                 productName: "",
                 productStatus: "1",
                 page: 1,
-                pageSize: 10,
+                pageSize: 3,
                 isPage: true
             },
             count: "",
@@ -129,7 +129,7 @@ export default {
         },
         //分页
         handlePage(value) {
-            this.getProductList(value);
+            this.handleProductList(value);
         },
         // 产品添加
         productOp() {
@@ -140,7 +140,7 @@ export default {
         listenOp() {
             this.opProduct = '';
             this.visible = false;
-            this.handleProductList();
+            this.handleProductList(1);
         },
         // 删除产品
         deleteProduct(product) {
