@@ -18,7 +18,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="设备编号">
-                    <el-input v-model="form.code"></el-input>
+                    <el-input v-model="form.did"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="handleeEquipment()">查询</el-button>
@@ -28,17 +28,17 @@
             <el-table :data="deviceList" style="width: 100%; margin-top: 12px" border size="small">
                 <el-table-column prop="model" label="产品型号"></el-table-column>
                 <el-table-column prop="name" label="产品名称"></el-table-column>
-                <el-table-column prop="hwID" label="设备编号" width="125"></el-table-column>
+                <el-table-column prop="did" label="设备编号" width="125"></el-table-column>
                 <el-table-column prop="group" label="设备分组" width="110">
                     <template slot-scope="scope">
                         <el-select
                             v-model="scope.row.group"
                             placeholder="请选择分组"
                             size="mini"
-                            @change="updateDeviceGroup(scope.row)"
+                            @change="updateGroup(scope.row)"
                         >
-                            <el-option label="正式组" value="release"></el-option>
-                            <el-option label="测试组" value="0"></el-option>
+                            <el-option label="正式组" value="formal"></el-option>
+                            <el-option label="测试组" value="test"></el-option>
                         </el-select>
                     </template>
                 </el-table-column>
@@ -86,7 +86,8 @@
 
 <script>
 import DeviceUpgrade from "./DeviceUpgrade";
-import { getDeviceList } from "@/api/device/device";
+import { getDeviceList, updateDeviceGroup } from "@/api/device/device";
+
 export default {
     name: "",
     props: [""],
@@ -96,12 +97,16 @@ export default {
                 page: 1,
                 pageSize: 6,
                 model: "",
-                code: "",
+                did: "",
                 online: "",
                 isPage: true
             },
             group: "",
-            deviceList: [],
+            deviceList: [
+                {
+                    did: "1"
+                }
+            ],
             dialogVisible: false,
             groupVisible: false,
             title: "",
@@ -135,6 +140,19 @@ export default {
                     return error;
                 });
         },
+        //更新设备分组
+        updateGroup(device) {
+            console.log("device: " + JSON.stringify(device));
+            const data = {
+                group: device.group,
+                did: device.did
+            };
+            updateDeviceGroup(data)
+                .then(() => {})
+                .catch(error => {
+                    return error;
+                });
+        },
         //分页
         handlePage(value) {
             this.form.page = value;
@@ -149,8 +167,8 @@ export default {
         handleUpgrade(device) {
             this.dialogVisible = true;
         },
-        //更新设备分组  
-        updateDeviceGroup( device ) {
+        //更新设备分组
+        updateDeviceGroup(device) {
             console.log(device);
         },
         isOnline(val) {

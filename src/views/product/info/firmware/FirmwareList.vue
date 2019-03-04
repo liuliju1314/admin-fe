@@ -6,7 +6,7 @@
                 <el-button type="primary" size="small" @click="showFwDialog('')">+ 添加固件</el-button>
                 <el-input
                     placeholder="请输入固件版本"
-                    v-model="form.fwVersion"
+                    v-model="form.version"
                     class="input-with-select"
                     size="small"
                 >
@@ -23,7 +23,7 @@
             <el-table-column prop="fwID" label="固件ID"></el-table-column>
             <el-table-column prop="version" label="固件版本"></el-table-column>
             <el-table-column prop="group" label="固件分组"></el-table-column>
-            <el-table-column prop="upgrade" label="升级方式"></el-table-column>
+            <el-table-column prop="upMethod" label="升级方式"></el-table-column>
             <el-table-column prop="desc" label="描述" width="300"></el-table-column>
             <el-table-column label="操作" width="170">
                 <template slot-scope="scope">
@@ -48,12 +48,13 @@
                 </template>
             </el-table-column>
         </el-table>
-        <div class="pagination-box" v-if="form.pageSize < firmwareList.count">
+        <!-- 固件列表分页 -->
+        <div class="pagination-box" v-if="form.pageSize < firmwareList.total">
             <el-pagination
                 :page-size="form.pageSize"
                 :page="form.page"
                 layout="prev, pager, next"
-                :total="firmwareList.count"
+                :total="firmwareList.total"
                 @current-change="handlePage"
             ></el-pagination>
         </div>
@@ -68,7 +69,7 @@
                 :rules="rules"
                 size="small"
             >
-                <el-form-item label="请选择需升级的设备分组" prop="group">
+                <el-form-item label="请选择需升级的设备分组" prop="deviceGroup">
                     <el-radio-group v-model="upForm.deviceGroup" placeholder="请选择">
                         <el-radio label="0">正式版</el-radio>
                         <el-radio label="1">测试版</el-radio>
@@ -101,7 +102,7 @@ export default {
             form: {
                 page: 1,
                 pageSize: 10,
-                fwVersion: "",
+                version: "",
                 pid: ""
             },
             opFw: "",
@@ -145,7 +146,7 @@ export default {
         };
     },
     created() {
-        this.form.pid = { pid: this.$route.params.id };
+        this.form.pid = this.$route.params.id;
         this.handlefirmwareList(1);
     },
     methods: {
@@ -165,7 +166,6 @@ export default {
         handlefirmwareList(value) {
             this.form.page = value ? value : 1;
             getfirmwareList(this.form).then(res => {
-                console.log(res);
                 this.firmwareList = res.payload;
             });
         },
@@ -178,13 +178,14 @@ export default {
                 const data = {
                     pid: this.form.pid,
                     fwID: fw.fwID
-                }
+                };
                 deleteFirmware(data)
                     .then(() => {
                         this.$message({
                             type: "success",
                             message: "删除成功!"
                         });
+                        this.handlefirmwareList();
                     })
                     .catch(() => {
                         this.$confirm(`该固件已升级，无法删除！`, "提示", {
