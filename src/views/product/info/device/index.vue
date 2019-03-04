@@ -6,27 +6,27 @@
                 <div class="device-log">当前设备总数： {{count}}，其中在线：{{online}}，离线：{{offline}}.</div>
                 <el-input
                     placeholder="请输入设备编号"
-                    v-model="firmwareSearch"
+                    v-model="form.did"
                     class="input-with-select"
                     size="small"
                 >
-                    <el-button slot="append" icon="el-icon-search"></el-button>
+                    <el-button slot="append" icon="el-icon-search" @click="searchDevice()"></el-button>
                 </el-input>
             </div>
         </div>
         <div class="device-wrapper">
             <el-table :data="deviceList" style="width: 100%; margin-top: 12px" border size="small">
-                <el-table-column prop="hwID" label="设备编号" width="125"></el-table-column>
+                <el-table-column prop="did" label="设备编号" width="125"></el-table-column>
                 <el-table-column prop="group" label="设备分组" width="120">
                     <template slot-scope="scope">
                         <el-select
                             v-model="scope.row.group"
                             placeholder="请选择分组"
                             size="mini"
-                            @change="updateDeviceGroup(scope.row)"
+                            @change="updateGroup(scope.row)"
                         >
-                            <el-option label="正式组" value="release"></el-option>
-                            <el-option label="测试组" value="0"></el-option>
+                            <el-option label="正式组" value="formal"></el-option>
+                            <el-option label="测试组" value="test"></el-option>
                         </el-select>
                     </template>
                 </el-table-column>
@@ -65,13 +65,13 @@
                 <div class="upgrade-wrapper">
                     <div class="progress-box">
                         <div>
-                            <span class="title">v1.00</span>                      
+                            <span class="title">v1.00</span>
                         </div>
                         <vue-progress :progress="60"></vue-progress>
                     </div>
                     <div class="progress-box">
-                                                <div>
-                            <span class="title">v2.0.0</span>                      
+                        <div>
+                            <span class="title">v2.0.0</span>
                         </div>
                         <vue-progress :progress="40"></vue-progress>
                     </div>
@@ -84,7 +84,7 @@
 <script>
 import VueProgress from "./VueProgress";
 import DeviceUpgrade from "@/views/device/DeviceUpgrade";
-import { getDeviceList } from "@/api/device/device";
+import { getDeviceList, updateDeviceGroup } from "@/api/device/device";
 export default {
     name: "",
     props: [""],
@@ -96,10 +96,15 @@ export default {
                 model: "",
                 code: "",
                 online: "",
-                isPage: true
+                isPage: true,
+                did: ""
             },
             group: "",
-            deviceList: [{ hwID: 1 }],
+            deviceList: [
+                {
+                    did: 1
+                }
+            ],
             dialogVisible: false,
             upgradeVisible: false,
             title: "",
@@ -139,6 +144,23 @@ export default {
                     return error;
                 });
         },
+        // 通过设备编号查询设备
+        searchDevice() {
+            this.getDevice();
+        },
+        //更新设备分组
+        updateGroup(device) {
+            console.log("device: " + JSON.stringify(device));
+            const data = {
+                group: device.group,
+                did: device.did
+            };
+            updateDeviceGroup(data)
+                .then(() => {})
+                .catch(error => {
+                    return error;
+                });
+        },
         //分页
         handlePage(value) {
             this.form.page = value;
@@ -153,10 +175,6 @@ export default {
         handleUpgrade(device) {
             this.dialogVisible = true;
             console.log("升级");
-        },
-        //更新设备分组
-        updateDeviceGroup(device) {
-            console.log(device);
         },
         isOnline(val) {
             if (val.online == true) {
