@@ -9,7 +9,7 @@
                     <el-input v-model="form.productName"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">查询</el-button>
+                    <el-button type="primary" @click="handleRuleList(1)">查询</el-button>
                 </el-form-item>
             </el-form>
             <el-button type="primary" @click="dialogVisible=true" size="small">+新建规则</el-button>
@@ -22,27 +22,14 @@
                 @row-click="expandDetail"
             >
                 <el-table-column prop="name" label="规则名称"></el-table-column>
-                <el-table-column prop="value" label="规则标识符"></el-table-column>
+                <el-table-column prop="taskKey" label="规则标识符"></el-table-column>
                 <el-table-column prop="desc" label="规则描述"></el-table-column>
                 <el-table-column label="创建时间">
-                    <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
+                    <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdTime) }}</template>
                 </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
                         <div>
-                            <!-- <el-button
-                                @click="edit(scope.row)"
-                                type="text"
-                                size="small"
-                            >
-                                <svg-icon icon-class="edit"></svg-icon>编辑
-                            </el-button>-->
-                            <!-- <el-button
-                                @click="openDetails(scope.row)"
-                                type="text"
-                                size="small"
-                                icon="el-icon-edit"
-                            >详情</el-button>-->
                             <el-button
                                 @click.stop="deleteRule(scope.row)"
                                 type="text"
@@ -71,7 +58,7 @@
 </template>
 
 <script>
-import {  deleRule, upadateRule, getRuleList } from "@/api/rule/rule";
+import { deleRule, getRuleList } from "@/api/rule/rule";
 import { formatDate } from "@/utils/format";
 
 export default {
@@ -88,17 +75,18 @@ export default {
             },
             ruleList: [
                 {
-                    id: '1sdfdfc323',
+                    id: "1sdfdfc323",
                     name: "1",
                     desc: "2324"
                 }
             ],
+            count: 0,
             dialogVisible: false
         };
     },
 
     created() {
-        this.handleRuleList();
+        this.handleRuleList(1);
     },
 
     components: {
@@ -108,14 +96,17 @@ export default {
     methods: {
         listenAdd(value) {
             this.dialogVisible = value;
+            this.handleRuleList(1);
         },
         expandDetail(row) {
-            this.$router.push({ path: `/rule/${row.id}/detail` });
+            this.$router.push({ path: `/rule/${row.tid}/detail` });
         },
-        handleRuleList() {
+        handleRuleList(value) {
+            this.form.page = value;
             getRuleList(this.form)
                 .then(res => {
                     this.ruleList = res.payload.items;
+                    this.count = res.payload.total;
                 })
                 .catch(error => {
                     return error;
@@ -123,11 +114,16 @@ export default {
         },
         //分页
         handlePage(value) {
-            this.form.page = value;
-            this.handleRuleList();
+            this.handleRuleList(value);
         },
         deleteRule(rule) {
-
+            deleRule(rule).then(() => {
+                this.$message({
+                    type: "success",
+                    message: "删除成功"
+                });
+                this.handleRuleList(this.form.page);
+            });
         },
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");

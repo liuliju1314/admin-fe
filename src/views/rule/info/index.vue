@@ -42,12 +42,14 @@ export default {
     },
     created() {
         this.ruleID = this.$route.params.id;
+        this.handleRuleInfo();
     },
     methods: {
         handleRuleInfo() {
-            getRuleInfo({ id: this.ruleId })
+            getRuleInfo({ tid: this.ruleID })
                 .then(res => {
-                    this.base = res.payload.items;
+                    console.log(res);
+                    this.base = res.payload;
                 })
                 .catch(() => {});
         }
