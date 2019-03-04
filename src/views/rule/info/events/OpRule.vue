@@ -169,14 +169,12 @@ export default {
         },
         // 关闭对话框
         beforeClose() {
-            this.$nextTick(() => {
-                if (this.isLogic) {
-                    this.$refs.logicForm.resetFields();
-                } else {
-                    this.$refs.conditionForm.resetFields();
-                }
-                this.$emit("listenRuleOp", false);
-            });
+            if (this.isLogic) {
+                this.$refs.logicForm.resetFields();
+            } else {
+                this.$refs.conditionForm.resetFields();
+            }
+            this.$emit("listenRuleOp", false);
         }
     }
 };

@@ -32,7 +32,7 @@ export default {
     name: "RuleInfo",
     data() {
         return {
-            ruleID: "",
+            ruleId: "",
             isDrag: false,
             base: "",
             ruleEvent: [],
@@ -46,7 +46,8 @@ export default {
         };
     },
     created() {
-        this.ruleID = this.$route.params.id;
+        this.ruleId = this.$route.params.id;
+        this.handleRuleInfo();
     },
     mounted() {
         eventVue.$on("listenRuleChange", () => {
@@ -98,12 +99,12 @@ export default {
         },
         // 获取Rule信息
         handleRuleInfo() {
-            getRuleInfo({ id: this.ruleId })
+            getRuleInfo({ tid: this.ruleId })
                 .then(res => {
                     this.base = res.payload;
                     this.base.actions = JSON.parse(this.base.actions);
                     this.base.event = JSON.parse(this.base.event);
-                    this.ruleEvent = this._deepClone(this.base).event.ruleEvent;
+                    this.ruleEvent = this._deepClone(this.base).ruleEvent;
                 })
                 .catch(() => {});
         },
@@ -123,6 +124,7 @@ export default {
                 ...this.base,
                 event: event
             };
+            console.log(data, this.base);
             updateRule(data).then(() => {
                 this.$message({
                     type: "success",
