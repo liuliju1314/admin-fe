@@ -9,7 +9,6 @@
                     v-model="firmwareSearch"
                     class="input-with-select"
                     size="small"
-
                 >
                     <el-button slot="append" icon="el-icon-search"></el-button>
                 </el-input>
@@ -18,7 +17,7 @@
         <div class="device-wrapper">
             <el-table :data="deviceList" style="width: 100%; margin-top: 12px" border size="small">
                 <el-table-column prop="hwID" label="设备编号" width="125"></el-table-column>
-                <el-table-column prop="group" label="设备分组" width="110">
+                <el-table-column prop="group" label="设备分组" width="120">
                     <template slot-scope="scope">
                         <el-select
                             v-model="scope.row.group"
@@ -38,7 +37,7 @@
                 <el-table-column label="软件版本号" :formatter="removeBlock">
                     <template slot-scope="scope">
                         <span>{{scope.row.fwVersion}}</span>
-                        <span>升级详情</span>
+                        <span @click.stop="upgradeVisible=true">升级详情</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
@@ -62,11 +61,28 @@
             <el-dialog title="设备升级" :visible.sync="dialogVisible">
                 <device-upgrade></device-upgrade>
             </el-dialog>
+            <el-dialog title="升级详情" :visible.sync="upgradeVisible">
+                <div class="upgrade-wrapper">
+                    <div class="progress-box">
+                        <div>
+                            <span class="title">v1.00</span>                      
+                        </div>
+                        <vue-progress :progress="60"></vue-progress>
+                    </div>
+                    <div class="progress-box">
+                                                <div>
+                            <span class="title">v2.0.0</span>                      
+                        </div>
+                        <vue-progress :progress="40"></vue-progress>
+                    </div>
+                </div>
+            </el-dialog>
         </div>
     </div>
 </template>
 
 <script>
+import VueProgress from "./VueProgress";
 import DeviceUpgrade from "@/views/device/DeviceUpgrade";
 import { getDeviceList } from "@/api/device/device";
 export default {
@@ -83,9 +99,9 @@ export default {
                 isPage: true
             },
             group: "",
-            deviceList: [],
+            deviceList: [{ hwID: 1 }],
             dialogVisible: false,
-            groupVisible: false,
+            upgradeVisible: false,
             title: "",
             count: 0,
             online: 0,
@@ -94,7 +110,10 @@ export default {
         };
     },
 
-    components: { DeviceUpgrade },
+    components: {
+        DeviceUpgrade,
+        VueProgress
+    },
 
     computed: {},
 
@@ -166,7 +185,23 @@ export default {
     width: 320px;
 }
 .device-log {
-    font-size:  14px;
+    font-size: 14px;
     margin-top: 20px;
+}
+.upgrade-wrapper {
+    display: flex;
+    text-align: center;
+    line-height: 1.5;
+    .progress-box {
+        margin: 10px 20px;
+        .title {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .desc {
+            color: #ddd;
+        }
+    }
 }
 </style>
