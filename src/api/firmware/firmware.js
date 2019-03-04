@@ -26,8 +26,8 @@ export function addFirmware(data) {
         data
     })
 }
-// 更新固件
-export function updateFirmware(data) {
+// 固件编辑
+export function editFirmware(data) {
     return service({
         url: '/api/firmware',
         method: 'PATCH',

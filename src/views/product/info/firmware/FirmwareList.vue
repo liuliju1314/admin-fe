@@ -10,7 +10,7 @@
                     class="input-with-select"
                     size="small"
                 >
-                    <el-button slot="append" icon="el-icon-search" @click="handlefirmwareList"></el-button>
+                    <el-button slot="append" icon="el-icon-search" @click="handlefirmwareList(1)"></el-button>
                 </el-input>
             </div>
         </div>
@@ -146,7 +146,7 @@ export default {
     },
     created() {
         this.form.pid = { pid: this.$route.params.id };
-        this.handlefirmwareList();
+        this.handlefirmwareList(1);
     },
     methods: {
         beforeCloseUp() {
@@ -175,7 +175,11 @@ export default {
                 cancelButtonText: "取消",
                 type: "warning"
             }).then(() => {
-                deleteFirmware(fw)
+                const data = {
+                    pid: this.form.pid,
+                    fwID: fw.fwID
+                }
+                deleteFirmware(data)
                     .then(() => {
                         this.$message({
                             type: "success",

@@ -69,15 +69,15 @@
             </el-form-item>
             <el-form-item label="固件分组" prop="group">
                 <el-radio-group v-model="form.group" placeholder="请选择">
-                    <el-radio label="0">正式版</el-radio>
-                    <el-radio label="1">测试版</el-radio>
+                    <el-radio label="formal">正式版</el-radio>
+                    <el-radio label="test">测试版</el-radio>
                 </el-radio-group>
             </el-form-item>
 
             <el-form-item label="升级方式" prop="upMethod">
                 <el-radio-group v-model="form.upMethod">
-                    <el-radio label="3">手动升级</el-radio>
-                    <el-radio label="6">静默升级</el-radio>
+                    <el-radio label="manual">手动升级</el-radio>
+                    <el-radio label="auto">静默升级</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="固件版本" prop="version">
@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { updateFirmware, addFirmware } from "@/api/firmware/firmware";
+import { editFirmware, addFirmware } from "@/api/firmware/firmware";
 export default {
     name: "Addfirmware",
     props: ["visible", "fw"],
@@ -159,8 +159,10 @@ export default {
             }
         },
         beforeClose() {
-            this.files = this.fileList = [];
-            this.$refs.form.resetFields();
+            this.$nextTick(() => {
+                this.files = this.fileList = [];
+                this.$refs.form.resetFields();                
+            })
             this.$emit("listenAdd", false);
         },
         clearFile(index) {
@@ -186,24 +188,17 @@ export default {
             }
             let reader = new FileReader();
             reader.onerror = function() {
-                console.error("Could not read the file");
                 this.$message.error("读取文件失败");
             };
-            reader.onload = event => {
-                if (this.files.length > 0 && index < this.files.length) {
-                    this.files[index].zone = index + 1;
-                    this.files[index].size = files[0].size;
-                    this.files[index].filename = files[0].name;
+            reader.onload = () => {
+                this.files.length = this.upload.length;
+                this.files.splice(index, 1, {
+                    zone: index + 1,
+                    size: files[0].size,
+                    filename: files[0].name
+                });
 
-                    this.fileList[index] = event.target.result;
-                } else {
-                    this.files.push({
-                        zone: index + 1,
-                        size: files[0].size,
-                        filename: files[0].name
-                    });
-                    this.fileList.push(files[0]);
-                }
+                this.fileList.push(files[0]);
             };
             reader.readAsArrayBuffer(files[0]);
         },
@@ -213,34 +208,35 @@ export default {
                     if (!this.isEdit) {
                         let formData = new FormData();
                         this.fileList.forEach((item, index) => {
-                            formData.append(`file${index+1}`, item);
+                            formData.append(`file${index + 1}`, item);
                         });
                         const data = {
                             ...this.form,
                             files: this.files
                         };
-                        formData.append(
-                            "firmware",
-                            JSON.stringify(data)
-                        );
+                        formData.append("firmware", JSON.stringify(data));
                         addFirmware(formData)
                             .then(() => {
                                 this.$message({
                                     type: "success",
                                     message: "添加成功"
                                 });
-                                this.beforClose();
+                                this.beforeClose();
                             })
                             .catch(() => {
                                 console.log("添加失败");
                             });
                     } else {
-                        updateFirmware().then(() => {
+                        const data = {
+                            fwID: this.fwID,
+                            ...this.form
+                        };
+                        editFirmware(data).then(() => {
                             this.$message({
                                 type: "success",
                                 message: "更新成功"
                             });
-                            this.beforClose();
+                            this.beforeClose();
                         });
                     }
                 } else {

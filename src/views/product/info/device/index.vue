@@ -37,15 +37,8 @@
                 <el-table-column prop="props.count" label="计数传感器"></el-table-column>
                 <el-table-column label="软件版本号" :formatter="removeBlock">
                     <template slot-scope="scope">
-                        <span>v1.0.0.3</span>
-                        <i
-                            class="el-icon-refresh"
-                            style="margin-left: 10px"
-                            @click="updateFwProgress(scope.row)"
-                        ></i>
-                        <div>
-                            <el-progress :percentage="70"></el-progress>
-                        </div>
+                        <span>{{scope.row.fwVersion}}</span>
+                        <span>升级详情</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
