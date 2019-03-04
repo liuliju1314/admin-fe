@@ -191,14 +191,14 @@ export default {
             };
             reader.onload = event => {
                 if (this.files.length > 0 && index < this.files.length) {
-                    this.files[index].zoom = index + 1;
+                    this.files[index].zone = index + 1;
                     this.files[index].size = files[0].size;
                     this.files[index].filename = files[0].name;
 
                     this.fileList[index] = event.target.result;
                 } else {
                     this.files.push({
-                        zoom: index + 1,
+                        zone: index + 1,
                         size: files[0].size,
                         filename: files[0].name
                     });
@@ -211,20 +211,19 @@ export default {
             this.$refs.form.validate(valid => {
                 if (valid) {
                     if (!this.isEdit) {
-                        const files = {};
-                        this.fileList.forEach((item, index) => {
-                            files["file" + (index + 1)] = item;
-                        });
                         let formData = new FormData();
+                        this.fileList.forEach((item, index) => {
+                            formData.append(`file${index+1}`, item);
+                        });
                         const data = {
-                            firmware: JSON.stringify({
-                                ...this.form,
-                                files: this.files
-                            }),
-                            ...files
+                            ...this.form,
+                            files: this.files
                         };
-                        console.log(data);
-                        addFirmware(data)
+                        formData.append(
+                            "firmware",
+                            JSON.stringify(data)
+                        );
+                        addFirmware(formData)
                             .then(() => {
                                 this.$message({
                                     type: "success",
