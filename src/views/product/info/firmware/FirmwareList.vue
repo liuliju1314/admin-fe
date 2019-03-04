@@ -69,7 +69,7 @@
                 :rules="rules"
                 size="small"
             >
-                <el-form-item label="请选择需升级的设备分组" prop="group">
+                <el-form-item label="请选择需升级的设备分组" prop="deviceGroup">
                     <el-radio-group v-model="upForm.deviceGroup" placeholder="请选择">
                         <el-radio label="0">正式版</el-radio>
                         <el-radio label="1">测试版</el-radio>
