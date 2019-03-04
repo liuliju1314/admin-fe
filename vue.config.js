@@ -65,6 +65,10 @@ module.exports = {
         https: false,
         hotOnly: false,
         proxy: {
+            "/api/rule": {
+                target: "http://47.107.91.58:28199/", // 设置你调用的接口域名和端口号
+                changeOrigin: true // 跨域
+            },
             "/api": {
                 target: "http://47.107.91.58:11021/", // 设置你调用的接口域名和端口号
                 changeOrigin: true // 跨域
