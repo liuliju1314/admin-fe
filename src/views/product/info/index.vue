@@ -2,12 +2,14 @@
     <el-card class="box-card product-detail-wrapper" shadow="never">
         <div slot="header" class="clearfix">
             <div class="card-breadcrumb">
-                <router-link to="/product" style="color: rgba(0,0,0,.45);text-decoration: none;">产品管理</router-link>
-                <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>{{productID}}
+                <router-link
+                    to="/product"
+                    style="color: rgba(0,0,0,.45);text-decoration: none;"
+                >产品管理</router-link>
+                <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>
+                {{productID}}
             </div>
-            <div class="card-title">
-                {{productName}}
-            </div>
+            <div class="card-title">{{productName}}</div>
             <router-link
                 class="link-item"
                 active-class="active"
@@ -23,7 +25,7 @@
                 active-class="active"
                 :to="'/product/'+productID+'/firmware'"
             >固件升级</router-link>
-                        <router-link
+            <router-link
                 class="link-item"
                 active-class="active"
                 :to="'/product/'+productID+'/device'"
@@ -35,18 +37,16 @@
 </template>
 
 <script>
-
 export default {
     data() {
         return {
             productID: "",
-            productName: ''
+            productName: ""
         };
     },
     created() {
         this.productID = this.$route.params.id;
         this.productName = localStorage.getItem("productName");
-
     },
     components: {}
 };
