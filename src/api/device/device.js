@@ -15,6 +15,6 @@ export function updateDeviceGroup(data) {
     return service({
         url: '/api/device',
         method: 'PATCH',
-        params: data
+        data
     })
 }
