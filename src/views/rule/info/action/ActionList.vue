@@ -10,8 +10,7 @@
             </div>
         </div>
         <el-table
-            :row-class-name="tableRowClassName"
-            :data="action"
+            :data="actionList"
             style="width: 100%; margin-top: 12px"
             border
             size="small"
@@ -56,8 +55,8 @@
                     <el-input v-model="form.did"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="beforClose" size="small">取 消</el-button>
-                    <el-button type="primary" @click="AddAction" size="small">确 定</el-button>
+                    <el-button @click="beforeClose" size="small">取 消</el-button>
+                    <el-button type="primary" @click="addAction" size="small">确 定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -70,13 +69,11 @@ export default {
     name: "ActionList",
     data() {
         return {
-            action: [
-                {
-                    name: "1",
-                    did: "1",
-                    value: "1"
-                }
-            ],
+            title: '',
+            base: '',
+            ruleId: '',
+            actions: [],
+            actionList: [],
             isEdit: "",
             index: 0,  //用于存放当前编辑行
             dialogVisible: false,
@@ -103,12 +100,15 @@ export default {
             }
         };
     },
-    watch: {},
-    computed: {},
+    created() {
+        this.ruleId = this.$route.params.id;
+        this.handleRuleInfo();
+    },
     methods: {
-        beforClose() {
+        beforeClose() {
             this.$refs.form.resetFields();
             this.dialogVisible = false;
+            this.handleRuleInfo();
         },
         openDialog(value) {
             if (value.action === "edit") {
@@ -120,16 +120,19 @@ export default {
                     };
                 });
             }
-            this.isEdit = value === "add" ? false : true;
-            this.title = value === "add" ? "添加Action" : "Action编辑";
+            this.isEdit = value.action === "add" ? false : true;
+            this.title = value.action === "add" ? "添加Action" : "Action编辑";
 
             this.dialogVisible = true;
         },
         handleRuleInfo() {
-            getRuleInfo({ id: this.ruleId })
+            getRuleInfo({ tid: this.ruleId })
                 .then(res => {
-                    this.base = res.payload.items;
-                    this.action = this._deepClone(this.base.action);
+                    this.base = res.payload;
+                    this.base.actions = JSON.parse(this.base.actions);
+                    this.base.event = JSON.parse(this.base.event);
+                    this.actionList = this._deepClone(this.base.actions);
+                    this.actions = this._deepClone(this.base.actions);
                 })
                 .catch(() => {});
         },
@@ -139,25 +142,18 @@ export default {
                 cancelButtonText: "取消",
                 type: "warning"
             }).then(() => {
-                this.action.splice(index, 1);
+                this.actions.splice(this.index, 1);
                 this.updateAction("删除");
             });
         },
-        AddAction() {
+        addAction() {
             this.$refs.form.validate(valid => {
                 if (valid) {
                     if (this.isEdit) {
-                        this.action.forEach((item,index) => {
-                            if (index === this.index) {
-                                item = {
-                                    ...item,
-                                    ...this.form
-                                };
-                            }
-                        });
+                        this.actions.splice(this.index, 1, this.form)
                         this.updateAction("更新");
                     } else {
-                        this.action.push(this.form);
+                        this.actions.push(this.form);
                         this.updateAction("添加");
                     }
                 }
@@ -165,9 +161,10 @@ export default {
         },
         // 更新Action编辑
         updateAction(event) {
+
             const data = {
                 ...this.base,
-                action: this.action
+                actions: this.actions
             };
             updateRule(data).then(() => {
                 this.$message({

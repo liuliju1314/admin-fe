@@ -35,14 +35,14 @@
             <el-form-item label="KEY" prop="key">
                 <el-input v-model="conditionForm.key" :disabled="isEdit"></el-input>
             </el-form-item>
-            <el-form-item label="描述" prop="msg">
-                <el-input v-model="conditionForm.msg"></el-input>
-            </el-form-item>
             <el-form-item label="操作" prop="op">
                 <el-input v-model="conditionForm.op"></el-input>
             </el-form-item>
             <el-form-item label="条件值" prop="value">
                 <el-input v-model="conditionForm.value"></el-input>
+            </el-form-item>
+            <el-form-item label="描述" prop="msg">
+                <el-input v-model="conditionForm.msg"></el-input>
             </el-form-item>
             <el-form-item label="设备ID">
                 <el-input v-model="conditionForm.did"></el-input>
@@ -76,13 +76,6 @@ export default {
                     {
                         required: true,
                         message: "请输入ID",
-                        trigger: "blur"
-                    }
-                ],
-                msg: [
-                    {
-                        required: true,
-                        message: "请输入msg",
                         trigger: "blur"
                     }
                 ],
@@ -132,19 +125,20 @@ export default {
     methods: {
         // 打开对话框，并且处理是编辑对话框还是添加对话框
         openDialog(value) {
-            console.log(value)
             this.isEdit = value.action === "add" ? false : true;
             this.title = value.action === "add" ? "添加" : "编辑";
             this.isLogic = value.name === "logic" ? true : false;
-            if(value.data) {
+            if (value.data) {
                 if (value.name === "logic") {
-                    this.logicForm = {...this.logicForm, ...value.data}
+                    this.logicForm = { ...this.logicForm, ...value.data };
                 } else {
-                    this.conditionForm = {...this.conditionForm, ...value.data}
+                    this.conditionForm = {
+                        ...this.conditionForm,
+                        ...value.data
+                    };
                     this.isLogic = false;
-                }                
+                }
             }
-
         },
         // 编辑与添加逻辑
         handleLogicOp() {
@@ -163,7 +157,7 @@ export default {
         handleConditionOp() {
             this.$refs.conditionForm.validate(valid => {
                 if (valid) {
-                    console.log(this.conditionForm)
+                    console.log(this.conditionForm);
                     const action = !this.isEdit ? "add" : "edit";
                     this.$emit("listenRuleOp", {
                         logic: this.conditionForm,
@@ -180,10 +174,9 @@ export default {
                     this.$refs.logicForm.resetFields();
                 } else {
                     this.$refs.conditionForm.resetFields();
-                }                
-            })
-
-            this.$emit("listenRuleOp", false);
+                }
+                this.$emit("listenRuleOp", false);
+            });
         }
     }
 };

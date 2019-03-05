@@ -42,9 +42,9 @@ export default {
     },
     methods: {
         handleRuleInfo() {
-            getRuleInfo({ id: this.ruleId })
+            getRuleInfo({ tid: this.ruleId })
                 .then(res => {
-                    this.base = res.payload.items;
+                    this.base = res.payload;
                     this.baseInfo = this._deepClone(this.base);
                 })
                 .catch(() => {});
@@ -55,6 +55,7 @@ export default {
         },
         listenAdd(value) {
             this.dialogVisible = value;
+            this.handleRuleInfo();
         }
     }
 };

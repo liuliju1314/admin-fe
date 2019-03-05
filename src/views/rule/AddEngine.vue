@@ -94,7 +94,7 @@ export default {
         createRule() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    if(!this.isEdit) {
+                    if (!this.isEdit) {
                         addRule(this.form)
                             .then(() => {
                                 this.$message({
@@ -102,21 +102,35 @@ export default {
                                     message: "创建成功",
                                     duration: 500
                                 });
-                                this.$router.push("/rule");
+                                this.beforeClose();
                             })
                             .catch(() => {});
                     } else {
+                        let actions = this.rule.actions,
+                            event = this.rule.action;
+                        if (!actions || typeof actions !== "object") {
+                            actions = [
+                            ];
+                        }
+                        if (!event || typeof event !== "object") {
+                            event = {
+                                rules: [],
+                                logic: ""
+                            };
+                        }
                         const data = {
                             ...this.rule,
+                            actions: actions,
+                            event: event,
                             ...this.form
-                        }
+                        };
                         updateRule(data).then(() => {
                             this.$message({
-                                type: 'success',
-                                message: '更新成功'
-                            })
-                            this.$router.go(0);
-                        })
+                                type: "success",
+                                message: "更新成功"
+                            });
+                             this.beforeClose();
+                        });
                     }
                 }
             });

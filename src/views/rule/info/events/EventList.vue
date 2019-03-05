@@ -35,14 +35,9 @@ export default {
             ruleID: "",
             isDrag: false,
             base: "",
-            ruleEvent: [
-                {
-                    logic: "and",
-                    children: [{ id: 18, key: "test" }, { id: 19, key: "test" }]
-                }
-            ],
+            ruleEvent: [],
             event: {
-                conArray: [],
+                rules: [],
                 logic: ""
             },
 
@@ -80,7 +75,7 @@ export default {
             for (let i = 0; i < data.length; i++) {
                 if (data[i].id && data[i].id === value.id) {
                     data[i] = value;
-                    console.log(this.ruleEvent)
+                    console.log(this.ruleEvent);
                     return;
                 } else {
                     if (data[i].children) {
@@ -105,7 +100,9 @@ export default {
         handleRuleInfo() {
             getRuleInfo({ id: this.ruleId })
                 .then(res => {
-                    this.base = res.payload.items;
+                    this.base = res.payload;
+                    this.base.actions = JSON.parse(this.base.actions);
+                    this.base.event = JSON.parse(this.base.event);
                     this.ruleEvent = this._deepClone(this.base).event.ruleEvent;
                 })
                 .catch(() => {});
@@ -138,7 +135,7 @@ export default {
             let arr = [];
             list.forEach(item => {
                 if (item.id) {
-                    this.event.conArray.push(item);
+                    this.event.rules.push(item);
                     arr.push(item.id);
                 } else if (item.logic && item.children) {
                     arr.push(
