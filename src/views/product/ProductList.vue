@@ -10,8 +10,9 @@
                 </el-form-item>
                 <el-form-item label="产品状态">
                     <el-select v-model="form.productStatus">
-                        <el-option label="开发中" value="0"></el-option>
-                        <el-option label="已发布" value="1"></el-option>
+                        <el-option label="全部" value=""></el-option>
+                        <el-option label="开发中" :value="0"></el-option>
+                        <el-option label="已发布" :value="1"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -44,7 +45,7 @@
                                 @click.stop="releaseProduct(scope.row)"
                                 type="text"
                                 size="small"
-                                v-if="!scope.row.productStatus"
+                                v-if="scope.row.productStatus === '0'"
                             >
                                 <svg-icon icon-class="release"></svg-icon>发布
                             </el-button>
@@ -80,7 +81,7 @@
 </template>
 
 <script>
-import { getProductList, deleteProduct } from "@/api/product/product";
+import { getProductList, deleteProduct, editProduct } from "@/api/product/product";
 import { formatDate } from "@/utils/format";
 
 export default {
@@ -177,10 +178,22 @@ export default {
                     cancelButtonText: "取消"
                 }
             ).then(() => {
-                this.$message({
-                    type: "success",
-                    message: "发布成功!"
-                });
+                const data = {
+                    ...product,
+                    productStatus: 1
+                }
+                editProduct(data).then(() => {
+                    this.$message({
+                        type: "success",
+                        message: "发布成功!"
+                    });                    
+                }).catch(() => {
+                    this.$message({
+                        type: "success",
+                        message: "发布失败，请重试!"
+                    });
+                })
+
             });
         },
 
