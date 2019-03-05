@@ -7,8 +7,17 @@
             <el-form :inline="true" class="demo-form-inline" size="small">
                 <!-- 测站类型框 -->
                 <el-form-item label="设备类型">
-                    <el-select v-model="form.model" placeholder="请选择设备类型">
-                        <el-option label="遥测雨量计" value="YL3800"></el-option>
+                    <el-select
+                        v-model="form.model"
+                        placeholder="请选择设备类型"
+                        @click.native="getProductModel()"
+                    >
+                        <el-option
+                            v-for="item in productModel"
+                            :key="item.pid"
+                            :label="item.name"
+                            :value="item.pid"
+                        ></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="在线状态">
@@ -37,8 +46,8 @@
                             size="mini"
                             @change="updateGroup(scope.row)"
                         >
-                            <el-option label="正式组" value="formal"></el-option>
-                            <el-option label="测试组" value="test"></el-option>
+                            <el-option label="正式组" value="release"></el-option>
+                            <el-option label="测试组" value="debug"></el-option>
                         </el-select>
                     </template>
                 </el-table-column>
@@ -46,17 +55,10 @@
                 <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
                 <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
                 <el-table-column prop="props.count" label="计数传感器"></el-table-column>
-                <el-table-column label="软件版本号" :formatter="removeBlock">
-                    <template slot-scope="scope">
-                        <span>v1.0.0.3</span>
-                        <i
-                            class="el-icon-refresh"
-                            style="margin-left: 10px"
-                            @click="updateFwProgress(scope.row)"
-                        ></i>
-                        <div>
-                            <el-progress :percentage="70"></el-progress>
-                        </div>
+                <el-table-column label="软件版本号" width="190">
+                    <template slot-scope="scope" :formatter="removeBlock">
+                        <span>{{scope.row.fwVersion}}</span>
+                        <span @click.stop="upgradeVisible=true">升级详情</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
@@ -80,13 +82,31 @@
             <el-dialog title="设备升级" :visible.sync="dialogVisible">
                 <device-upgrade></device-upgrade>
             </el-dialog>
+            <el-dialog title="升级详情" :visible.sync="upgradeVisible">
+                <div class="upgrade-wrapper">
+                    <div class="progress-box">
+                        <div>
+                            <span class="title">v1.00</span>
+                        </div>
+                        <vue-progress :progress="60"></vue-progress>
+                    </div>
+                    <div class="progress-box">
+                        <div>
+                            <span class="title">v2.0.0</span>
+                        </div>
+                        <vue-progress :progress="40"></vue-progress>
+                    </div>
+                </div>
+            </el-dialog>
         </div>
     </el-card>
 </template>
 
 <script>
+import VueProgress from "../product/info/device/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
 import { getDeviceList, updateDeviceGroup } from "@/api/device/device";
+import { getProductList } from "@/api/product/product";
 
 export default {
     name: "",
@@ -95,19 +115,18 @@ export default {
         return {
             form: {
                 page: 1,
-                pageSize: 6,
+                pageSize: 10,
                 model: "",
                 did: "",
                 online: "",
                 isPage: true
             },
+            isPage: false,
+            productModel: [],
             group: "",
-            deviceList: [
-                {
-                    did: "1"
-                }
-            ],
+            deviceList: [],
             dialogVisible: false,
+            upgradeVisible: false,
             groupVisible: false,
             title: "",
             value: "",
@@ -116,7 +135,7 @@ export default {
         };
     },
 
-    components: { DeviceUpgrade },
+    components: { DeviceUpgrade, VueProgress },
 
     computed: {},
 
@@ -127,14 +146,32 @@ export default {
     created() {
         this.getDevice();
     },
-
     methods: {
+        // 获取产品名称和产品id
+        getProductModel() {
+            this.productModel = [];
+            getProductList(this.isPage)
+                .then(res => {
+                    res.payload.result.map(item => {
+                        const obj = {
+                            pid: "",
+                            name: ""
+                        };
+                        obj.pid = item.pid;
+                        obj.name = item.name;
+                        this.productModel.push(obj);
+                    });
+                })
+                .catch(error => {
+                    return error;
+                });
+        },
         //获取设备列表
         getDevice() {
             getDeviceList(this.form)
                 .then(res => {
-                    this.deviceList = res.payload.result;
-                    this.count = res.payload.count;
+                    this.deviceList = res.payload.items;
+                    this.count = res.payload.total;
                 })
                 .catch(error => {
                     return error;
@@ -142,7 +179,6 @@ export default {
         },
         //更新设备分组
         updateGroup(device) {
-            console.log("device: " + JSON.stringify(device));
             const data = {
                 group: device.group,
                 did: device.did
@@ -158,6 +194,7 @@ export default {
             this.form.page = value;
             this.getDevice();
         },
+
         handleeEquipment() {
             this.getDevice();
         },
@@ -185,6 +222,7 @@ export default {
                 var reg2 = /\}$/gi;
                 str = str.replace(reg, "");
                 str = str.replace(reg2, "");
+                return str;
             }
             return str;
         }
@@ -216,5 +254,21 @@ export default {
 }
 .morebox .moreitem:hover {
     background-color: #e6f7ff;
+}
+.upgrade-wrapper {
+    display: flex;
+    text-align: center;
+    line-height: 1.5;
+    .progress-box {
+        margin: 10px 20px;
+        .title {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .desc {
+            color: #ddd;
+        }
+    }
 }
 </style>

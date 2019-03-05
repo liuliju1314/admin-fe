@@ -97,7 +97,7 @@ export default {
             count: "",
             productList: [],
             visible: false,
-            opProduct: ''
+            opProduct: ""
         };
     },
 
@@ -112,7 +112,7 @@ export default {
     methods: {
         // 进入产品详情
         expandDetail(row) {
-            localStorage.setItem("productName", row.name)
+            localStorage.setItem("productName", row.name);
             this.$router.push({ path: `/product/${row.pid}/detail` });
         },
         // 获取产品列表
@@ -133,12 +133,12 @@ export default {
         },
         // 产品添加
         productOp() {
-            this.opProduct = '';
+            this.opProduct = "";
             this.visible = true;
         },
         // 对话框关闭
         listenOp() {
-            this.opProduct = '';
+            this.opProduct = "";
             this.visible = false;
             this.handleProductList(1);
         },
@@ -146,11 +146,11 @@ export default {
         deleteProduct(product) {
             this.$confirm(`是否确认删除产品  ${product.name} ?`, "提示", {
                 confirmButtonText: "确定",
-                cancelButtonText: "取消",
+                cancelButtonText: "取消"
             }).then(() => {
                 deleteProduct({ pid: product.pid })
                     .then(() => {
-                        console.log("删除成功")
+                        console.log("删除成功");
                         this.$message({
                             type: "success",
                             message: "删除成功!"

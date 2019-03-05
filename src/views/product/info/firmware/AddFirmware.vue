@@ -69,8 +69,8 @@
             </el-form-item>
             <el-form-item label="固件分组" prop="group">
                 <el-radio-group v-model="form.group" placeholder="请选择">
-                    <el-radio label="formal">正式版</el-radio>
-                    <el-radio label="test">测试版</el-radio>
+                    <el-radio label="release">正式版</el-radio>
+                    <el-radio label="debug">测试版</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="升级方式" prop="upMethod">

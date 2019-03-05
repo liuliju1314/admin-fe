@@ -25,8 +25,8 @@
                             size="mini"
                             @change="updateGroup(scope.row)"
                         >
-                            <el-option label="正式组" value="formal"></el-option>
-                            <el-option label="测试组" value="test"></el-option>
+                            <el-option label="正式组" value="release"></el-option>
+                            <el-option label="测试组" value="debug"></el-option>
                         </el-select>
                     </template>
                 </el-table-column>
@@ -34,8 +34,8 @@
                 <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
                 <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
                 <el-table-column prop="props.count" label="计数传感器"></el-table-column>
-                <el-table-column label="软件版本号" :formatter="removeBlock">
-                    <template slot-scope="scope">
+                <el-table-column label="软件版本号">
+                    <template slot-scope="scope" :formatter="removeBlock">
                         <span>{{scope.row.fwVersion}}</span>
                         <span @click.stop="upgradeVisible=true">升级详情</span>
                     </template>
@@ -100,11 +100,7 @@ export default {
                 did: ""
             },
             group: "",
-            deviceList: [
-                {
-                    did: 1
-                }
-            ],
+            deviceList: [],
             dialogVisible: false,
             upgradeVisible: false,
             title: "",
@@ -190,6 +186,7 @@ export default {
                 var reg2 = /\}$/gi;
                 str = str.replace(reg, "");
                 str = str.replace(reg2, "");
+                return str;
             }
             return str;
         }
