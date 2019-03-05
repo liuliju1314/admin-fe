@@ -106,13 +106,13 @@ export default {
                             })
                             .catch(() => {});
                     } else {
-                        let actions = this.rule.actions,
-                            event = this.rule.action;
-                        if (!actions || typeof actions !== "object") {
+                        let actions = JSON.parse(this.rule.actions),
+                            event = JSON.parse(this.rule.event);
+                        if (!actions ) {
                             actions = [
                             ];
                         }
-                        if (!event || typeof event !== "object") {
+                        if (!event) {
                             event = {
                                 rules: [],
                                 logic: ""

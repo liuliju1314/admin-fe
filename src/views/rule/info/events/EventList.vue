@@ -15,9 +15,9 @@
                 <div class="rule-event-logic">
                     <rule-event :ruleEvent="ruleEvent"></rule-event>
                 </div>
-                <div v-if="isDrag">
-                    <el-button @click="cancelDrag">取消</el-button>
-                    <el-button type="primary" @click="updateEvent">保存编辑</el-button>
+                <div v-if="isDrag" style="margin-top: 15px;">
+                    <el-button @click="cancelDrag" size="small">取消</el-button>
+                    <el-button type="primary" @click="updateEvent" size="small">保存编辑</el-button>
                 </div>
             </el-col>
         </el-row>
@@ -58,11 +58,6 @@ export default {
             this.action = data;
         });
     },
-    watch: {
-        ruleEvent() {
-            this.isDrag = true;
-        }
-    },
     components: {
         RuleEvent: () => import("./RuleEvent"),
         OpRule: () => import("./OpRule")
@@ -76,7 +71,6 @@ export default {
             for (let i = 0; i < data.length; i++) {
                 if (data[i].id && data[i].id === value.id) {
                     data[i] = value;
-                    console.log(this.ruleEvent);
                     return;
                 } else {
                     if (data[i].children) {
@@ -105,6 +99,7 @@ export default {
                     this.base.actions = JSON.parse(this.base.actions);
                     this.base.event = JSON.parse(this.base.event);
                     this.ruleEvent = this._deepClone(this.base).ruleEvent;
+                    this.ruleEvent = this.ruleEvent ? this.ruleEvent: [];
                 })
                 .catch(() => {});
         },
@@ -117,19 +112,19 @@ export default {
         updateEvent() {
             this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
             const event = {
-                ruleEvent: this.ruleEvent,
                 ...this.event
             };
             const data = {
                 ...this.base,
-                event: event
+                event: event,
+                ruleEvent: this.ruleEvent,
             };
-            console.log(data, this.base);
             updateRule(data).then(() => {
                 this.$message({
                     type: "success",
                     message: "更新成功"
                 });
+                this.isDrag = false;
             });
         },
         // 将编辑数组转为后台所需格式
@@ -142,7 +137,7 @@ export default {
                 } else if (item.logic && item.children) {
                     arr.push(
                         "( " +
-                            this.handleEventFormat(item.children).join(
+                            this.handleFormatToStr(item.children).join(
                                 " " + item.logic + " "
                             ) +
                             " )"

@@ -59,6 +59,13 @@
 export default {
     props: ["visible", "action"],
     data() {
+        var checkId = (rule, value, callback) => {
+            if (!Number.isInteger(value)) {
+                callback(new Error("请输入数字值"));
+            } else {
+                callback();
+            }
+        };
         return {
             title: "",
             isLogic: false,
@@ -77,12 +84,13 @@ export default {
                         required: true,
                         message: "请输入ID",
                         trigger: "blur"
-                    }
+                    },
+                    { validator: checkId, trigger: "blur" }
                 ],
                 value: [
                     {
                         required: true,
-                        message: "请输入value",
+                        message: "请输入条件值",
                         trigger: "blur"
                     }
                 ],
@@ -130,13 +138,16 @@ export default {
             this.isLogic = value.name === "logic" ? true : false;
             if (value.data) {
                 if (value.name === "logic") {
-                    this.logicForm = { ...this.logicForm, ...value.data };
+                    this.$nextTick(() => {
+                        this.logicForm = { ...this.logicForm, ...value.data };
+                    });
                 } else {
-                    this.conditionForm = {
-                        ...this.conditionForm,
-                        ...value.data
-                    };
-                    this.isLogic = false;
+                    this.$nextTick(() => {
+                        this.conditionForm = {
+                            ...this.conditionForm,
+                            ...value.data
+                        };
+                    });
                 }
             }
         },
@@ -145,11 +156,17 @@ export default {
             this.$refs.logicForm.validate(valid => {
                 if (valid) {
                     const action = !this.isEdit ? "add" : "edit";
+                    const data = {
+                        ...this.logicForm,
+                        children: []
+                    };
                     this.$emit("listenRuleOp", {
-                        logic: this.logicForm,
+                        logic: data,
                         action: action
                     });
-                    this.beforeClose();
+                    setTimeout(() => {
+                        this.beforeClose();
+                    }, 0);
                 }
             });
         },
@@ -157,22 +174,30 @@ export default {
         handleConditionOp() {
             this.$refs.conditionForm.validate(valid => {
                 if (valid) {
-                    console.log(this.conditionForm);
                     const action = !this.isEdit ? "add" : "edit";
+                    const data = {
+                        ...this.conditionForm
+                    };
+                    setTimeout(() => {
+                        this.beforeClose();
+                    }, 0);
                     this.$emit("listenRuleOp", {
-                        logic: this.conditionForm,
+                        logic: data,
                         action: action
                     });
-                    this.beforeClose();
                 }
             });
         },
         // 关闭对话框
         beforeClose() {
             if (this.isLogic) {
-                this.$refs.logicForm.resetFields();
+                this.$nextTick(() => {
+                    this.$refs["logicForm"].resetFields();
+                });
             } else {
-                this.$refs.conditionForm.resetFields();
+                this.$nextTick(() => {
+                    this.$refs.conditionForm.resetFields();
+                });
             }
             this.$emit("listenRuleOp", false);
         }

@@ -30,7 +30,7 @@
                     <el-button
                         type="text"
                         size="small"
-                        @click="deleteAction(index)"
+                        @click="deleteAction(scope)"
                         icon="el-icon-delete"
                     >删除</el-button>
                 </template>
@@ -112,11 +112,13 @@ export default {
         },
         openDialog(value) {
             if (value.action === "edit") {
-                this.index = value.data.$index;
+                const data = value.data;
+                this.index = data.$index;
                 this.$nextTick(() => {
                     this.form = {
                         ...this.form,
-                        ...value.data.row
+                        ...data.row,
+                        value: data.row.join(",")
                     };
                 });
             }
@@ -131,29 +133,34 @@ export default {
                     this.base = res.payload;
                     this.base.actions = JSON.parse(this.base.actions);
                     this.base.event = JSON.parse(this.base.event);
-                    this.actionList = this._deepClone(this.base.actions);
-                    this.actions = this._deepClone(this.base.actions);
+                    this.actionList = this.base.actions ? this._deepClone(this.base.actions) : [];
+                    this.actions = this.base.actions ? this._deepClone(this.base.actions) : [];
                 })
                 .catch(() => {});
         },
-        deleteAction(index) {
+        deleteAction(scope) {
             this.$confirm(`是否确认删除该Action?`, "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning"
             }).then(() => {
-                this.actions.splice(this.index, 1);
+                this.actions.splice(scope.$index, 1);
                 this.updateAction("删除");
             });
         },
         addAction() {
             this.$refs.form.validate(valid => {
                 if (valid) {
+                    const data = {
+                        ...this.form,
+                        value: this.form.value.split(",")
+                    }
                     if (this.isEdit) {
-                        this.actions.splice(this.index, 1, this.form)
+                        this.actions.splice(this.index, 1, data)
                         this.updateAction("更新");
                     } else {
-                        this.actions.push(this.form);
+                        console.log(this.actions);
+                        this.actions.push(data);
                         this.updateAction("添加");
                     }
                 }
@@ -161,7 +168,6 @@ export default {
         },
         // 更新Action编辑
         updateAction(event) {
-
             const data = {
                 ...this.base,
                 actions: this.actions
