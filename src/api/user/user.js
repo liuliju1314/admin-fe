@@ -20,7 +20,7 @@ export function userLogout(data) {
 // 获取管理员列表接口
 export function getManagerList(data) {
     return service({
-        url: '/api/web/all_managers',
+        url: '/api/web/managers',
         method: 'get',
         params: data
     })
