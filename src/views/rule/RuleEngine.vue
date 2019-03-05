@@ -29,14 +29,18 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
-                        <div>
-                            <el-button
-                                @click.stop="deleteRule(scope.row)"
-                                type="text"
-                                size="small"
-                                icon="el-icon-delete"
-                            >删除</el-button>
-                        </div>
+                        <el-button
+                            @click.stop="startUpRule(scope.row)"
+                            type="text"
+                            size="small"
+                            icon="el-icon-setting"
+                        >启动</el-button>
+                        <el-button
+                            @click.stop="deleteRule(scope.row)"
+                            type="text"
+                            size="small"
+                            icon="el-icon-delete"
+                        >删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -124,6 +128,19 @@ export default {
                 });
                 this.handleRuleList(this.form.page);
             });
+        },
+        startUpRule(rule) {
+            this.$confirm("是否确认启动规则?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消"
+            })
+                .then(() => {
+                    this.$message({
+                        type: "success",
+                        message: "启动成功!"
+                    });
+                })
+                .catch(() => {});
         },
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");
