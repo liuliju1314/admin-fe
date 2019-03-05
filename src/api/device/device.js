@@ -10,11 +10,11 @@ export function getDeviceList(data) {
 }
 
 
-// 获取设备列表
+// 更新设备分组
 export function updateDeviceGroup(data) {
     return service({
-        url: '/device/update_device_group',
-        method: 'GET',
+        url: '/api/device',
+        method: 'PATCH',
         params: data
     })
 }
