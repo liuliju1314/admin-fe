@@ -35,8 +35,8 @@
                 <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
                 <el-table-column prop="props.count" label="计数传感器"></el-table-column>
                 <el-table-column label="软件版本号">
-                    <template slot-scope="scope" :formatter="removeBlock">
-                        <span>{{scope.row.fwVersion}}</span>
+                    <template slot-scope="scope">
+                        <span>{{removeBlock(scope.row.fwVersion)}}</span>
                         <span @click.stop="upgradeVisible=true">升级详情</span>
                     </template>
                 </el-table-column>
@@ -146,7 +146,6 @@ export default {
         },
         //更新设备分组
         updateGroup(device) {
-            console.log("device: " + JSON.stringify(device));
             const data = {
                 group: device.group,
                 did: device.did
@@ -182,10 +181,9 @@ export default {
         //去除大括号
         removeBlock(str) {
             if (str) {
-                var reg = /^\{/gi;
-                var reg2 = /\}$/gi;
-                str = str.replace(reg, "");
-                str = str.replace(reg2, "");
+                console.log(JSON.stringify(str));
+                var reg = /\{|\}/g;
+                str = JSON.stringify(str).replace(reg, "");
                 return str;
             }
             return str;
