@@ -30,12 +30,12 @@
             label-width="120px"
         >
             <el-form-item label="ID" prop="id">
-                <el-input v-model="conditionForm.id" placeholder="由数字组成,不可重复" :disabled="isEdit"></el-input>
+                <el-input v-model.number="conditionForm.id" placeholder="由数字组成,不可重复" :disabled="isEdit"></el-input>
             </el-form-item>
             <el-form-item label="KEY" prop="key">
                 <el-input v-model="conditionForm.key" :disabled="isEdit"></el-input>
             </el-form-item>
-            <el-form-item label="操作" prop="op">
+            <el-form-item label="符号" prop="op">
                 <el-input v-model="conditionForm.op"></el-input>
             </el-form-item>
             <el-form-item label="条件值" prop="value">
@@ -60,10 +60,14 @@ export default {
     props: ["visible", "action"],
     data() {
         var checkId = (rule, value, callback) => {
-            if (!Number.isInteger(value)) {
-                callback(new Error("请输入数字值"));
+            if (!value) {
+                callback(new Error("请输入id"));
             } else {
-                callback();
+                if (!Number.isInteger(value)) {
+                    callback(new Error("请输入数字值"));
+                } else {
+                    callback();
+                }
             }
         };
         return {
@@ -79,14 +83,7 @@ export default {
                 key: ""
             },
             conditionRule: {
-                id: [
-                    {
-                        required: true,
-                        message: "请输入ID",
-                        trigger: "blur"
-                    },
-                    { validator: checkId, trigger: "blur" }
-                ],
+                id: [{ validator: checkId, trigger: "blur", required: true }],
                 value: [
                     {
                         required: true,
@@ -97,7 +94,7 @@ export default {
                 op: [
                     {
                         required: true,
-                        message: "请输入op",
+                        message: "请输入符号",
                         trigger: "blur"
                     }
                 ],

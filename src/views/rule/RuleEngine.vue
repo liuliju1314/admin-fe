@@ -34,7 +34,7 @@
                             type="text"
                             size="small"
                             icon="el-icon-setting"
-                        >启动</el-button>
+                        >{{scope.row.enable === 1 ? '关闭': '启动'}}</el-button>
                         <el-button
                             @click.stop="deleteRule(scope.row)"
                             type="text"
@@ -62,9 +62,8 @@
 </template>
 
 <script>
-import { deleRule, getRuleList } from "@/api/rule/rule";
+import { deleRule, getRuleList, updateRule } from "@/api/rule/rule";
 import { formatDate } from "@/utils/format";
-
 export default {
     name: "RuleEngine",
     data() {
@@ -129,15 +128,23 @@ export default {
                 this.handleRuleList(this.form.page);
             });
         },
-        startUpRule(rule) {
-            this.$confirm("是否确认启动规则?", "提示", {
+        startUpRule(data) {
+            const rule = this._deepClone(data);
+            const isStart = rule.enable === 1 ? '关闭': '启动';
+            this.$confirm(`是否确认${isStart}规则?`, "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消"
             })
                 .then(() => {
-                    this.$message({
-                        type: "success",
-                        message: "启动成功!"
+                    rule.actions = JSON.parse(rule.actions),
+                    rule.event = JSON.parse(rule.event);
+                    rule.enable = rule.enable ? 0 : 1;
+                    updateRule(rule).then(() => {
+                        this.$message({
+                            type: "success",
+                            message: `${isStart}成功`
+                        });
+                        this.handleRuleList(this.form.page);
                     });
                 })
                 .catch(() => {});
