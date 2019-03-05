@@ -9,11 +9,11 @@
             class="form-box"
             size="small"
         >
-            <el-form-item label="属性名称" prop="name">
-                <el-input v-model="propertForm.name"></el-input>
-            </el-form-item>
-            <el-form-item label="标识符" prop="label">
+            <el-form-item label="属性名称" prop="label">
                 <el-input v-model="propertForm.label"></el-input>
+            </el-form-item>
+            <el-form-item label="标识符" prop="name">
+                <el-input v-model="propertForm.name"></el-input>
             </el-form-item>
             <el-form-item label="属性类型" prop="dataType.type">
                 <el-select v-model="propertForm.dataType.type" placeholder="请选择类型">
@@ -134,8 +134,8 @@ export default {
             enumList: [{ propertyValue: "", propertyDesc: "" }],
             propertForm: {
                 pid: "",
-                name: "",
                 label: "",
+                name: "",
                 permission: "RW",
                 dialogVisible: "",
                 history: true,
@@ -150,14 +150,14 @@ export default {
                 arraySize: ""
             },
             formRules: {
-                name: [
+                label: [
                     {
                         required: true,
                         message: "请输入属性名称",
                         trigger: "blur"
                     }
                 ],
-                label: [
+                name: [
                     {
                         required: true,
                         message: "请输入属性标识符",
