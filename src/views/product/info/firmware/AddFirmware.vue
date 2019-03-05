@@ -109,6 +109,7 @@ export default {
                 version: "",
                 desc: ""
             },
+            group: ['A','B'],
             isEdit: false,
             files: [],
             fileList: [],
@@ -192,7 +193,7 @@ export default {
             reader.onload = () => {
                 this.files.length = this.upload.length;
                 this.files.splice(index, 1, {
-                    zone: index + 1,
+                    zone: this.group[index].charCodeAt(),
                     size: files[0].size,
                     filename: files[0].name
                 });
@@ -207,7 +208,7 @@ export default {
                     if (!this.isEdit) {
                         let formData = new FormData();
                         this.fileList.forEach((item, index) => {
-                            formData.append(`file${index + 1}`, item);
+                            formData.append(`file${this.group[index]}`, item);
                         });
                         const data = {
                             ...this.form,
