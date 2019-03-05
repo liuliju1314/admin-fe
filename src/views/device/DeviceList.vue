@@ -58,7 +58,7 @@
                 <el-table-column label="软件版本号" width="190">
                     <template slot-scope="scope" :formatter="removeBlock">
                         <span>{{scope.row.fwVersion}}</span>
-                        <span @click.stop="upgradeVisible=true">升级详情</span>
+                        <el-button type="text" @click.stop="upgradeVisible=true">升级详情</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
