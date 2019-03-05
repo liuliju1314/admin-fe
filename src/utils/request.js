@@ -60,8 +60,9 @@ service.interceptors.response.use(
         }
     },
     error => {
+        console.log(error);
         Message({
-            message: error.response.data,
+            message: error,
             type: 'error',
             duration: 2 * 1000
         })

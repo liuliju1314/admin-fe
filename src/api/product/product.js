@@ -30,6 +30,7 @@ export function addProduct(data) {
 // 删除产品
 export function deleteProduct(data) {
     return service({
+        url: '/api/product',
         method: 'DELETE',
         data
     })

@@ -55,7 +55,7 @@
                                 icon="el-icon-edit"
                             >详情</el-button>-->
                             <el-button
-                                @click.stop="deleteProduct(scope.row)"
+                                @click.stop="handleDeleProduct(scope.row)"
                                 type="text"
                                 size="small"
                                 icon="el-icon-delete"
@@ -143,7 +143,7 @@ export default {
             this.handleProductList(1);
         },
         // 删除产品
-        deleteProduct(product) {
+        handleDeleProduct(product) {
             this.$confirm(`是否确认删除产品  ${product.name} ?`, "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消"
@@ -157,7 +157,8 @@ export default {
                         });
                         this.handleProductList();
                     })
-                    .catch(() => {
+                    .catch((error) => {
+                        console.log(error);
                         this.$message({
                             message: "删除失败!"
                         });
