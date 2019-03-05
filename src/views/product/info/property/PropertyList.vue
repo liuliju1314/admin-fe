@@ -6,7 +6,7 @@
         <el-table :data="propertList" style="width: 100%; margin-top: 12px" border size="small">
             <el-table-column prop="name" label="属性名称"></el-table-column>
             <el-table-column prop="label" label="标识符"></el-table-column>
-            <el-table-column prop="propType" label="属性类型"></el-table-column>
+            <el-table-column prop="dataType.type" label="属性类型"></el-table-column>
             <el-table-column prop="permission" label="属性读写"></el-table-column>
             <el-table-column label="操作" width="160">
                 <template slot-scope="scope">

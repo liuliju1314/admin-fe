@@ -148,7 +148,7 @@ export default {
         getManager() {
             getManagerList()
                 .then(res => {
-                    this.manageList = res.payload.result;
+                    this.manageList = res.payload.items;
                     this.count = res.payload.count;
                 })
                 .catch(error => {
