@@ -34,7 +34,7 @@
                 <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
                 <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
                 <el-table-column prop="props.count" label="计数传感器"></el-table-column>
-                <el-table-column label="软件版本号">
+                <el-table-column label="软件版本号" width="170">
                     <template slot-scope="scope">
                         <span>{{removeBlock(scope.row.fwVersion)}}</span>
                         <div>
@@ -44,7 +44,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
-                <el-table-column prop="online" label="在线状态" :formatter="isOnline"></el-table-column>
+                <el-table-column prop="status" label="在线状态" :formatter="isOnline"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
@@ -96,7 +96,7 @@ export default {
             form: {
                 page: 1,
                 pageSize: 6,
-                model: "",
+                pid: "",
                 code: "",
                 online: "",
                 isPage: true,
@@ -127,6 +127,7 @@ export default {
 
     created() {
         this.getDevice();
+        this.form.pid = this.$route.params.id;
     },
 
     methods: {
@@ -174,10 +175,13 @@ export default {
             this.dialogVisible = true;
             console.log("升级");
         },
+        // 更改名称
         isOnline(val) {
-            if (val.online == true) {
+            if (val.status === 0) {
+                return "未知状态";
+            } else if (val.status === 1) {
                 return "在线";
-            } else if (val.online == false) {
+            } else if (val.status === 2) {
                 return "离线";
             }
         },

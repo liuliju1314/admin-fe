@@ -89,7 +89,7 @@ export default {
         return {
             form: {
                 productName: "",
-                productStatus: "1",
+                productStatus: "",
                 page: 1,
                 pageSize: 10,
                 isPage: true
@@ -157,7 +157,7 @@ export default {
                         });
                         this.handleProductList();
                     })
-                    .catch((error) => {
+                    .catch(error => {
                         console.log(error);
                         this.$message({
                             message: "删除失败!"

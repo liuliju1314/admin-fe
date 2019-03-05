@@ -8,7 +8,7 @@
                 <!-- 测站类型框 -->
                 <el-form-item label="设备类型">
                     <el-select
-                        v-model="form.model"
+                        v-model="form.pid"
                         placeholder="请选择设备类型"
                         @click.native="getProductModel()"
                     >
@@ -21,9 +21,10 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="在线状态">
-                    <el-select v-model="form.online" placeholder="请选择在线状态">
-                        <el-option label="在线" value="true"></el-option>
-                        <el-option label="离线" value="false"></el-option>
+                    <el-select v-model="form.status" placeholder="请选择在线状态">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="在线" value="1"></el-option>
+                        <el-option label="离线" value="2"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="设备编号">
@@ -55,8 +56,7 @@
                 <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
                 <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
                 <el-table-column prop="props.count" label="计数传感器"></el-table-column>
-                <el-table-column label="软件版本号" width="190">
-
+                <el-table-column label="软件版本号" width="170">
                     <template slot-scope="scope">
                         <span>{{removeBlock(scope.row.fwVersion)}}</span>
                         <div>
@@ -66,7 +66,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
-                <el-table-column prop="online" label="在线状态" :formatter="isOnline"></el-table-column>
+                <el-table-column prop="status" label="在线状态" :formatter="isOnline"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
@@ -120,9 +120,9 @@ export default {
             form: {
                 page: 1,
                 pageSize: 10,
-                model: "",
+                pid: "",
                 did: "",
-                online: "",
+                status: "0",
                 isPage: true
             },
             isPage: false,
@@ -208,21 +208,19 @@ export default {
         handleUpgrade(device) {
             this.dialogVisible = true;
         },
-        //更新设备分组
-        updateDeviceGroup(device) {
-            console.log(device);
-        },
+        // 更改名称
         isOnline(val) {
-            if (val.online == true) {
+            if (val.status === 0) {
+                return "未知状态";
+            } else if (val.status === 1) {
                 return "在线";
-            } else if (val.online == false) {
+            } else if (val.status === 2) {
                 return "离线";
             }
         },
         //去除大括号
         removeBlock(str) {
             if (str) {
-                console.log(JSON.stringify(str));
                 var reg = /\{|\}/g;
                 str = JSON.stringify(str).replace(reg, "");
                 return str;
