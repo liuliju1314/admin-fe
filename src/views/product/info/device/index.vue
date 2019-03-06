@@ -17,7 +17,7 @@
         <div class="device-wrapper">
             <el-table :data="deviceList" style="width: 100%; margin-top: 12px" border size="small">
                 <el-table-column prop="did" label="设备编号" width="125"></el-table-column>
-                <el-table-column prop="group" label="设备分组" width="120">
+                <el-table-column prop="group" label="设备分组" width="110">
                     <template slot-scope="scope">
                         <el-select
                             v-model="scope.row.group"
@@ -26,6 +26,7 @@
                             @change="updateGroup(scope.row)"
                         >
                             <el-option label="正式组" value="release"></el-option>
+                            <el-option label="开发组" value="develop"></el-option>
                             <el-option label="测试组" value="debug"></el-option>
                         </el-select>
                     </template>
@@ -33,15 +34,7 @@
                 <el-table-column prop="props.batVolt" label="电池电压"></el-table-column>
                 <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
                 <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
-                <el-table-column prop="props.count" label="计数传感器"></el-table-column>
-                <el-table-column label="软件版本号" width="170">
-                    <template slot-scope="scope">
-                        <span>{{removeBlock(scope.row.fwVersion)}}</span>
-                        <div>
-                            <el-button type="text" size="small" @click.stop="getOtaDetail(scope.row)">升级详情</el-button>                            
-                        </div>
-
-                    </template>
+                <el-table-column label="软件版本号" prop="props.feVersion">
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
                 <el-table-column prop="status" label="在线状态" :formatter="isOnline"></el-table-column>

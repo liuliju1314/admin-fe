@@ -60,6 +60,7 @@
                                 type="text"
                                 size="small"
                                 icon="el-icon-delete"
+                                v-if="!scope.row.productStatus === '0'"   
                             >删除</el-button>
                         </div>
                     </template>
