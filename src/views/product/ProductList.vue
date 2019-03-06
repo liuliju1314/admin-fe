@@ -11,8 +11,8 @@
                 <el-form-item label="产品状态">
                     <el-select v-model="form.productStatus">
                         <el-option label="全部" value=""></el-option>
-                        <el-option label="开发中" :value="0"></el-option>
-                        <el-option label="已发布" :value="1"></el-option>
+                        <el-option label="开发中" value="0"></el-option>
+                        <el-option label="已发布" value="1"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -45,7 +45,7 @@
                                 @click.stop="releaseProduct(scope.row)"
                                 type="text"
                                 size="small"
-                                v-if="scope.row.productStatus === '0'"
+                                v-if="scope.row.productStatus === '0' || !scope.row.productStatus"
                             >
                                 <svg-icon icon-class="release"></svg-icon>发布
                             </el-button>
