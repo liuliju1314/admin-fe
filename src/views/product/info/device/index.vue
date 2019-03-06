@@ -119,6 +119,7 @@ export default {
     mounted() {},
 
     created() {
+        this.form.pid = this.$route.params.id;
         this.getDevice();
     },
     methods: {
