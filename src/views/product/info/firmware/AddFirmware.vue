@@ -24,7 +24,6 @@
                                     type="file"
                                     name="file"
                                     class="el-upload__input"
-                                    accept=".js"
                                     @change="addFile(index,$event)"
                                 >
                             </div>
@@ -55,12 +54,11 @@
                     >+ 新增固件</el-button>
                 </div>
             </div>
-            <el-form-item label="固件名称" prop="fwName">
+            <el-form-item label="固件名称" prop="fwName" v-if="fwNameList && fwNameList !== []">
                 <el-select
                     v-model="form.fwName"
                     filterable
                     default-first-option
-                    @click.native="getFwName()"
                     placeholder="请选择固件名称"
                 >
                     <el-option
@@ -150,6 +148,7 @@ export default {
     created() {
         this.form.pid = this.$route.params.id;
         this.handleOp();
+        this.getFwName();
     },
     watch: {
         fw() {

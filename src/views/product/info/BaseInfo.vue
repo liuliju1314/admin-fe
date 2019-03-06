@@ -19,6 +19,7 @@
                 </td>
                 <td class="value">
                     <div
+                        class="fwname-box"
                         v-for="(item,index) in productInfo.fwGroup"
                         :key="index"
                     >{{item.name}} - {{item.desc}}</div>
@@ -114,8 +115,9 @@ export default {
 // }
 </style>
 <style lang='less' scoped>
-.ve-pie {
-    height: 190px !important;
+.fwname-box {
+    display: inline-block;
+    margin-right: 10px;
 }
 .add-category {
     margin-left: 90px;

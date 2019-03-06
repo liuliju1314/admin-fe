@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="添加产品" :visible.sync="visible" center :before-close="beforeClose">
+    <el-dialog :title="title" :visible.sync="visible" center :before-close="beforeClose">
         <div class="create-product-wrapper">
             <el-form
                 ref="form"
@@ -29,12 +29,12 @@
                         :key="index"
                         style="margin: 0px 0px 10px 0px;"
                     >
-                        <el-input v-model.number="item.name" class="small-width"></el-input>
+                        <el-input v-model="item.name" class="small-width"></el-input>
                         <span
                             class="span"
                             style="display: inline-block;width: 3%;text-align: center"
                         >~</span>
-                        <el-input v-model.number="item.desc" class="small-width"></el-input>
+                        <el-input v-model="item.desc" class="small-width"></el-input>
                         <el-button
                             type="text"
                             @click="deleteFw(index)"
@@ -71,6 +71,7 @@ export default {
                 desc: "",
                 fwGroup: [{ name: "", desc: "" }]
             },
+            title: '',
             formRules: {
                 name: [
                     {
@@ -98,10 +99,16 @@ export default {
         };
     },
     watch: {
-        product() {
+        visible() {
             this.$nextTick(() => {
-                if (this.product) {
+                if (this.product && this.visible) {
+                    if(!this.product.fwGroup || this.product.fwGroup.length === 0) {
+                        this.product.fwGroup = [{ name: "", desc: "" }]
+                    }
                     this.form = { ...this.form, ...this.product };
+                    this.title="产品编辑"
+                } else {
+                     this.title="添加产品";
                 }
             });
         }
