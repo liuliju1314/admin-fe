@@ -14,9 +14,14 @@
                 <td class="value">{{productInfo.category}}</td>
             </tr>
             <tr>
-                <td class="label"><span style="letter-space: 16px;"></span> 固&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件:</td>
+                <td class="label">
+                    <span style="letter-space: 16px;"></span> 固&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件:
+                </td>
                 <td class="value">
-                    <div v-for="(item,index) in productInfo.fwTypes" :key="index">{{item.name}} - {{item.desc}}</div>
+                    <div
+                        v-for="(item,index) in productInfo.fwGroup"
+                        :key="index"
+                    >{{item.name}} - {{item.desc}}</div>
                 </td>
             </tr>
             <tr>
@@ -46,11 +51,8 @@
                 </td>
             </tr>-->
         </table>
-        <el-button
-            @click="productOp"
-            style="padding: 10px 22px; margin: 30px 0 0 100px;"
-        >编辑</el-button>
-        <product-create :product="product" :visible="visible" @listenOp="listenOp" ></product-create>
+        <el-button @click="productOp" style="padding: 10px 22px; margin: 30px 0 0 100px;">编辑</el-button>
+        <product-create :product="product" :visible="visible" @listenOp="listenOp"></product-create>
     </div>
 </template>
 
@@ -62,9 +64,9 @@ export default {
     data() {
         return {
             pid: "",
-            productInfo: "",
+            productInfo: [],
             visible: false,
-            product: ''
+            product: ""
         };
     },
     components: {
@@ -91,7 +93,7 @@ export default {
             this.product = this.productInfo;
         },
         listenOp(value) {
-            this.product = '';
+            this.product = "";
             this.visible = value;
             this.handleProductOp();
         }
