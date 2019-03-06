@@ -55,16 +55,20 @@
                     >+ 新增固件</el-button>
                 </div>
             </div>
-
             <el-form-item label="固件名称" prop="fwName">
                 <el-select
                     v-model="form.fwName"
                     filterable
                     default-first-option
+                    @click.native="getFwName()"
                     placeholder="请选择固件名称"
                 >
-                    <el-option label="正式版" value="0"></el-option>
-                    <el-option label="测试版" value="1"></el-option>
+                    <el-option
+                        v-for="(item,index) in fwNameList"
+                        :key="index"
+                        :label="item.name"
+                        :value="item.name"
+                    ></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="固件分组" prop="group">
@@ -94,7 +98,11 @@
 </template>
 
 <script>
-import { editFirmware, addFirmware } from "@/api/firmware/firmware";
+import {
+    editFirmware,
+    addFirmware,
+    getFirmwareName
+} from "@/api/firmware/firmware";
 export default {
     name: "Addfirmware",
     props: ["visible", "fw"],
@@ -109,7 +117,8 @@ export default {
                 version: "",
                 desc: ""
             },
-            group: ['A','B'],
+            fwNameList: [],
+            group: ["A", "B"],
             isEdit: false,
             files: [],
             fileList: [],
@@ -175,6 +184,16 @@ export default {
             this.fileList.splice(index, 1);
             this.files.splice(index, 1);
         },
+        // 获取固件名称
+        getFwName() {
+            getFirmwareName({ pid: this.form.pid })
+                .then(res => {
+                    this.fwNameList = res.payload;
+                })
+                .catch(() => {
+                    this.$message.error("获取失败!");
+                });
+        },
         // 文件上传成功后返回值
         addFile(index, event) {
             let files = event.target.files;
@@ -224,7 +243,7 @@ export default {
                                 this.beforeClose();
                             })
                             .catch(() => {
-                                console.log("添加失败");
+                                this.$message.error("添加失败!");
                             });
                     } else {
                         const data = {

@@ -16,7 +16,7 @@
                     <el-input v-model="form.model"></el-input>
                 </el-form-item>
                 <el-form-item label="产品分类" prop="category">
-                     <el-input v-model="form.category"></el-input>
+                    <el-input v-model="form.category"></el-input>
                 </el-form-item>
                 <el-form-item label="固件名称">
                     <div>
@@ -34,7 +34,7 @@
                             class="span"
                             style="display: inline-block;width: 3%;text-align: center"
                         >~</span>
-                        <el-input v-model.number="item.tag" class="small-width"></el-input>
+                        <el-input v-model.number="item.desc" class="small-width"></el-input>
                         <el-button
                             type="text"
                             @click="deleteFw(index)"
@@ -42,7 +42,7 @@
                             v-if="index > 0"
                         >删除</el-button>
                     </div>
-                    <el-button type="text" @click="form.fwGroup.push({name: '', tag: ''})">+ 添加固件名称</el-button>
+                    <el-button type="text" @click="form.fwGroup.push({name: '', desc: ''})">+ 添加固件名称</el-button>
                 </el-form-item>
                 <el-form-item label="产品描述">
                     <el-input type="textarea" v-model="form.desc"></el-input>
@@ -69,7 +69,7 @@ export default {
                 model: "",
                 category: "",
                 desc: "",
-                fwGroup: [{ name: "", tag: "" }]
+                fwGroup: [{ name: "", desc: "" }]
             },
             formRules: {
                 name: [

@@ -26,6 +26,14 @@ export function addFirmware(data) {
         data
     })
 }
+// 获取固件名称
+export function getFirmwareName(data) {
+    return service({
+        url: '/api/product/get_firmware_name',
+        method: 'get',
+        params: data
+    })
+}
 // 固件编辑
 export function editFirmware(data) {
     return service({
