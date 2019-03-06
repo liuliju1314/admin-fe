@@ -62,7 +62,7 @@ export default {
                     this.$store.dispatch("UserLogin", this.loginForm)
                         .then(() => {
                             this.loading = false;
-                            this.$router.push("/home");
+                            this.$router.push("/product");
                         })
                         .catch(error => {
                             this.loading = false;
