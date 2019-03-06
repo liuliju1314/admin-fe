@@ -60,9 +60,12 @@
                     <template slot-scope="scope">
                         <span>{{removeBlock(scope.row.fwVersion)}}</span>
                         <div>
-                            <el-button type="text" size="small" @click.stop="upgradeVisible=true">升级详情</el-button>                            
+                            <el-button
+                                type="text"
+                                size="small"
+                                @click.stop="getOtaDetail(scope.row)"
+                            >升级详情</el-button>
                         </div>
-
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
@@ -83,22 +86,18 @@
                     @current-change="handlePage"
                 ></el-pagination>
             </div>
-            <el-dialog title="设备升级" :visible.sync="dialogVisible">
-                <device-upgrade></device-upgrade>
-            </el-dialog>
+            <device-upgrade
+                :device="upgradeDevice"
+                @listenUpgrade="listenUpgrade"
+                :visible="dialogVisible"
+            ></device-upgrade>
             <el-dialog title="升级详情" :visible.sync="upgradeVisible">
                 <div class="upgrade-wrapper">
-                    <div class="progress-box">
+                    <div class="progress-box" v-for="(item, index) in progressList" :key="index">
                         <div>
-                            <span class="title">v1.00</span>
+                            <span class="title">{{item.fwName}} - {{item.version}}</span>
                         </div>
-                        <vue-progress :progress="60"></vue-progress>
-                    </div>
-                    <div class="progress-box">
-                        <div>
-                            <span class="title">v2.0.0</span>
-                        </div>
-                        <vue-progress :progress="40"></vue-progress>
+                        <vue-progress :progress="item.progress"></vue-progress>
                     </div>
                 </div>
             </el-dialog>
@@ -109,9 +108,12 @@
 <script>
 import VueProgress from "../product/info/device/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
-import { getDeviceList, updateDeviceGroup } from "@/api/device/device";
+import {
+    getDeviceList,
+    updateDeviceGroup,
+    getOTAProgress
+} from "@/api/device/device";
 import { getProductList } from "@/api/product/product";
-
 export default {
     name: "",
     props: [""],
@@ -129,13 +131,15 @@ export default {
             productModel: [],
             group: "",
             deviceList: [],
+            upgradeDevice: "",
             dialogVisible: false,
             upgradeVisible: false,
             groupVisible: false,
             title: "",
             value: "",
             count: "",
-            btnShow: false
+            btnShow: false,
+            progressList: []
         };
     },
 
@@ -169,6 +173,16 @@ export default {
                 .catch(error => {
                     return error;
                 });
+        },
+        // 获取设备升级进度
+        getOtaDetail(device) {
+            const data = {
+                did: device.did
+            };
+            getOTAProgress(data).then(res => {
+                this.progressList = res.payload;
+                this.upgradeVisible = true;
+            });
         },
         //获取设备列表
         getDevice() {
@@ -206,7 +220,12 @@ export default {
             console.log("测试");
         },
         handleUpgrade(device) {
+            this.upgradeDevice = device;
             this.dialogVisible = true;
+        },
+        listenUpgrade(value) {
+            this.upgradeDevice = "";
+            this.dialogVisible = value;
         },
         // 更改名称
         isOnline(val) {

@@ -1,99 +1,98 @@
 <template>
-    <div class="deviceUpgrade">
-        <div>
-            <span>设备ID：{{did}}</span>
-        </div>
-        <div>
-            <span>设备当前固件版本：v1.0.0.3</span>
-        </div>
+    <el-dialog title="设备升级" :visible.sync="visible" :before-close="beforeClose">
+        <div class="deviceUpgrade">
+            <div>
+                <span>设备ID：{{this.device.did}}</span>
+            </div>
+            <div>
+                <span>设备当前固件版本：{{this.device.fwVersion}}</span>
+            </div>
 
-        <!-- 循环的设备列表 -->
-        <el-table :data="firmwareList" style="width: 100%; margin-top: 12px">
-            <el-table-column prop="fwID" label="固件ID"></el-table-column>
-            <el-table-column prop="name" label="固件名称"></el-table-column>
-            <el-table-column prop="version" label="版本"></el-table-column>
-            <el-table-column prop="desc" label="分组"></el-table-column>
-            <el-table-column label="操作">
-                <template slot-scope="scope">
-                    <el-button
-                        @click.stop="handleUpgrade(scope)"
-                        type="text"
-                        size="small"
-                        :disabled="scope.row.status != 0"
-                    >升级</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-    </div>
+            <!-- 循环的设备列表 -->
+            <el-table :data="firmwareList.items" style="width: 100%; margin-top: 12px" size="small">
+                <el-table-column prop="fwID" label="固件ID"></el-table-column>
+                <el-table-column prop="name" label="固件名称"></el-table-column>
+                <el-table-column prop="version" label="版本"></el-table-column>
+                <el-table-column prop="desc" label="分组"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button
+                            @click.stop="handleUpgrade(scope)"
+                            type="text"
+                            size="small"
+                            :disabled="scope.row.status != 0"
+                        >升级</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 分页逻辑 -->
+            <div class="pagination-box" v-if="pageSize < firmwareList.total">
+                <el-pagination
+                    :page-size="pageSize"
+                    :page="page"
+                    layout="prev, pager, next"
+                    :total="firmwareList.total"
+                    @current-change="handlePage"
+                ></el-pagination>
+            </div>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
+import { OTAForDevice } from '@/api/device/device';
+import { getfirmwareList } from "@/api/firmware/firmware";
 export default {
     name: "",
-    props: [""],
+    props: ["device", "visible"],
     data() {
         return {
-            did: 1,
             UpgradeFw: "",
-            fwVersion: [
-                { default: "0.0.2" },
-                { default: "0.0.3" },
-                { default: "0.0.2" }
-            ],
-            firmwareList: [
-                {
-                    createdAt: "2019-01-06T11:01:06.935Z",
-                    desc: "正式版",
-                    fwID: "6pxrqh8njsw",
-                    group: "release",
-                    name: "app",
-                    pid: "1z0zbfe0db5",
-                    updatedAt: "2019-01-06T11:01:06.935Z",
-                    version: "0.1.2",
-                    status: 0
-                },
-                {
-                    createdAt: "2019-01-06T11:01:06.935Z",
-                    desc: "正式版",
-                    fwID: "6pxrqh8njsS",
-                    group: "release",
-                    name: "app",
-                    pid: "1z0zbfe0db5",
-                    updatedAt: "2019-01-06T11:01:06.935Z",
-                    version: "0.1.2",
-                    status: 0
-                },
-                {
-                    createdAt: "2019-01-06T11:01:06.935Z",
-                    desc: "正式版",
-                    fwID: "6pxrqh8njsZ",
-                    group: "release",
-                    name: "app",
-                    pid: "1z0zbfe0db5",
-                    updatedAt: "2019-01-06T11:01:06.935Z",
-                    version: "0.1.2",
-                    status: 0
-                }
-            ]
+            firmwareList: [],
+            page: 1,
+            pageSize: 10
         };
     },
-
-    components: {},
-
-    computed: {},
-
-    beforeMount() {},
-
-    mounted() {},
-
-    methods: {
-        handleUpgrade(fw) {
-            this.firmwareList[fw.$index].status = 1;
-            this.UpgradeFw = fw.fwID;
+    watch: {
+        visible() {
+            if (this.visible && this.device) {
+                this.handleFwList(1);
+            }
         }
     },
+    methods: {
+        beforeClose() {
+            this.$emit("listenUpgrade", false);
+        },
 
-    watch: {}
+        handlePage(value) {
+            this.handleFwList(value);
+        },
+        handleUpgrade(fw) {
+            const data = {
+                fwID: fw.row.feID,
+                did: this.device.did
+            }
+            OTAForDevice(data).then(() => {
+                this.$message({
+                    type: 'success',
+                    message: '正在升级中'
+
+                })
+            })
+        },
+        handleFwList(value) {
+            this.page = value;
+            const data = {
+                pid: this.device.pid,
+                page: 1,
+                pageSize: 10
+            };
+            getfirmwareList(data).then(res => {
+                this.firmwareList = res.payload;
+            });
+        }
+    }
 };
 </script>
 <style lang='less' scoped>

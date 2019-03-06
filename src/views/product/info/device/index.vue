@@ -38,7 +38,7 @@
                     <template slot-scope="scope">
                         <span>{{removeBlock(scope.row.fwVersion)}}</span>
                         <div>
-                            <el-button type="text" size="small" @click.stop="upgradeVisible=true">升级详情</el-button>                            
+                            <el-button type="text" size="small" @click.stop="getOtaDetail(scope.row)">升级详情</el-button>                            
                         </div>
 
                     </template>
@@ -61,22 +61,14 @@
                     @current-change="handlePage"
                 ></el-pagination>
             </div>
-            <el-dialog title="设备升级" :visible.sync="dialogVisible">
-                <device-upgrade></device-upgrade>
-            </el-dialog>
+              <device-upgrade :device="upgradeDevice" @listenUpgrade="listenUpgrade" :visible="dialogVisible"></device-upgrade>
             <el-dialog title="升级详情" :visible.sync="upgradeVisible">
                 <div class="upgrade-wrapper">
-                    <div class="progress-box">
+                    <div class="progress-box" v-for="(item, index) in progressList" :key="index">
                         <div>
-                            <span class="title">v1.00</span>
+                            <span class="title">{{item.fwName}} - {{item.version}}</span>
                         </div>
-                        <vue-progress :progress="60"></vue-progress>
-                    </div>
-                    <div class="progress-box">
-                        <div>
-                            <span class="title">v2.0.0</span>
-                        </div>
-                        <vue-progress :progress="40"></vue-progress>
+                        <vue-progress :progress="item.progress"></vue-progress>
                     </div>
                 </div>
             </el-dialog>
@@ -87,7 +79,8 @@
 <script>
 import VueProgress from "./VueProgress";
 import DeviceUpgrade from "@/views/device/DeviceUpgrade";
-import { getDeviceList, updateDeviceGroup } from "@/api/device/device";
+import { getDeviceList, updateDeviceGroup, getOTAProgress } from "@/api/device/device";
+import { getProductList } from "@/api/product/product";
 export default {
     name: "",
     props: [""],
@@ -95,29 +88,29 @@ export default {
         return {
             form: {
                 page: 1,
-                pageSize: 6,
+                pageSize: 10,
                 pid: "",
-                code: "",
-                online: "",
-                isPage: true,
-                did: ""
+                did: "",
+                status: "0",
+                isPage: true
             },
+            isPage: false,
+            productModel: [],
             group: "",
             deviceList: [],
+            upgradeDevice: '',
             dialogVisible: false,
             upgradeVisible: false,
+            groupVisible: false,
             title: "",
-            count: 0,
-            online: 0,
-            offline: 0,
-            btnShow: false
+            value: "",
+            count: "",
+            btnShow: false,
+            progressList: []
         };
     },
 
-    components: {
-        DeviceUpgrade,
-        VueProgress
-    },
+    components: { DeviceUpgrade, VueProgress },
 
     computed: {},
 
@@ -127,26 +120,47 @@ export default {
 
     created() {
         this.getDevice();
-        this.form.pid = this.$route.params.id;
     },
-
     methods: {
-        //获取设备列表
-        getDevice() {
-            getDeviceList(this.form)
+        // 获取产品名称和产品id
+        getProductModel() {
+            this.productModel = [];
+            getProductList(this.isPage)
                 .then(res => {
-                    this.deviceList = res.payload.items;
-                    this.count = res.payload.count;
-                    this.online = res.payload.online;
-                    this.offline = res.payload.offline;
+                    res.payload.result.map(item => {
+                        const obj = {
+                            pid: "",
+                            name: ""
+                        };
+                        obj.pid = item.pid;
+                        obj.name = item.name;
+                        this.productModel.push(obj);
+                    });
                 })
                 .catch(error => {
                     return error;
                 });
         },
-        // 通过设备编号查询设备
-        searchDevice() {
-            this.getDevice();
+        // 获取设备升级进度
+        getOtaDetail(device) {
+            const data = {
+                did: device.did
+            };
+            getOTAProgress(data).then((res) => {
+                this.progressList = res.payload;
+                this.upgradeVisible = true;
+            })
+        },
+        //获取设备列表
+        getDevice() {
+            getDeviceList(this.form)
+                .then(res => {
+                    this.deviceList = res.payload.items;
+                    this.count = res.payload.total;
+                })
+                .catch(error => {
+                    return error;
+                });
         },
         //更新设备分组
         updateGroup(device) {
@@ -165,6 +179,7 @@ export default {
             this.form.page = value;
             this.getDevice();
         },
+
         handleeEquipment() {
             this.getDevice();
         },
@@ -172,8 +187,12 @@ export default {
             console.log("测试");
         },
         handleUpgrade(device) {
+            this.upgradeDevice = device;
             this.dialogVisible = true;
-            console.log("升级");
+        },
+        listenUpgrade(value) {
+            this.upgradeDevice = '';
+            this.dialogVisible = value;
         },
         // 更改名称
         isOnline(val) {
@@ -188,7 +207,6 @@ export default {
         //去除大括号
         removeBlock(str) {
             if (str) {
-                console.log(JSON.stringify(str));
                 var reg = /\{|\}/g;
                 str = JSON.stringify(str).replace(reg, "");
                 return str;
@@ -202,7 +220,7 @@ export default {
 </script>
 <style lang='less' scoped>
 .input-with-select {
-    width: 320px;
+    width: 300px;
 }
 .device-log {
     font-size: 14px;

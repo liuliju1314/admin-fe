@@ -21,6 +21,7 @@
             size="small"
         >
             <el-table-column prop="fwID" label="固件ID"></el-table-column>
+                        <el-table-column prop="name" label="固件名称"></el-table-column>
             <el-table-column prop="version" label="固件版本"></el-table-column>
             <el-table-column prop="group" label="固件分组"></el-table-column>
             <el-table-column prop="upMethod" label="升级方式"></el-table-column>
