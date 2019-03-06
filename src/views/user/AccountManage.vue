@@ -87,9 +87,9 @@
                 </el-form-item>
                 <el-form-item label="权限" prop="role">
                     <el-select v-model="editManageForm.role">
-                        <el-option value="0">super</el-option>
-                        <el-option value="1">系统管理员</el-option>
-                        <el-option value="2">区域管理员</el-option>
+                        <el-option label="super" value="0"></el-option>
+                        <el-option label="系统管理员" value="1"></el-option>
+                        <el-option label="区域管理员" value="2"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
