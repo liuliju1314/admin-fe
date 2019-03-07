@@ -21,7 +21,7 @@
             size="small"
         >
             <el-table-column prop="fwID" label="固件ID"></el-table-column>
-            <el-table-column prop="name" label="固件名称"></el-table-column>
+            <el-table-column prop="fwName" label="固件名称"></el-table-column>
             <el-table-column prop="version" label="固件版本"></el-table-column>
             <el-table-column prop="group" label="固件分组" :formatter="handleGroupFormat"></el-table-column>
             <el-table-column prop="desc" label="描述" width="300"></el-table-column>
@@ -29,11 +29,11 @@
                 <template slot-scope="scope">
                     <div v-if="scope.row.status !== 2">
                         <el-switch
-                            v-model="scope.status"
+                            v-model="scope.row.status"
                             :active-value="1"
                             :inactive-value="3"
                             :content="scope.status !== 3? '已验证' : '未验证'"
-                            @change="FwDisable({fw: scope.row, status: 1})"
+                            @change="FwDisable({fwID: scope.row.fwID, status:scope.row.status})"
                         ></el-switch>
                     </div>
                     <div style="font-size: 12px;" v-else>
@@ -175,7 +175,15 @@ export default {
         this.handlefirmwareList(1);
     },
     methods: {
-        handleGroupFormat() {},
+        handleGroupFormat(row) {
+            if (row.group === "release") {
+                return "正式版";
+            } else if (row.group === "develop") {
+                return "开发版";
+            } else if (row.group === "debug") {
+                return "测试版";
+            }
+        },
         beforeCloseUp() {
             this.$refs.upForm.resetFields();
             this.upVisible = false;
@@ -198,19 +206,10 @@ export default {
         FwDisable(fw) {
             reviewFirmware(fw)
                 .then(() => {
-                    this.$message({
-                        type: "success",
-                        message: "固件已不可用!"
-                    });
                     this.handlefirmwareList();
                 })
                 .catch(err => {
                     return err;
-                    // this.$confirm(`该固件已升级，无法禁用！`, "提示", {
-                    //     confirmButtonText: "确定",
-                    //     cancelButtonText: "取消",
-                    //     type: "warning"
-                    // });
                 });
         },
         upgradefirmware(fw) {
