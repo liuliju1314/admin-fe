@@ -30,7 +30,7 @@
             label-width="120px"
         >
             <el-form-item label="ID" prop="id">
-                <el-input v-model.number="conditionForm.id" placeholder="由数字组成,不可重复" :disabled="isEdit"></el-input>
+                <el-input v-model="conditionForm.id" placeholder="由数字组成,不可重复" :disabled="isEdit"></el-input>
             </el-form-item>
             <el-form-item label="KEY" prop="key">
                 <el-input v-model="conditionForm.key" :disabled="isEdit"></el-input>
