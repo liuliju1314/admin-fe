@@ -48,7 +48,6 @@ export default {
         handleRuleInfo() {
             getRuleInfo({ tid: this.ruleID })
                 .then(res => {
-                    console.log(res);
                     this.base = res.payload;
                 })
                 .catch(() => {});
