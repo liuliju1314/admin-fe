@@ -21,7 +21,7 @@
                 </div>
             </el-col>
         </el-row>
-        <op-rule :visible="visible" :action="action" @listenRuleOp="listenRuleOp"></op-rule>
+        <op-rule :visible="visible" :action="action" @listenRuleOp="listenRuleOp" :conditionId="conditionId"></op-rule>
     </div>
 </template>
 
@@ -42,7 +42,8 @@ export default {
             },
 
             visible: false,
-            action: ""
+            action: "",
+            conditionId: 0
         };
     },
     created() {
@@ -65,6 +66,9 @@ export default {
     methods: {
         openDialog(action) {
             this.action = action;
+            if(this.action.name === 'condition') {
+                this.conditionId++;
+            }
             this.visible = true;
         },
         replaceData(data, value) {
@@ -100,6 +104,7 @@ export default {
                     this.base.event = JSON.parse(this.base.event);
                     this.ruleEvent = this._deepClone(this.base).ruleEvent;
                     this.ruleEvent = this.ruleEvent ? this.ruleEvent: [];
+                    this.conditionId = this.base.event.rules.length;
                 })
                 .catch(() => {});
         },

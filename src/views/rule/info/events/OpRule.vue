@@ -61,7 +61,7 @@
 
 <script>
 export default {
-    props: ["visible", "action"],
+    props: ["visible", "action", "conditionId"],
     data() {
         var checkId = (rule, value, callback) => {
             if (!value) {
@@ -79,7 +79,7 @@ export default {
             isLogic: false,
             isEdit: false,
             conditionForm: {
-                id: 1,
+                id: '',
                 msg: "",
                 value: "",
                 op: "",
@@ -128,6 +128,7 @@ export default {
         visible() {
             if (this.visible) {
                 this.openDialog(this.action);
+                this.conditionForm.id = this.conditionId;
             }
         }
     },
