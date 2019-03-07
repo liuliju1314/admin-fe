@@ -187,6 +187,7 @@ export default {
                 const data = {
                     ...product,
                     productStatus: "1"
+
                 };
                 editProduct(data)
                     .then(() => {

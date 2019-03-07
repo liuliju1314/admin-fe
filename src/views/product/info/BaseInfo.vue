@@ -10,6 +10,10 @@
                 <td class="value">{{productInfo.model}}</td>
             </tr>
             <tr>
+                <td class="label">升级方式:</td>
+                <td class="value">{{productInfo.upMethod}}</td>
+            </tr>
+            <tr>
                 <td class="label">产品分类:</td>
                 <td class="value">{{productInfo.category}}</td>
             </tr>

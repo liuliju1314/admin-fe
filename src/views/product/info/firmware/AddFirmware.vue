@@ -60,6 +60,7 @@
                     filterable
                     default-first-option
                     placeholder="请选择固件名称"
+                    :disabled="isEdit"
                 >
                     <el-option
                         v-for="(item,index) in fwNameList"
@@ -73,10 +74,15 @@
                 <el-radio-group v-model="form.group" placeholder="请选择">
                     <el-radio label="release">正式版</el-radio>
                     <el-radio label="debug">测试版</el-radio>
+                    <el-radio label="develop">开发版</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="固件版本" prop="version">
-                <el-input v-model="form.version" placeholder="建议采用版本递增进行管理"></el-input>
+                <el-input
+                    :disabled="isEdit"
+                    v-model="form.version"
+                    placeholder="建议采用版本递增进行管理,如：1.0.0"
+                ></el-input>
             </el-form-item>
             <el-form-item label="描述" prop="desc">
                 <el-input type="textarea" v-model="form.desc"></el-input>
@@ -99,6 +105,17 @@ export default {
     name: "Addfirmware",
     props: ["visible", "fw"],
     data() {
+        var checkVersion = (rule, value, callback) => {
+            if (!value) {
+                callback(new Error("请输入固件版本"));
+            } else {
+                if (!new RegExp(/^\d{1}.\d{1}.\d{1}$/g).test(value)) {
+                    callback(new Error("请正确的版本号"));
+                } else {
+                    callback();
+                }
+            }
+        };
         return {
             upload: [{ index: "" }],
             form: {
@@ -129,11 +146,7 @@ export default {
                     }
                 ],
                 version: [
-                    {
-                        required: true,
-                        message: "请填写固件版本",
-                        trigger: "blur"
-                    }
+                    { validator: checkVersion, trigger: "blur", required: true }
                 ]
             }
         };
