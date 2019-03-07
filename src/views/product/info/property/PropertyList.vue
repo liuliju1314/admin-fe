@@ -1,7 +1,12 @@
 <template>
     <el-main>
         <div class="btn-box">
-            <el-button type="primary" size="small" @click="addProperty">+ 添加属性</el-button>
+            <el-button
+                type="primary"
+                size="small"
+                @click="addProperty"
+                :disabled="proStatus == '1'"
+            >+ 添加属性</el-button>
         </div>
         <el-table :data="propertList" style="width: 100%; margin-top: 12px" border size="small">
             <el-table-column prop="name" label="属性名称"></el-table-column>
@@ -16,12 +21,14 @@
                         size="small"
                         @click="editProperty(scope.row)"
                         icon="el-icon-edit"
+                        v-if="proStatus !== '1'"
                     >编辑</el-button>
                     <el-button
                         type="text"
                         size="small"
                         @click="handleDeletePropert(scope.row)"
                         icon="el-icon-delete"
+                        v-if="proStatus !== '1'"
                     >删除</el-button>
                 </template>
             </el-table-column>
@@ -65,7 +72,7 @@
 import AddProperty from "./AddProperty";
 import CheckProperty from "./CheckProperty";
 import { getPropertyList, deleteProduce } from "@/api/property/property";
-
+import { getProductInfo } from "@/api/product/product";
 export default {
     name: "PropertyList",
     data() {
@@ -83,7 +90,8 @@ export default {
             property: "",
             dialogVisible: false,
             dialogVisibleProperty: false,
-            propertyJson: ""
+            propertyJson: "",
+            proStatus: ""
         };
     },
     components: {
@@ -94,6 +102,13 @@ export default {
     computed: {},
     created() {
         this.pid = this.$route.params.id;
+        getProductInfo({ pid: this.pid })
+            .then(res => {
+                this.proStatus = res.payload.productStatus;
+            })
+            .catch(err => {
+                return err;
+            });
         this.getProperty();
     },
     methods: {

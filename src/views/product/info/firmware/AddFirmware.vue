@@ -73,6 +73,7 @@
                 <el-radio-group v-model="form.group" placeholder="请选择">
                     <el-radio label="release">正式版</el-radio>
                     <el-radio label="debug">测试版</el-radio>
+                    <el-radio label="develop">开发版</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="固件版本" prop="version">
