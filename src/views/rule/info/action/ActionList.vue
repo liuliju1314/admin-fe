@@ -13,7 +13,11 @@
             <el-table-column type="index" width="50"></el-table-column>
             <el-table-column prop="name" label="名称"></el-table-column>
             <el-table-column prop="did" label="设备ID"></el-table-column>
-            <el-table-column prop="value" label="需执行的参数列表"></el-table-column>
+            <el-table-column label="需执行的参数列表">
+                <template slot-scope="scope">
+                    <span>{{scope.row.value}}</span>
+                </template>
+            </el-table-column>
             <el-table-column label="操作" width="170">
                 <template slot-scope="scope">
                     <el-button
@@ -109,13 +113,6 @@ export default {
                         trigger: "blur"
                     }
                 ]
-                // value: [
-                //     {
-                //         required: true,
-                //         message: "请输入执行参数",
-                //         trigger: "blur"
-                //     }
-                // ]
             }
         };
     },
