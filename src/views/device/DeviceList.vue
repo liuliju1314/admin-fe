@@ -210,7 +210,10 @@ export default {
             console.log("测试");
         },
         handleUpgrade(device) {
-            this.upgradeDevice = device;
+            this.upgradeDevice = {
+                ...device,
+                status: 1
+            } ;
             this.dialogVisible = true;
         },
         listenUpgrade(value) {

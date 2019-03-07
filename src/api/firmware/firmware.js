@@ -52,3 +52,11 @@ export function deleteFirmware(data) {
     })
 }
 
+// 固件验证
+export function reviewFirmware(data) {
+    return service({
+        url: '/api/firmware/status',
+        method: 'PATCH',
+        data
+    })
+}

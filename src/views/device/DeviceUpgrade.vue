@@ -20,7 +20,6 @@
                             @click.stop="handleUpgrade(scope)"
                             type="text"
                             size="small"
-                            :disabled="scope.row.status != 0"
                         >升级</el-button>
                     </template>
                 </el-table-column>
@@ -71,7 +70,8 @@ export default {
         handleUpgrade(fw) {
             const data = {
                 fwID: fw.row.feID,
-                did: this.device.did
+                did: this.device.did,
+                satus: fw.status
             }
             OTAForDevice(data).then(() => {
                 this.$message({

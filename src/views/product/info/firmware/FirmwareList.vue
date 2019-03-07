@@ -21,11 +21,26 @@
             size="small"
         >
             <el-table-column prop="fwID" label="固件ID"></el-table-column>
-                        <el-table-column prop="name" label="固件名称"></el-table-column>
+            <el-table-column prop="name" label="固件名称"></el-table-column>
             <el-table-column prop="version" label="固件版本"></el-table-column>
-            <el-table-column prop="group" label="固件分组"></el-table-column>
-            <el-table-column prop="upMethod" label="升级方式"></el-table-column>
+            <el-table-column prop="group" label="固件分组" :formatter="handleGroupFormat"></el-table-column>
             <el-table-column prop="desc" label="描述" width="300"></el-table-column>
+            <el-table-column prop="version" label="固件验证" width="100">
+                <template slot-scope="scope">
+                    <div v-if="scope.status !== 3">
+                        <el-switch
+                            v-model="scope.status"
+                            :active-value="1"
+                            inactive-value="3"
+                            :content="scope.status !== 3? '已验证' : '未验证'"
+                            @change="FwDisable({fwID: scope.row.fwID, status: 1})"
+                        ></el-switch>
+                    </div>
+                    <div style="font-size: 12px;" v-else>
+                        <span style="color: #ddd;">固件不可用</span>
+                    </div>
+                </template>
+            </el-table-column>
             <el-table-column label="操作" width="170">
                 <template slot-scope="scope">
                     <!-- <el-button
@@ -33,19 +48,28 @@
                         size="small"
                         @click="upgradefirmware(scope.row)"
                         icon="el-icon-upload"
-                    >升级</el-button> -->
+                    >升级</el-button>-->
                     <el-button
                         type="text"
                         size="small"
                         @click="showFwDialog(scope.row)"
+                        v-if="scope.row.status !== 2"
                         icon="el-icon-edit"
                     >编辑</el-button>
-                    <!-- <el-button
+                    <el-button
                         type="text"
                         size="small"
-                        @click="deletefirmware(scope.row)"
-                        icon="el-icon-delete"
-                    >删除</el-button> -->
+                        v-if="scope.row.status !== 2"
+                        @click="FwDisable({fwID: scope.row.fwID, status: 2})"
+                        icon="el-icon-setting"
+                    >禁用</el-button>
+                    <el-button
+                        type="text"
+                        size="small"
+                        v-if="scope.row.status===2"
+                        @click="FwDisable({fwID: scope.row.fwID, status: 3})"
+                        icon="el-icon-setting"
+                    >取消禁用</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -90,7 +114,7 @@ import AddFirmware from "./AddFirmware";
 import {
     getfirmwareList,
     upgradeFirmware,
-    deleteFirmware
+    reviewFirmware
 } from "@/api/firmware/firmware";
 export default {
     components: {
@@ -151,6 +175,7 @@ export default {
         this.handlefirmwareList(1);
     },
     methods: {
+        handleGroupFormat() {},
         beforeCloseUp() {
             this.$refs.upForm.resetFields();
             this.upVisible = false;
@@ -170,32 +195,23 @@ export default {
                 this.firmwareList = res.payload;
             });
         },
-        deletefirmware(fw) {
-            this.$confirm(`是否确认删除该固件?`, "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            }).then(() => {
-                const data = {
-                    pid: this.form.pid,
-                    fwID: fw.fwID
-                };
-                deleteFirmware(data)
-                    .then(() => {
-                        this.$message({
-                            type: "success",
-                            message: "删除成功!"
-                        });
-                        this.handlefirmwareList();
-                    })
-                    .catch(() => {
-                        this.$confirm(`该固件已升级，无法删除！`, "提示", {
-                            confirmButtonText: "确定",
-                            cancelButtonText: "取消",
-                            type: "warning"
-                        });
+        FwDisable(fw) {
+            reviewFirmware(fw)
+                .then(() => {
+                    this.$message({
+                        type: "success",
+                        message: "固件已不可用!"
                     });
-            });
+                    this.handlefirmwareList();
+                })
+                .catch((err) => {
+                    return err;
+                    // this.$confirm(`该固件已升级，无法禁用！`, "提示", {
+                    //     confirmButtonText: "确定",
+                    //     cancelButtonText: "取消",
+                    //     type: "warning"
+                    // });
+                });
         },
         upgradefirmware(fw) {
             this.upVisible = true;
