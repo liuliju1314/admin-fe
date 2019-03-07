@@ -34,8 +34,7 @@
                 <el-table-column prop="props.batVolt" label="电池电压"></el-table-column>
                 <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
                 <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
-                <el-table-column label="软件版本号" prop="props.feVersion">
-                </el-table-column>
+                <el-table-column label="软件版本号" prop="props.feVersion"></el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
                 <el-table-column prop="status" label="在线状态" :formatter="isOnline"></el-table-column>
                 <el-table-column label="操作">
@@ -54,7 +53,11 @@
                     @current-change="handlePage"
                 ></el-pagination>
             </div>
-              <device-upgrade :device="upgradeDevice" @listenUpgrade="listenUpgrade" :visible="dialogVisible"></device-upgrade>
+            <device-upgrade
+                :device="upgradeDevice"
+                @listenUpgrade="listenUpgrade"
+                :visible="dialogVisible"
+            ></device-upgrade>
             <el-dialog title="升级详情" :visible.sync="upgradeVisible">
                 <div class="upgrade-wrapper">
                     <div class="progress-box" v-for="(item, index) in progressList" :key="index">
@@ -72,7 +75,11 @@
 <script>
 import VueProgress from "./VueProgress";
 import DeviceUpgrade from "@/views/device/DeviceUpgrade";
-import { getDeviceList, updateDeviceGroup, getOTAProgress } from "@/api/device/device";
+import {
+    getDeviceList,
+    updateDeviceGroup,
+    getOTAProgress
+} from "@/api/device/device";
 import { getProductList } from "@/api/product/product";
 export default {
     name: "",
@@ -91,13 +98,15 @@ export default {
             productModel: [],
             group: "",
             deviceList: [],
-            upgradeDevice: '',
+            upgradeDevice: "",
             dialogVisible: false,
             upgradeVisible: false,
             groupVisible: false,
             title: "",
             value: "",
             count: "",
+            online: "",
+            offline: "",
             btnShow: false,
             progressList: []
         };
@@ -140,10 +149,10 @@ export default {
             const data = {
                 did: device.did
             };
-            getOTAProgress(data).then((res) => {
+            getOTAProgress(data).then(res => {
                 this.progressList = res.payload;
                 this.upgradeVisible = true;
-            })
+            });
         },
         //获取设备列表
         getDevice() {
@@ -151,6 +160,8 @@ export default {
                 .then(res => {
                     this.deviceList = res.payload.items;
                     this.count = res.payload.total;
+                    this.online = res.payload.online;
+                    this.offline = res.payload.offline;
                 })
                 .catch(error => {
                     return error;
@@ -185,7 +196,7 @@ export default {
             this.dialogVisible = true;
         },
         listenUpgrade(value) {
-            this.upgradeDevice = '';
+            this.upgradeDevice = "";
             this.dialogVisible = value;
         },
         // 更改名称

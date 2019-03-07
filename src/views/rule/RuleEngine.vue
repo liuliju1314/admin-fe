@@ -130,14 +130,14 @@ export default {
         },
         startUpRule(data) {
             const rule = this._deepClone(data);
-            const isStart = rule.enable === 1 ? '关闭': '启动';
+            const isStart = rule.enable === 1 ? "关闭" : "启动";
             this.$confirm(`是否确认${isStart}规则?`, "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消"
             })
                 .then(() => {
-                    rule.actions = JSON.parse(rule.actions),
-                    rule.event = JSON.parse(rule.event);
+                    (rule.actions = JSON.parse(rule.actions)),
+                        (rule.event = JSON.parse(rule.event));
                     rule.enable = rule.enable ? 0 : 1;
                     updateRule(rule).then(() => {
                         this.$message({
@@ -150,6 +150,7 @@ export default {
                 .catch(() => {});
         },
         changeTimeFormater(cellvalue) {
+            cellvalue = cellvalue * 1000;
             return formatDate(cellvalue, "y-m-d");
         }
     },

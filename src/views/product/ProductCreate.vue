@@ -15,7 +15,10 @@
                 <el-form-item label="产品型号" prop="model">
                     <el-input v-model="form.model"></el-input>
                 </el-form-item>
-                <el-form-item label="产品分类" prop="category">
+                <!-- <el-form-item label="产品分类" prop="category">
+                    <el-input v-model="form.category"></el-input>
+                </el-form-item>-->
+                <el-form-item label="产品分类">
                     <el-input v-model="form.category"></el-input>
                 </el-form-item>
                 <el-form-item label="升级方式" prop="upMethod">
@@ -100,14 +103,14 @@ export default {
                         message: "请选择升级方式",
                         trigger: "blur"
                     }
-                ],
-                category: [
-                    {
-                        required: true,
-                        message: "请添加或选择产品分类",
-                        trigger: "blur"
-                    }
                 ]
+                // category: [
+                //     {
+                //         required: true,
+                //         message: "请添加或选择产品分类",
+                //         trigger: "blur"
+                //     }
+                // ]
             },
             dialogVisible: false
         };
