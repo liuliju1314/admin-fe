@@ -10,7 +10,7 @@
                 </el-form-item>
                 <el-form-item label="产品状态">
                     <el-select v-model="form.productStatus">
-                        <el-option label="全部" value=""></el-option>
+                        <el-option label="全部" value></el-option>
                         <el-option label="开发中" value="0"></el-option>
                         <el-option label="已发布" value="1"></el-option>
                     </el-select>
@@ -49,19 +49,20 @@
                             >
                                 <svg-icon icon-class="release"></svg-icon>发布
                             </el-button>
-                            <!-- <el-button
-                                @click="openDetails(scope.row)"
-                                type="text"
-                                size="small"
-                                icon="el-icon-edit"
-                            >详情</el-button>-->
                             <el-button
                                 @click.stop="handleDeleProduct(scope.row)"
                                 type="text"
                                 size="small"
                                 icon="el-icon-delete"
-                                v-if="scope.row.productStatus === '0'"   
+                                v-if="scope.row.productStatus === '0'"
                             >删除</el-button>
+                            <el-button
+                                type="text"
+                                size="small"
+                                icon="el-icon-bell"
+                                v-if="!(scope.row.productStatus === '0')"
+                                disabled
+                            >已发布</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -82,7 +83,11 @@
 </template>
 
 <script>
-import { getProductList, deleteProduct, editProduct } from "@/api/product/product";
+import {
+    getProductList,
+    deleteProduct,
+    editProduct
+} from "@/api/product/product";
 import { formatDate } from "@/utils/format";
 
 export default {
@@ -182,19 +187,22 @@ export default {
                 const data = {
                     ...product,
                     productStatus: "1"
-                }
-                editProduct(data).then(() => {
-                    this.$message({
-                        type: "success",
-                        message: "发布成功!"
-                    });                    
-                }).catch(() => {
-                    this.$message({
-                        type: "success",
-                        message: "发布失败，请重试!"
-                    });
-                })
 
+                };
+                editProduct(data)
+                    .then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "发布成功!"
+                        });
+                        this.handleProductList();
+                    })
+                    .catch(() => {
+                        this.$message({
+                            type: "success",
+                            message: "发布失败，请重试!"
+                        });
+                    });
             });
         },
 
