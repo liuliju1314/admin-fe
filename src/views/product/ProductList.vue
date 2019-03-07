@@ -60,7 +60,7 @@
                                 type="text"
                                 size="small"
                                 icon="el-icon-delete"
-                                v-if="!scope.row.productStatus === '0'"   
+                                v-if="scope.row.productStatus === '0'"   
                             >删除</el-button>
                         </div>
                     </template>
@@ -181,7 +181,7 @@ export default {
             ).then(() => {
                 const data = {
                     ...product,
-                    productStatus: 1
+                    productStatus: "1"
                 }
                 editProduct(data).then(() => {
                     this.$message({
