@@ -27,13 +27,13 @@
             <el-table-column prop="desc" label="描述" width="300"></el-table-column>
             <el-table-column prop="version" label="固件验证" width="100">
                 <template slot-scope="scope">
-                    <div v-if="scope.status !== 3">
+                    <div v-if="scope.row.status !== 2">
                         <el-switch
                             v-model="scope.status"
                             :active-value="1"
-                            inactive-value="3"
+                            :inactive-value="3"
                             :content="scope.status !== 3? '已验证' : '未验证'"
-                            @change="FwDisable({fwID: scope.row.fwID, status: 1})"
+                            @change="FwDisable({fw: scope.row, status: 1})"
                         ></el-switch>
                     </div>
                     <div style="font-size: 12px;" v-else>
@@ -204,7 +204,7 @@ export default {
                     });
                     this.handlefirmwareList();
                 })
-                .catch((err) => {
+                .catch(err => {
                     return err;
                     // this.$confirm(`该固件已升级，无法禁用！`, "提示", {
                     //     confirmButtonText: "确定",
