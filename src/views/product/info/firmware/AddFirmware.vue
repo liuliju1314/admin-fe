@@ -75,12 +75,6 @@
                     <el-radio label="debug">测试版</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="升级方式" prop="upMethod">
-                <el-radio-group v-model="form.upMethod">
-                    <el-radio label="manual">手动升级</el-radio>
-                    <el-radio label="auto">静默升级</el-radio>
-                </el-radio-group>
-            </el-form-item>
             <el-form-item label="固件版本" prop="version">
                 <el-input v-model="form.version" placeholder="建议采用版本递增进行管理"></el-input>
             </el-form-item>
@@ -109,7 +103,6 @@ export default {
             upload: [{ index: "" }],
             form: {
                 pid: "",
-                upMethod: "",
                 group: "",
                 fwName: "",
                 version: "",

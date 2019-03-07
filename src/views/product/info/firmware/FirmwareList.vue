@@ -28,24 +28,24 @@
             <el-table-column prop="desc" label="描述" width="300"></el-table-column>
             <el-table-column label="操作" width="170">
                 <template slot-scope="scope">
-                    <el-button
+                    <!-- <el-button
                         type="text"
                         size="small"
                         @click="upgradefirmware(scope.row)"
                         icon="el-icon-upload"
-                    >升级</el-button>
+                    >升级</el-button> -->
                     <el-button
                         type="text"
                         size="small"
                         @click="showFwDialog(scope.row)"
                         icon="el-icon-edit"
                     >编辑</el-button>
-                    <el-button
+                    <!-- <el-button
                         type="text"
                         size="small"
                         @click="deletefirmware(scope.row)"
                         icon="el-icon-delete"
-                    >删除</el-button>
+                    >删除</el-button> -->
                 </template>
             </el-table-column>
         </el-table>

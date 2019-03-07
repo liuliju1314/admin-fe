@@ -18,6 +18,12 @@
                 <el-form-item label="产品分类" prop="category">
                     <el-input v-model="form.category"></el-input>
                 </el-form-item>
+                <el-form-item label="升级方式" prop="upMethod">
+                    <el-radio-group v-model="form.upMethod">
+                        <el-radio label="manual">手动升级</el-radio>
+                        <el-radio label="auto">静默升级</el-radio>
+                    </el-radio-group>
+                </el-form-item>
                 <el-form-item label="固件名称">
                     <div>
                         <span style="display: inline-block; width: 43%">标识符:</span>
@@ -69,9 +75,10 @@ export default {
                 model: "",
                 category: "",
                 desc: "",
+                upMethod: "",
                 fwGroup: [{ name: "", desc: "" }]
             },
-            title: '',
+            title: "",
             formRules: {
                 name: [
                     {
@@ -84,6 +91,13 @@ export default {
                     {
                         required: true,
                         message: "请输入产品型号",
+                        trigger: "blur"
+                    }
+                ],
+                upMethod: [
+                    {
+                        required: true,
+                        message: "请选择升级方式",
                         trigger: "blur"
                     }
                 ],
@@ -102,13 +116,16 @@ export default {
         visible() {
             this.$nextTick(() => {
                 if (this.product && this.visible) {
-                    if(!this.product.fwGroup || this.product.fwGroup.length === 0) {
-                        this.product.fwGroup = [{ name: "", desc: "" }]
+                    if (
+                        !this.product.fwGroup ||
+                        this.product.fwGroup.length === 0
+                    ) {
+                        this.product.fwGroup = [{ name: "", desc: "" }];
                     }
                     this.form = { ...this.form, ...this.product };
-                    this.title="产品编辑"
+                    this.title = "产品编辑";
                 } else {
-                     this.title="添加产品";
+                    this.title = "添加产品";
                 }
             });
         }
