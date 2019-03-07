@@ -181,7 +181,7 @@ export default {
             ).then(() => {
                 const data = {
                     ...product,
-                    productStatus: 1
+                    productStatus: "1"
                 }
                 editProduct(data).then(() => {
                     this.$message({
