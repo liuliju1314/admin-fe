@@ -64,7 +64,7 @@ export default {
             this.handleFwList(value);
         },
         handleUpgrade(fw) {
-            console.log("fw: " + JSON.stringify(fw.row));
+            // console.log("fw: " + JSON.stringify(fw.row));
             const data = {
                 fwID: fw.row.fwID,
                 did: this.device.did
