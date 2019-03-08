@@ -16,11 +16,7 @@
                 <el-table-column prop="desc" label="分组"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button
-                            @click.stop="handleUpgrade(scope)"
-                            type="text"
-                            size="small"
-                        >升级</el-button>
+                        <el-button @click.stop="handleUpgrade(scope)" type="text" size="small">升级</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -39,7 +35,7 @@
 </template>
 
 <script>
-import { OTAForDevice } from '@/api/device/device';
+import { OTAForDevice } from "@/api/device/device";
 import { getfirmwareList } from "@/api/firmware/firmware";
 export default {
     name: "",
@@ -68,18 +64,17 @@ export default {
             this.handleFwList(value);
         },
         handleUpgrade(fw) {
+            console.log("fw: " + JSON.stringify(fw.row));
             const data = {
-                fwID: fw.row.feID,
-                did: this.device.did,
-                satus: fw.status
-            }
+                fwID: fw.row.fwID,
+                did: this.device.did
+            };
             OTAForDevice(data).then(() => {
                 this.$message({
-                    type: 'success',
-                    message: '正在升级中'
-
-                })
-            })
+                    type: "success",
+                    message: "正在升级中"
+                });
+            });
         },
         handleFwList(value) {
             this.page = value;

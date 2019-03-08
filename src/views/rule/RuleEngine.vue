@@ -120,13 +120,21 @@ export default {
             this.handleRuleList(value);
         },
         deleteRule(rule) {
-            deleRule(rule).then(() => {
-                this.$message({
-                    type: "success",
-                    message: "删除成功"
-                });
-                this.handleRuleList(this.form.page);
-            });
+            this.$confirm("此操作将删除该规则, 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    deleRule(rule).then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "删除成功"
+                        });
+                        this.handleRuleList(this.form.page);
+                    });
+                })
+                .catch(() => {});
         },
         startUpRule(data) {
             const rule = this._deepClone(data);
