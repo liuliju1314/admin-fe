@@ -13,68 +13,72 @@
                     >+ 添加逻辑</el-button>
                 </div>
                 <div class="rule-event-logic">
-                    <rule-event :ruleEvent="ruleEvent"></rule-event>
+                    <el-tree :data="ruleEvent" node-key="id" default-expand-all draggable>
+                        <div class="custom-tree-node" slot-scope="{ node, data }">
+                            <div class="item clearfix">
+                                <div class="title">{{node.label}}</div>
+                                <div class="desc">{{data.msg}}</div>
+                                <div class="icon-box">
+                                    <i class="el-icon-edit" @click="() => handleEdit(node, data)"></i>
+                                    <i
+                                        class="el-icon-delete"
+                                        @click="() => deleteEvent(node, data)"
+                                    ></i>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tree>
                 </div>
-                <div v-if="isDrag" style="margin-top: 15px;">
+                <div style="margin-top: 15px;" v-if="isDrag">
                     <el-button @click="cancelDrag" size="small">取消</el-button>
                     <el-button type="primary" @click="updateEvent" size="small">保存编辑</el-button>
                 </div>
             </el-col>
         </el-row>
-        <op-rule :visible="visible" :action="action" @listenRuleOp="listenRuleOp" :conditionId="conditionId"></op-rule>
+        <op-rule
+            :visible="visible"
+            :action="action"
+            @listenRuleOp="listenRuleOp"
+            :conditionId="conditionId"
+        ></op-rule>
     </div>
 </template>
 
 <script>
-import eventVue from "@/components/commonEvent";
 import { updateRule, getRuleInfo } from "@/api/rule/rule";
 export default {
-    name: "RuleInfo",
+    name: "EventList",
     data() {
         return {
             ruleId: "",
-            isDrag: false,
             base: "",
             ruleEvent: [],
             event: {
                 rules: [],
                 logic: ""
             },
-
+            isDrag: false,
             visible: false,
             action: "",
-            conditionId: 0
+            conditionId: 1
         };
     },
     created() {
         this.ruleId = this.$route.params.id;
         this.handleRuleInfo();
     },
-    mounted() {
-        eventVue.$on("listenRuleChange", () => {
-            this.isDrag = true;
-        });
-        eventVue.$on("listenEdit", data => {
-            this.visible = true;
-            this.action = data;
-        });
-    },
     components: {
-        RuleEvent: () => import("./RuleEvent"),
         OpRule: () => import("./OpRule")
     },
     methods: {
         openDialog(action) {
             this.action = action;
-            if(this.action.name === 'condition') {
-                this.conditionId++;
-            }
             this.visible = true;
         },
         replaceData(data, value) {
             for (let i = 0; i < data.length; i++) {
                 if (data[i].id && data[i].id === value.id) {
-                    data[i] = value;
+                    data.splice(i,1, value);
                     return;
                 } else {
                     if (data[i].children) {
@@ -83,13 +87,29 @@ export default {
                 }
             }
         },
+        handleEdit(node, data) {
+            const action = {
+                data: data,
+                action: "edit",
+                name: data.logic ? "logic" : "condition"
+            };
+            this.openDialog(action);
+        },
+        deleteEvent(node, data) {
+            this.isDrag = true;
+            const parent = node.parent;
+            const children = parent.data.children || parent.data;
+            const index = children.findIndex(d => d.id === data.id);
+            children.splice(index, 1);
+        },
         listenRuleOp(value) {
+            this.isDrag = true;
             if (value) {
                 if (value.action === "add") {
                     this.ruleEvent.push(value.logic);
+                    this.conditionId++;
                 } else {
                     this.replaceData(this.ruleEvent, value.logic);
-                    this.isDrag = true;
                 }
             }
             this.action = "";
@@ -103,7 +123,7 @@ export default {
                     this.base.actions = JSON.parse(this.base.actions);
                     this.base.event = JSON.parse(this.base.event);
                     this.ruleEvent = this._deepClone(this.base).ruleEvent;
-                    this.ruleEvent = this.ruleEvent ? this.ruleEvent: [];
+                    this.ruleEvent = this.ruleEvent ? this.ruleEvent : [];
                     this.conditionId = this.base.event.rules.length;
                 })
                 .catch(() => {});
@@ -122,7 +142,7 @@ export default {
             const data = {
                 ...this.base,
                 event: event,
-                ruleEvent: this.ruleEvent,
+                ruleEvent: this.ruleEvent
             };
             updateRule(data).then(() => {
                 this.$message({
@@ -136,7 +156,7 @@ export default {
         handleFormatToStr(list) {
             let arr = [];
             list.forEach(item => {
-                if (item.id) {
+                if (!item.logic) {
                     this.event.rules.push(item);
                     arr.push(item.id);
                 } else if (item.logic && item.children) {
@@ -159,6 +179,13 @@ export default {
     .el-card__header {
         padding-bottom: 0 !important;
     }
+    .el-tree-node__content {
+        background: #f6fafe;
+        margin-bottom: 6px;
+    }
+    .custom-tree-node {
+        width: 100% !important;
+    }
 }
 </style>
 <style lang='less' scoped>
@@ -176,6 +203,38 @@ export default {
     .link-item.active {
         color: @baseColor;
         border-bottom: 2px solid @baseColor;
+    }
+    .rule-event-logic {
+        border: 1px dashed #ddd;
+        padding: 10px;
+        margin-top: 10px;
+    }
+    .rule-logic-box:hover {
+        cursor: move;
+    }
+    .rule-event-logic {
+        .item {
+            width: 100%;
+            .title {
+                color: #606266;
+                float: left;
+                padding: 9px 15px;
+                box-sizing: content-box;
+            }
+            .desc {
+                float: left;
+                width: auto;
+                padding: 9px 15px;
+            }
+            .icon-box {
+                float: right;
+                padding: 9px 15px;
+                i {
+                    cursor: pointer;
+                    padding-left: 9px;
+                }
+            }
+        }
     }
 }
 </style>

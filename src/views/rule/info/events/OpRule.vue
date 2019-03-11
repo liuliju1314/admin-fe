@@ -160,7 +160,8 @@ export default {
                     const action = !this.isEdit ? "add" : "edit";
                     const data = {
                         ...this.logicForm,
-                        children: []
+                        id: this.conditionId,
+                        label: this.logicForm.logic
                     };
                     this.$emit("listenRuleOp", {
                         logic: data,
@@ -178,7 +179,8 @@ export default {
                 if (valid) {
                     const action = !this.isEdit ? "add" : "edit";
                     const data = {
-                        ...this.conditionForm
+                        ...this.conditionForm,
+                        label: this.conditionId
                     };
                     setTimeout(() => {
                         this.beforeClose();
