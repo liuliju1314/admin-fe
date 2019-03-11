@@ -16,7 +16,7 @@
                 <el-table-column prop="desc" label="分组"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button @click.stop="handleUpgrade(scope)" type="text" size="small">升级</el-button>
+                        <el-button @click.stop="handleUpgrade(scope.row)" type="text" size="small">升级</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -64,9 +64,8 @@ export default {
             this.handleFwList(value);
         },
         handleUpgrade(fw) {
-            console.log("fw: " + JSON.stringify(fw.row));
             const data = {
-                fwID: fw.row.fwID,
+                fwID: fw.fwID,
                 did: this.device.did
             };
             OTAForDevice(data).then(() => {
