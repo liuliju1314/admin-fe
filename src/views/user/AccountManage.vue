@@ -17,11 +17,11 @@
                 <el-table-column prop="phone" label="电话"></el-table-column>
                 <el-table-column prop="role" label="权限" :formatter="isRole"></el-table-column>
                 <el-table-column label="注册时间">
-                    <template slot-scope="scope">{{ changeTimeFormater(scope.row.activatedAt) }}</template>
+                    <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="handleEditManage(scope.row)">编辑</el-button>
+                        <el-button type="text" size="small" @click="showEditManage(scope.row)">编辑</el-button>
                         <el-button
                             type="text"
                             size="small"
@@ -44,34 +44,40 @@
 
         <!-- 添加管理员对话框 -->
         <el-dialog title="添加管理员" :visible.sync="dialogVisible" width="60%">
-            <el-form ref="form" :model="addManageForm" label-width="100px" class="form-box">
+            <el-form
+                ref="addManageForm"
+                :rules="addManageFormValid"
+                :model="addManageForm"
+                label-width="100px"
+                class="form-box"
+            >
                 <el-form-item label="电话" prop="phone">
-                    <el-input v-model="form.phone"></el-input>
+                    <el-input v-model="addManageForm.phone"></el-input>
                 </el-form-item>
                 <el-form-item label="姓名" prop="name">
-                    <el-input v-model="form.name"></el-input>
+                    <el-input v-model="addManageForm.name"></el-input>
                 </el-form-item>
                 <el-form-item label="权限" prop="role">
-                    <el-select v-model="form.role">
-                        <el-option label="super" value="super">super</el-option>
-                        <el-option label="super" value="0">系统管理员</el-option>
-                        <el-option label="super" value="1">区域管理员</el-option>
+                    <el-select v-model="addManageForm.role">
+                        <el-option value="super">超级管理员</el-option>
+                        <el-option value="user">普通用户</el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="addManage()">确 定</el-button>
+                    <el-button type="primary" @click="handleAddManage()">确 定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
 
         <!-- 编辑管理员对话框 -->
-        <el-dialog title="编辑管理员" :visible.sync="editManage" width="60%">
+        <el-dialog title="编辑管理员" :visible.sync="dialogeditManage" width="60%">
             <el-form
                 ref="editManageForm"
                 :model="editManageForm"
                 label-width="100px"
                 class="form-box"
+                :rules="editManageFormValid"
             >
                 <el-form-item label="UID" prop="uid">
                     <el-input v-model="editManageForm.uid" disabled="disabled"></el-input>
@@ -87,14 +93,13 @@
                 </el-form-item>
                 <el-form-item label="权限" prop="role">
                     <el-select v-model="editManageForm.role">
-                        <el-option label="super" value="0"></el-option>
-                        <el-option label="系统管理员" value="1"></el-option>
-                        <el-option label="区域管理员" value="2"></el-option>
+                        <el-option label="超级管理员" value="super"></el-option>
+                        <el-option label="普通用户" value="user"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="editManage = false">取 消</el-button>
-                    <el-button type="primary" @click="iseditManage()">确 定</el-button>
+                    <el-button @click="dialogeditManage = false">取 消</el-button>
+                    <el-button type="primary" @click="handleEditManage()">确 定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -102,23 +107,39 @@
 </template>
 
 <script>
-import { getManagerList } from "@/api/user/user";
+import {
+    getManagerList,
+    addManager,
+    deleteManager,
+    updateManager
+} from "@/api/user/user";
 import { formatDate } from "@/utils/format";
 
 export default {
     name: "",
     data() {
+        const validatePhone = (rule, value, callback) => {
+            if (value === "") {
+                callback(new Error("请输入手机号码"));
+            } else {
+                if (!/^1[34578]\d{9}$/.test(value)) {
+                    callback(new Error("请输入正确的手机号码"));
+                }
+                callback();
+            }
+        };
         return {
             form: {
                 page: 1,
                 pageSize: 6,
                 isPage: true
             },
+            count: "",
             manageList: [],
             addManageForm: {
                 name: "",
                 phone: "",
-                role: ""
+                role: "user"
             },
             editManageForm: {
                 uid: "",
@@ -128,8 +149,25 @@ export default {
                 role: ""
             },
             dialogVisible: false,
-            editManage: false,
-            count: ""
+            dialogeditManage: false,
+            addManageFormValid: {
+                phone: [
+                    {
+                        validator: validatePhone,
+                        trigger: "blur",
+                        required: true
+                    }
+                ]
+            },
+            editManageFormValid: {
+                phone: [
+                    {
+                        validator: validatePhone,
+                        trigger: "blur",
+                        required: true
+                    }
+                ]
+            }
         };
     },
     created() {
@@ -145,36 +183,89 @@ export default {
             this.form.page = value;
             this.getManager();
         },
+        // 获取管理员列表
         getManager() {
             getManagerList()
                 .then(res => {
                     this.manageList = res.payload.items;
-                    this.count = res.payload.count;
+                    this.count = res.payload.total;
                 })
                 .catch(error => {
                     return error;
                 });
         },
-        handleEditManage(value) {
-            (this.editManageForm = value),
-                (this.editManage = true),
-                console.log("编辑管理员");
+        // 添加管理员
+        handleAddManage() {
+            this.$refs.addManageForm.validate(valid => {
+                if (valid) {
+                    addManager(this.addManageForm)
+                        .then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "添加成功"
+                            });
+                            this.dialogVisible = false;
+                            this.getManager();
+                        })
+                        .catch(error => {
+                            return error;
+                        });
+                } else {
+                    return false;
+                }
+            });
         },
-        iseditManage() {
-            console.log("编辑成功");
-            this.editManage = false;
+        // 删除管理员
+        handleDeleteManage(val) {
+            console.log(JSON.stringify(val));
+            this.$confirm(`此操作将删除 ${val.uid} 用户, 是否继续?`, "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    deleteManager({ uid: val.uid }).then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "删除成功"
+                        });
+                    });
+                    this.getManager();
+                })
+                .catch(() => {});
         },
-        handleDeleteManage() {
-            console.log("删除管理员");
+        // 显示更新信息对话框
+        showEditManage(value) {
+            this.editManageForm = value;
+            this.dialogeditManage = true;
+        },
+        // 更新管理员信息
+        handleEditManage() {
+            this.$refs.editManageForm.validate(valid => {
+                if (valid) {
+                    updateManager(this.editManageForm)
+                        .then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "更新成功"
+                            });
+                            this.dialogeditManage = false;
+                            this.getManager();
+                        })
+                        .catch(error => {
+                            return error;
+                        });
+                } else {
+                    return false;
+                }
+            });
         },
         isRole(val) {
-            if (val.role == "super") {
+            if (val.role === "super") {
                 return "超级管理员";
+            } else if (val.role === "user") {
+                return "普通用户";
             }
-        },
-        addManage() {
-            console.log("添加成功");
-            this.dialogVisible = false;
         },
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");
