@@ -43,12 +43,6 @@
             </el-table-column>
             <el-table-column label="操作" width="170">
                 <template slot-scope="scope">
-                    <!-- <el-button
-                        type="text"
-                        size="small"
-                        @click="upgradefirmware(scope.row)"
-                        icon="el-icon-upload"
-                    >升级</el-button>-->
                     <el-button
                         type="text"
                         size="small"
@@ -85,27 +79,6 @@
         </div>
         <!-- 添加固件对话框 -->
         <add-firmware @listenAdd="listenAdd" :visible="visible" :fw="opFw"></add-firmware>
-        <el-dialog title="固件升级" :visible.sync="upVisible" center :before-close="beforeCloseUp">
-            <el-form
-                :model="upForm"
-                ref="upForm"
-                label-width="180px"
-                class="form-box"
-                :rules="rules"
-                size="small"
-            >
-                <el-form-item label="请选择需升级的设备分组" prop="deviceGroup">
-                    <el-radio-group v-model="upForm.deviceGroup" placeholder="请选择">
-                        <el-radio label="0">正式版</el-radio>
-                        <el-radio label="1">测试版</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item>
-                    <el-button @click="beforeCloseUp" size="small">取 消</el-button>
-                    <el-button type="primary" @click="submitUpFw" size="small">确 定</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
     </el-main>
 </template>
 
