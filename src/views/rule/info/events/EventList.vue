@@ -19,7 +19,7 @@
                                 <div class="title">{{node.label}}</div>
                                 <div class="desc">{{data.msg}}</div>
                                 <div class="icon-box">
-                                    <i class="el-icon-edit" @click="() => handleEdit(node, data)"></i>
+                                    <i class="el-icon-edit" v-if="!data.logic" @click="() => handleEdit(node, data)"></i>
                                     <i
                                         class="el-icon-delete"
                                         @click="() => deleteEvent(node, data)"
@@ -60,7 +60,7 @@ export default {
             isDrag: false,
             visible: false,
             action: "",
-            conditionId: 1
+            conditionId: 0
         };
     },
     created() {
@@ -124,7 +124,7 @@ export default {
                     this.base.event = JSON.parse(this.base.event);
                     this.ruleEvent = this._deepClone(this.base).ruleEvent;
                     this.ruleEvent = this.ruleEvent ? this.ruleEvent : [];
-                    this.conditionId = this.base.event.rules.length;
+                    this.conditionId = this.base.event.rules.length + 1;
                 })
                 .catch(() => {});
         },
