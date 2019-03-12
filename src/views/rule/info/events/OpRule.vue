@@ -211,10 +211,14 @@ export default {
     }
 };
 </script>
+<style lang="less">
+
+</style>
 
 <style lang='less' scoped>
 .form {
     width: 60%;
     margin: auto;
 }
+
 </style>

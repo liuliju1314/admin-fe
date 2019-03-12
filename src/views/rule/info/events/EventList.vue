@@ -12,6 +12,7 @@
                         @click="openDialog({name: 'logic', action: 'add'})"
                     >+ 添加逻辑</el-button>
                 </div>
+                <div style="margin: 10px">logic: {{event.logic}}</div>
                 <div class="rule-event-logic">
                     <el-tree :data="ruleEvent" node-key="id" default-expand-all draggable>
                         <div class="custom-tree-node" slot-scope="{ node, data }">
@@ -19,7 +20,11 @@
                                 <div class="title">{{node.label}}</div>
                                 <div class="desc">{{data.msg}}</div>
                                 <div class="icon-box">
-                                    <i class="el-icon-edit" v-if="!data.logic" @click="() => handleEdit(node, data)"></i>
+                                    <i
+                                        class="el-icon-edit"
+                                        v-if="!data.logic"
+                                        @click="() => handleEdit(node, data)"
+                                    ></i>
                                     <i
                                         class="el-icon-delete"
                                         @click="() => deleteEvent(node, data)"
@@ -67,6 +72,12 @@ export default {
         this.ruleId = this.$route.params.id;
         this.handleRuleInfo();
     },
+    watch: {
+        ruleEvent() {
+            this.isDrag = true;
+            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
+        }
+    },
     components: {
         OpRule: () => import("./OpRule")
     },
@@ -78,7 +89,7 @@ export default {
         replaceData(data, value) {
             for (let i = 0; i < data.length; i++) {
                 if (data[i].id && data[i].id === value.id) {
-                    data.splice(i,1, value);
+                    data.splice(i, 1, value);
                     return;
                 } else {
                     if (data[i].children) {
@@ -101,6 +112,7 @@ export default {
             const children = parent.data.children || parent.data;
             const index = children.findIndex(d => d.id === data.id);
             children.splice(index, 1);
+            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
         },
         listenRuleOp(value) {
             this.isDrag = true;
@@ -113,6 +125,7 @@ export default {
                 }
             }
             this.action = "";
+            this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
             this.visible = false;
         },
         // 获取Rule信息
@@ -135,6 +148,13 @@ export default {
         },
         // 更新event编辑
         updateEvent() {
+            if(this.handleFormatToStr(this.ruleEvent).length > 1) {
+                this.$message({
+                    type: 'warning',
+                    message: '数据格式错误'
+                })
+                return;
+            }
             this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
             const event = {
                 ...this.event
@@ -185,6 +205,13 @@ export default {
     }
     .custom-tree-node {
         width: 100% !important;
+    }
+    .el-tree-node {
+        white-space: nowrap;
+        outline: 0;
+        border: 1px dashed #aea4a4;
+        padding: 12px 16px 12px 16px;
+        margin: 10px;
     }
 }
 </style>
