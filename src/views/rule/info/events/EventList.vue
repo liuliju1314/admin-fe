@@ -16,7 +16,7 @@
                 <div class="rule-event-logic">
                     <el-tree :data="ruleEvent" node-key="id" default-expand-all draggable>
                         <div class="custom-tree-node" slot-scope="{ node, data }">
-                            <div class="item clearfix">
+                            <div class="item clearfix" :class="data.logic ? 'logic' :'condition'">
                                 <div class="title">{{node.label}}</div>
                                 <div class="desc">{{data.msg}}</div>
                                 <div class="icon-box">
@@ -261,6 +261,9 @@ export default {
                     padding-left: 9px;
                 }
             }
+        }
+        .condition {
+            
         }
     }
 }
