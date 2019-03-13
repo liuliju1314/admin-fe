@@ -79,7 +79,7 @@ export default {
             isLogic: false,
             isEdit: false,
             conditionForm: {
-                id: '',
+                id: "",
                 msg: "",
                 value: "",
                 op: "",
@@ -128,7 +128,9 @@ export default {
         visible() {
             if (this.visible) {
                 this.openDialog(this.action);
-                this.conditionForm.id = this.conditionId;
+                this.$nextTick(() => {
+                    this.conditionForm.id = this.conditionId;
+                });
             }
         }
     },
@@ -153,6 +155,7 @@ export default {
                 }
             }
         },
+
         // 编辑与添加逻辑
         handleLogicOp() {
             this.$refs.logicForm.validate(valid => {
@@ -208,10 +211,14 @@ export default {
     }
 };
 </script>
+<style lang="less">
+
+</style>
 
 <style lang='less' scoped>
 .form {
     width: 60%;
     margin: auto;
 }
+
 </style>
