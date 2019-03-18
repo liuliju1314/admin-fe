@@ -43,7 +43,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <el-button size="small" type="primary" style="margin-top: 20px">推送</el-button>
+                        <el-button size="small" type="primary" style="margin-top: 20px">发送</el-button>
                     </div>
                 </el-col>
                 <el-col :span="16">
