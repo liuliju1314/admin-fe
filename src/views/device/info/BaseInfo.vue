@@ -14,7 +14,7 @@
             <tr>
                 <th>设备分组:</th>
                 <td>
-                    <span>{{formatter(deviceList[0].group)}}</span>
+                    <span>{{formatterGroup(deviceList[0].group)}}</span>
                 </td>
                 <th>固件版本号:</th>
                 <td>{{deviceList[0].fwVersion.app}}</td>
@@ -70,7 +70,7 @@ export default {
                     return error;
                 });
         },
-        formatter(value) {
+        formatterGroup(value) {
             if (value === "release") {
                 return "正式组";
             } else if (value === "develop") {
