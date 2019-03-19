@@ -95,7 +95,7 @@ const routes = [
         component: LayOut,
         children: [
             { path: "/log", component: () => import("@/views/monitor/Log") },
-            { path: "/Debug", component: () => import("@/views/monitor/Debug") }
+            { path: "/debug", component: () => import("@/views/monitor/Debug") }
         ]
     },
     {

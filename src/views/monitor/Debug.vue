@@ -29,21 +29,13 @@
                         <div>
                             <h3>设备编辑</h3>
                         </div>
-                        <table>
-                            <tr>
-                                <td>switch_1：</td>
-                                <td>
-                                    <el-input size="mini"></el-input>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>switch_2：</td>
-                                <td>
-                                    <el-input size="mini"></el-input>
-                                </td>
-                            </tr>
-                        </table>
-                        <el-button size="small" type="primary" style="margin-top: 20px">发送</el-button>
+                        <div ref="editor" id="editor" style="height: 48vh"></div>
+                        <el-button
+                            size="small"
+                            type="primary"
+                            style="margin-top: 20px"
+                            @click="sendData"
+                        >发送</el-button>
                     </div>
                 </el-col>
                 <el-col :span="16">
@@ -64,6 +56,8 @@
 </template>
 
 <script>
+import JSONEditor from "jsoneditor";
+import "jsoneditor/dist/jsoneditor.min.css";
 export default {
     components: {},
     props: {},
@@ -79,47 +73,83 @@ export default {
                 ],
                 deviceName: [
                     { required: true, message: "请选择设备", trigger: "blur" }
-                ],
+                ]
             },
-            ws: '',
+            ws: "",
             wsData: [],
+            // 富文本
+            editor: "",
+            content: "",
+            editorOption: {
+                mode: "code",
+                modes: ["text", "code"]
+            }
         };
     },
-    beforeDestroy() {
-        this.ws.close();
-    },
-    methods: {
-        doDeviceSearch() {
-            this.$refs.form.validate((valid) => {
-                if(valid) {
-                    this.WebSocketLink();
+    created() {
+        this.content = {
+            content: "1",
+            content2: "1",
+            a: {
+                b: {
+                    c: {
+                        d: {
+                            e: 1,
+                            f: {
+                                r: {
+                                    3: 2
+                                }
+                            }
+                        }
+                    }
                 }
-            })
+            }
+        };
+    },
+    mounted() {
+        this.$nextTick(() => {
+            this.editor = new JSONEditor(this.$refs.editor, this.editorOption);
+            this.editor.set(this.content);
+        });
+    },
+    // beforeDestroy() {
+    //     this.ws.close();
+    // },
+    methods: {
+        // 发送数据
+        sendData() {
+            console.log(this.editor.get());
+            this.WebSocketLink();
+        },
+        doDeviceSearch() {
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                }
+            });
         },
         WebSocketLink() {
             if ("WebSocket" in window) {
-               
-               // 打开一个 web socket
-               this.ws = new WebSocket("ws://localhost:9998/echo");
-                
-               this.ws.onopen = function() {
-                  // Web Socket 已连接上，使用 send() 方法发送数据
-                //   this.ws.send("发送数据");
-                  alert("数据发送中...");
-               };
-                
-               this.ws.onmessage = function (evt)  { 
-                  this.wsData = evt.data;
-                  alert("数据已接收...");
-               };
-                
-               this.ws.onclose = function() { 
-                  // 关闭 websocket
-                  alert("连接已关闭..."); 
-               };
+                // 打开一个 web socket
+                this.ws = new WebSocket("ws://localhost:9998/echo");
+
+                this.ws.onopen = function() {
+                    // Web Socket 已连接上，使用 send() 方法发送数据
+                    //   this.ws.send("发送数据");
+                    alert("数据发送中...");
+                };
+
+                this.ws.onmessage = function(evt) {
+                    this.wsData = evt.data;
+                    alert("数据已接收...");
+                };
+
+                this.ws.onclose = function() {
+                    // 关闭 websocket
+                    alert("连接已关闭...");
+                };
             } else {
-               // 浏览器不支持 WebSocket
-               alert("您的浏览器不支持 WebSocket!");
+                // 浏览器不支持 WebSocket
+                alert("您的浏览器不支持 WebSocket!");
             }
         }
     }
@@ -129,6 +159,24 @@ export default {
 .debug-wrapper {
     .el-card__body {
         padding-bottom: 0px;
+    }
+    div.jsoneditor-menu > button,
+    div.jsoneditor-menu > div.jsoneditor-modes > button {
+        display: none;
+    }
+    div.jsoneditor {
+        border: 1px solid #efefef;
+    }
+    div.jsoneditor-menu {
+        background: #efefef;
+                border: 1px solid #efefef;
+    }
+    div.jsoneditor-statusbar {
+        display: none;
+    }
+    div.jsoneditor-outer.has-status-bar {
+        margin-bottom: 0;
+        padding-bottom: 0;
     }
 }
 </style>
