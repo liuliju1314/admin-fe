@@ -362,3 +362,18 @@ li {
     overflow: auto;
     _height: 1%;
 }
+
+
+.outline,
+.online {
+    background-color: #d9d9d9;
+    width: 6px;
+    height: 6px;
+    display: inline-block;
+    margin-right: 4px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+.online {
+    background-color: #1890ff;
+}

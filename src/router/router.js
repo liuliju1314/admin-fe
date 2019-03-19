@@ -47,10 +47,28 @@ const routes = [
         ]
     },
     {
-        path: "/device",
+        path: "",
         component: LayOut,
         children: [
-            { path: "", component: () => import("@/views/device/DeviceList") }
+            {
+                path: "device",
+                component: () => import("@/views/device/DeviceList")
+            },
+            {
+                path: "device/:id",
+                component: () => import("@/views/device/info"),
+                children: [
+                    {
+                        path: "detail",
+                        component: () => import("@/views/device/info/BaseInfo")
+                    },
+                    {
+                        path: "state",
+                        component: () =>
+                            import("@/views/device/info/OperateState")
+                    }
+                ]
+            }
         ]
     },
     {
