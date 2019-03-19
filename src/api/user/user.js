@@ -25,3 +25,30 @@ export function getManagerList(data) {
         params: data
     })
 }
+
+// 新增管理员列表接口
+export function addManager(data) {
+    return service({
+        url: '/api/web/manager',
+        method: 'post',
+        data
+    })
+}
+
+// 删除管理员列表接口
+export function deleteManager(data) {
+    return service({
+        url: '/api/web/manager',
+        method: 'DELETE',
+        data
+    })
+}
+
+// 修改管理员列表接口
+export function updateManager(data) {
+    return service({
+        url: '/api/web/manager',
+        method: 'PATCH',
+        data
+    })
+}
