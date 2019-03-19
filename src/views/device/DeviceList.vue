@@ -58,7 +58,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="固件版本号">
-                    <template slot-scope="scope">{{scope.row.fwVersion}}</template>
+                    <template slot-scope="scope">{{scope.row.fwVersion.app}}</template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
                 <el-table-column label="在线状态">

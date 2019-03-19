@@ -17,7 +17,7 @@
                     <span>{{formatter(deviceList[0].group)}}</span>
                 </td>
                 <th>固件版本号:</th>
-                <td>{{deviceList[0].fwVersion}}</td>
+                <td>{{deviceList[0].fwVersion.app}}</td>
                 <th>硬件版本号:</th>
                 <td>{{deviceList[0].hwVersion}}</td>
             </tr>
