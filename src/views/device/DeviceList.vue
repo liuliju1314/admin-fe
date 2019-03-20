@@ -42,8 +42,8 @@
                 size="small"
                 @row-click="expandDetail"
             >
-                <el-table-column prop="did" label="设备编号" width="125"></el-table-column>
-                <el-table-column prop="group" label="设备分组" width="110">
+                <el-table-column prop="did" label="设备编号"></el-table-column>
+                <el-table-column prop="group" label="设备分组">
                     <template slot-scope="scope">
                         <el-select
                             v-model="scope.row.group"
@@ -57,8 +57,20 @@
                         </el-select>
                     </template>
                 </el-table-column>
-                <el-table-column label="固件版本号">
+                <!-- <el-table-column label="固件版本号">
                     <template slot-scope="scope">{{scope.row.fwVersion.app}}</template>
+                </el-table-column>-->
+                <el-table-column label="软件版本号">
+                    <template slot-scope="scope">
+                        <span>{{removeBlock(scope.row.fwVersion)}}</span>
+                        <div>
+                            <el-button
+                                type="text"
+                                size="small"
+                                @click.stop="getOtaDetail(scope.row)"
+                            >升级详情</el-button>
+                        </div>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
                 <el-table-column label="在线状态">
@@ -159,8 +171,8 @@ export default {
         this.getDevice();
     },
     methods: {
+        // 点击跳路由
         expandDetail(row) {
-            // localStorage.setItem("deviceName", row.name);
             this.$router.push({ path: `/device/${row.did}/detail` });
         },
         // 获取产品名称和产品id
