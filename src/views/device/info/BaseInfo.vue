@@ -52,7 +52,10 @@ export default {
             },
             deviceList: [
                 {
-                    name: ""
+                    name: "",
+                    fwVersion: {
+                        app: ""
+                    }
                 }
             ]
         };
