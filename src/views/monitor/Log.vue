@@ -44,19 +44,6 @@
                 </el-form-item>
             </el-form>
             <el-tabs type="card">
-                <el-tab-pane label="设备行为分析">
-                    <el-table
-                        :data="LogList"
-                        style="width: 100%; margin-top: 12px"
-                        border
-                        size="small"
-                    >
-                        <el-table-column prop="time" label="时间"></el-table-column>
-                        <el-table-column prop="deviceName" label="DeviceName"></el-table-column>
-                        <el-table-column prop="content" label="内容(全部)"></el-table-column>
-                        <el-table-column prop="stateAnalyze" label="状态以及原因分析"></el-table-column>
-                    </el-table>
-                </el-tab-pane>
                 <el-tab-pane label="上行消息分析">
                     <el-table
                         :data="LogList"
@@ -71,6 +58,19 @@
                     </el-table>
                 </el-tab-pane>
                 <el-tab-pane label="下行消息分析">
+                    <el-table
+                        :data="LogList"
+                        style="width: 100%; margin-top: 12px"
+                        border
+                        size="small"
+                    >
+                        <el-table-column prop="time" label="时间"></el-table-column>
+                        <el-table-column prop="deviceName" label="DeviceName"></el-table-column>
+                        <el-table-column prop="content" label="内容(全部)"></el-table-column>
+                        <el-table-column prop="stateAnalyze" label="状态以及原因分析"></el-table-column>
+                    </el-table>
+                </el-tab-pane>
+                <el-tab-pane label="设备行为分析">
                     <el-table
                         :data="LogList"
                         style="width: 100%; margin-top: 12px"
