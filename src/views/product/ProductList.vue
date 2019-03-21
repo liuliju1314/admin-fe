@@ -5,8 +5,21 @@
         </div>
         <div class="product-wrapper">
             <el-form :inline="true" :model="form" size="small">
+                <!-- 产品信息框 -->
                 <el-form-item label="产品名称">
-                    <el-input v-model="form.productName"></el-input>
+                    <el-select
+                        v-model="form.productName"
+                        placeholder="请选择产品名称"
+                        clearable
+                        @click.native="getProductModel()"
+                    >
+                        <el-option
+                            v-for="item in productModel"
+                            :key="item.pid"
+                            :label="item.name"
+                            :value="item.name"
+                        ></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="产品状态">
                     <el-select v-model="form.productStatus">
@@ -88,6 +101,7 @@ import {
     deleteProduct,
     editProduct
 } from "@/api/product/product";
+
 import { formatDate } from "@/utils/format";
 
 export default {
@@ -101,6 +115,8 @@ export default {
                 pageSize: 10,
                 isPage: true
             },
+            isPage: false, //获取所有产品名称以及产品Id,不分页
+            productModel: [], //存放所有产品名称以及产品Id
             count: "",
             productList: [],
             visible: false,
@@ -117,6 +133,25 @@ export default {
     },
 
     methods: {
+        // 获取产品名称和产品id
+        getProductModel() {
+            this.productModel = [];
+            getProductList(this.isPage)
+                .then(res => {
+                    res.payload.result.map(item => {
+                        const obj = {
+                            pid: "",
+                            name: ""
+                        };
+                        obj.pid = item.pid;
+                        obj.name = item.name;
+                        this.productModel.push(obj);
+                    });
+                })
+                .catch(error => {
+                    return error;
+                });
+        },
         // 进入产品详情
         expandDetail(row) {
             localStorage.setItem("productName", row.name);
@@ -187,7 +222,6 @@ export default {
                 const data = {
                     ...product,
                     productStatus: "1"
-
                 };
                 editProduct(data)
                     .then(() => {
@@ -205,7 +239,7 @@ export default {
                     });
             });
         },
-
+        // 更改时间格式
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");
         }

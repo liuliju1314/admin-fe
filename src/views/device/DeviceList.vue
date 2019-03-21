@@ -10,6 +10,7 @@
                     <el-select
                         v-model="form.pid"
                         placeholder="请选择设备类型"
+                        clearable
                         @click.native="getProductModel()"
                     >
                         <el-option
