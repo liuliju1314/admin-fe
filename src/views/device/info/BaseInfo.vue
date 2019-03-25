@@ -106,7 +106,9 @@ export default {
     border-left: 1px solid #ebecec;
     border-top: 1px solid;
     border-color: #ebecec;
+    margin-top: 20px;
     margin-bottom: 18px;
+    font-size: 14px;
     tr {
         height: 48px;
         box-sizing: border-box;
