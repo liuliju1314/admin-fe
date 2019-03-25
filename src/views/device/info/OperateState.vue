@@ -1,70 +1,92 @@
 <template>
-    <el-card class="box-card operate-state-wrapper" shadow="never">
+    <div class="operate-state-wrapper">
         <el-row :gutter="20">
             <el-col :span="6">
-                <div class="state-content">
-                    <div class="state-name">
-                        <span>充电电压</span>
-                        <el-button type="text">查看数据</el-button>
+                <el-card shadow="hover">
+                    <div class="state-content">
+                        <div class="state-name">
+                            <span>实时充电电压</span>
+                            <el-button  @click="showChart" type="text" size="small">查看历史数据</el-button>
+                        </div>
+                        <div class="state-num">30</div>
+                        <div class="state-time">2019/03/18 16:00:28</div>
                     </div>
-                    <div class="state-num">30</div>
-                    <div class="state-time">2019/03/18 16:00:28</div>
-                </div>
+                </el-card>
             </el-col>
             <el-col :span="6">
-                <div class="state-content">
-                    <div class="state-name">
-                        <span>充电电压</span>
-                        <el-button type="text">查看数据</el-button>
+                <el-card shadow="hover">
+                    <div class="state-content">
+                        <div class="state-name">
+                            <span>实时充电电压</span>
+                            <el-button  @click="showChart" type="text" size="small">查看历史数据</el-button>
+                        </div>
+                        <div class="state-num">30</div>
+                        <div class="state-time">2019/03/18 16:00:28</div>
                     </div>
-                    <div class="state-num">30</div>
-                    <div class="state-time">2019/03/18 16:00:28</div>
-                </div>
+                </el-card>
             </el-col>
             <el-col :span="6">
-                <div class="state-content">
-                    <div class="state-name">
-                        <span>充电电压</span>
-                        <el-button type="text">查看数据</el-button>
+                <el-card shadow="hover">
+                    <div class="state-content">
+                        <div class="state-name">
+                            <span>实时充电电压</span>
+                            <el-button  @click="showChart" type="text" size="small">查看历史数据</el-button>
+                        </div>
+                        <div class="state-num">30</div>
+                        <div class="state-time">2019/03/18 16:00:28</div>
                     </div>
-                    <div class="state-num">30</div>
-                    <div class="state-time">2019/03/18 16:00:28</div>
-                </div>
+                </el-card>
             </el-col>
         </el-row>
-    </el-card>
+        <el-dialog title="提示" :visible.sync="dialogVisible" :before-close="handleClose">
+            <ve-line :data="chartData"></ve-line>
+        </el-dialog>
+    </div>
 </template>
 
 <script>
+import VeLine from "v-charts/lib/line.common";
 export default {
-    components: {},
     props: {},
     data() {
-        return {};
+        return {
+            dialogVisible: false,
+            chartData: {
+                columns: ["date", "PV"],
+                rows: [
+                    { date: "01-01", PV: 1231 },
+                    { date: "01-02", PV: 1223 },
+                    { date: "01-03", PV: 2123 },
+                    { date: "01-04", PV: 4123 },
+                    { date: "01-05", PV: 3123 },
+                    { date: "01-06", PV: 7123 }
+                ]
+            }
+        };
     },
-    watch: {},
-    computed: {},
-    methods: {},
-    created() {},
-    mounted() {}
+    components: {
+        VeLine
+    },
+
+    methods: {
+        showChart() {
+            this.dialogVisible = true;
+        }
+    }
 };
 </script>
 <style lang="less" scoped>
-.box-card {
-    text-align: left;
-    min-height: calc(100vh - 250px);
-    border: 0px;
-}
 .state-content {
     padding: 20px;
-    border: 1px solid #d7d8d9;
     .state-name {
-        font-size: 14px;
-        color: #333;
         text-align: left;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        span {
+            font-size: 16px;
+            color: #333;
+        }
     }
     .state-num {
         overflow: hidden;
@@ -75,7 +97,7 @@ export default {
     }
     .state-time {
         color: #999;
-        font-size: 14px;
+        font-size: 13px;
         line-height: 40px;
     }
 }

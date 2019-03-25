@@ -43,7 +43,7 @@
                 @row-click="expandDetail"
             >
                 <el-table-column prop="did" label="设备编号"></el-table-column>
-                <el-table-column prop="group" label="设备分组">
+                <el-table-column prop="group" label="设备分组" width="120">
                     <template slot-scope="scope">
                         <el-select
                             v-model="scope.row.group"
@@ -60,16 +60,15 @@
                 <!-- <el-table-column label="固件版本号">
                     <template slot-scope="scope">{{scope.row.fwVersion.app}}</template>
                 </el-table-column>-->
-                <el-table-column label="软件版本号">
+                <el-table-column label="软件版本号" width="200">
                     <template slot-scope="scope">
                         <span>{{removeBlock(scope.row.fwVersion)}}</span>
-                        <div>
                             <el-button
                                 type="text"
                                 size="small"
+                                style="margin-left: 10px;"
                                 @click.stop="getOtaDetail(scope.row)"
                             >升级详情</el-button>
-                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
@@ -201,7 +200,14 @@ export default {
             };
             getOTAProgress(data).then(res => {
                 this.progressList = res.payload;
-                this.upgradeVisible = true;
+                if(this.progressList.length > 0) {
+                    this.upgradeVisible = true;
+                } else {
+                    this.$message({
+                        message: '暂无正在升级的固件'
+                    })
+                }
+
             });
         },
         //获取设备列表
@@ -275,29 +281,7 @@ export default {
 };
 </script>
 <style lang='less' scoped>
-.morebox {
-    position: absolute;
-    text-align: left;
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-    top: 51px;
-    left: 82px;
-}
-.morebox .moreitem {
-    padding: 5px 12px;
-    margin: 0;
-    clear: both;
-    font-size: 14px;
-    font-weight: 400;
-    color: rgba(0, 0, 0, 0.65);
-    white-space: nowrap;
-    cursor: pointer;
-}
-.morebox .moreitem:hover {
-    background-color: #e6f7ff;
-}
+
 .upgrade-wrapper {
     display: flex;
     text-align: center;
@@ -312,6 +296,11 @@ export default {
         .desc {
             color: #ddd;
         }
+    }
+    .warning-tips {
+        margin: 20px auto;
+        width: 100%;
+        text-align: center;
     }
 }
 </style>

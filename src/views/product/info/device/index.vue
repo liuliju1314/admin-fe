@@ -79,6 +79,9 @@
                     </div>
                 </div>
             </el-dialog>
+            <el-dialog title="提示" :visible.sync="chartVisible">
+                <ve-line :data="echartData"></ve-line>
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -86,6 +89,7 @@
 <script>
 import VueProgress from "./VueProgress";
 import DeviceUpgrade from "@/views/device/DeviceUpgrade";
+import VeLine from "v-charts/lib/line.common";
 import {
     getDeviceList,
     updateDeviceGroup,
@@ -119,11 +123,12 @@ export default {
             online: "",
             offline: "",
             btnShow: false,
-            progressList: []
+            progressList: [],
+            echartData: []
         };
     },
 
-    components: { DeviceUpgrade, VueProgress },
+    components: { DeviceUpgrade, VueProgress, VeLine },
 
     computed: {},
 
