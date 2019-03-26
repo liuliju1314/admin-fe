@@ -15,15 +15,21 @@
             </div>
         </div>
         <div class="device-wrapper">
-            <el-table :data="deviceList" style="width: 100%; margin-top: 12px" border size="small">
-                <el-table-column prop="did" label="设备编号" width="125"></el-table-column>
-                <el-table-column prop="group" label="设备分组" width="110">
+            <el-table
+                :data="deviceList"
+                style="width: 100%; margin-top: 12px"
+                border
+                size="small"
+                @row-click="expandDetail"
+            >
+                <el-table-column prop="did" label="设备编号"></el-table-column>
+                <el-table-column prop="group" label="设备分组" width="120">
                     <template slot-scope="scope">
                         <el-select
                             v-model="scope.row.group"
                             placeholder="请选择分组"
                             size="mini"
-                            @change="updateGroup(scope.row)"
+                            @click.stop="updateGroup(scope.row)"
                         >
                             <el-option label="正式组" value="release"></el-option>
                             <el-option label="开发组" value="develop"></el-option>
@@ -31,26 +37,37 @@
                         </el-select>
                     </template>
                 </el-table-column>
-                <el-table-column prop="props.batVolt" label="电池电压"></el-table-column>
-                <el-table-column prop="props.chgVolt" label="充电电压"></el-table-column>
-                <el-table-column prop="props.rssi" label="信号强度"></el-table-column>
-                <el-table-column label="软件版本号" width="170">
+                <!-- <el-table-column label="固件版本号">
+                    <template slot-scope="scope">{{scope.row.fwVersion.app}}</template>
+                </el-table-column>-->
+                <el-table-column label="软件版本号" width="200">
                     <template slot-scope="scope">
-                        <span>{{removeBlock(scope.row.fwVersion)}}</span>
-                        <div>
-                            <el-button
-                                type="text"
-                                size="small"
-                                @click.stop="getOtaDetail(scope.row)"
-                            >升级详情</el-button>
-                        </div>
+                        <span>{{ handleFormatter(scope.row, 'fwVersion', scope.row.fwVersion) }}</span>
+                        <el-button
+                            type="text"
+                            size="small"
+                            style="margin-left: 10px;"
+                            @click.stop="getOtaDetail(scope.row)"
+                        >升级详情</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
-                <el-table-column prop="status" label="在线状态" :formatter="isOnline"></el-table-column>
+                <el-table-column label="在线状态">
+                    <template slot-scope="scope">
+                        <span
+                            class="cell-item"
+                            :class="scope.row.status === 1? 'online': 'outline'"
+                        ></span>
+                        <span>{{ handleFormatter(scope.row, 'status', scope.row.status) }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
+                        <el-button
+                            type="text"
+                            size="small"
+                            @click.stop="handleUpgrade(scope.row)"
+                        >升级</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -97,8 +114,6 @@ import {
 } from "@/api/device/device";
 import { getProductList } from "@/api/product/product";
 export default {
-    name: "",
-    props: [""],
     data() {
         return {
             form: {
@@ -116,6 +131,7 @@ export default {
             upgradeDevice: "",
             dialogVisible: false,
             upgradeVisible: false,
+            chartVisible: false,
             groupVisible: false,
             title: "",
             value: "",
@@ -141,6 +157,10 @@ export default {
         this.getDevice();
     },
     methods: {
+        // 点击跳路由
+        expandDetail(row) {
+            this.$router.push({ path: `/device/${row.did}/detail` });
+        },
         // 获取产品名称和产品id
         getProductModel() {
             this.productModel = [];
@@ -167,7 +187,13 @@ export default {
             };
             getOTAProgress(data).then(res => {
                 this.progressList = res.payload;
-                this.upgradeVisible = true;
+                if (this.progressList.length > 0) {
+                    this.upgradeVisible = true;
+                } else {
+                    this.$message({
+                        message: "暂无正在升级的固件"
+                    });
+                }
             });
         },
         //获取设备列表
@@ -200,7 +226,6 @@ export default {
             this.form.page = value;
             this.getDevice();
         },
-
         handleeEquipment() {
             this.getDevice();
         },
@@ -215,24 +240,28 @@ export default {
             this.upgradeDevice = "";
             this.dialogVisible = value;
         },
-        // 更改名称
-        isOnline(val) {
-            if (val.status === 0) {
-                return "未知状态";
-            } else if (val.status === 1) {
-                return "在线";
-            } else if (val.status === 2) {
-                return "离线";
+        // 格式化表单显示
+        handleFormatter(row, column, cellValue) {
+            const prop = column.property || column;
+            let result;
+            switch (prop) {
+                case "status":
+                    if (cellValue === 0) {
+                        result = "未知状态";
+                    } else if (cellValue === 1) {
+                        result = "在线";
+                    } else if (cellValue === 2) {
+                        result = "离线";
+                    }
+                    break;
+                case "fwVersion":
+                    if (cellValue) {
+                        let reg = /\{|\}/g;
+                        result = JSON.stringify(cellValue).replace(reg, "");
+                    }
+                    break;
             }
-        },
-        //去除大括号
-        removeBlock(str) {
-            if (str) {
-                var reg = /\{|\}/g;
-                str = JSON.stringify(str).replace(reg, "");
-                return str;
-            }
-            return str;
+            return result;
         }
     },
 

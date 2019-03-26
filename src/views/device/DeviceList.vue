@@ -63,13 +63,13 @@
                 </el-table-column>-->
                 <el-table-column label="软件版本号" width="200">
                     <template slot-scope="scope">
-                        <span>{{removeBlock(scope.row.fwVersion)}}</span>
-                            <el-button
-                                type="text"
-                                size="small"
-                                style="margin-left: 10px;"
-                                @click.stop="getOtaDetail(scope.row)"
-                            >升级详情</el-button>
+                        <span>{{ handleFormatter(scope.row, 'fwVersion', scope.row.fwVersion) }}</span>
+                        <el-button
+                            type="text"
+                            size="small"
+                            style="margin-left: 10px;"
+                            @click.stop="getOtaDetail(scope.row)"
+                        >升级详情</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
@@ -79,7 +79,7 @@
                             class="cell-item"
                             :class="scope.row.status === 1? 'online': 'outline'"
                         ></span>
-                        <span>{{ isOnline(scope.row.status) }}</span>
+                        <span>{{ handleFormatter(scope.row, 'status', scope.row.status) }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作">
@@ -131,8 +131,6 @@ import {
 } from "@/api/device/device";
 import { getProductList } from "@/api/product/product";
 export default {
-    name: "",
-    props: [""],
     data() {
         return {
             form: {
@@ -201,14 +199,13 @@ export default {
             };
             getOTAProgress(data).then(res => {
                 this.progressList = res.payload;
-                if(this.progressList.length > 0) {
+                if (this.progressList.length > 0) {
                     this.upgradeVisible = true;
                 } else {
                     this.$message({
-                        message: '暂无正在升级的固件'
-                    })
+                        message: "暂无正在升级的固件"
+                    });
                 }
-
             });
         },
         //获取设备列表
@@ -239,7 +236,6 @@ export default {
             this.form.page = value;
             this.getDevice();
         },
-
         handleeEquipment() {
             this.getDevice();
         },
@@ -257,32 +253,33 @@ export default {
             this.upgradeDevice = "";
             this.dialogVisible = value;
         },
-        // 更改名称
-        isOnline(val) {
-            if (val === 0) {
-                return "未知状态";
-            } else if (val === 1) {
-                return "在线";
-            } else if (val === 2) {
-                return "离线";
+        // 格式化表单显示
+        handleFormatter(row, column, cellValue) {
+            const prop = column.property || column;
+            let result;
+            switch (prop) {
+                case "status":
+                    if (cellValue === 0) {
+                        result = "未知状态";
+                    } else if (cellValue === 1) {
+                        result = "在线";
+                    } else if (cellValue === 2) {
+                        result = "离线";
+                    }
+                    break;
+                case "fwVersion":
+                    if (cellValue) {
+                        let reg = /\{|\}/g;
+                        result = JSON.stringify(cellValue).replace(reg, "");
+                    }
+                    break;
             }
-        },
-        //去除大括号
-        removeBlock(str) {
-            if (str) {
-                var reg = /\{|\}/g;
-                str = JSON.stringify(str).replace(reg, "");
-                return str;
-            }
-            return str;
+            return result;
         }
-    },
-
-    watch: {}
+    }
 };
 </script>
 <style lang='less' scoped>
-
 .upgrade-wrapper {
     display: flex;
     text-align: center;

@@ -6,7 +6,7 @@
                     <div class="state-content">
                         <div class="state-name">
                             <span>实时充电电压</span>
-                            <el-button  @click="showChart" type="text" size="small">查看历史数据</el-button>
+                            <el-button @click="showChart" type="text" size="small">查看历史数据</el-button>
                         </div>
                         <div class="state-num">30</div>
                         <div class="state-time">2019/03/18 16:00:28</div>
@@ -18,7 +18,7 @@
                     <div class="state-content">
                         <div class="state-name">
                             <span>实时充电电压</span>
-                            <el-button  @click="showChart" type="text" size="small">查看历史数据</el-button>
+                            <el-button @click="showChart" type="text" size="small">查看历史数据</el-button>
                         </div>
                         <div class="state-num">30</div>
                         <div class="state-time">2019/03/18 16:00:28</div>
@@ -30,7 +30,7 @@
                     <div class="state-content">
                         <div class="state-name">
                             <span>实时充电电压</span>
-                            <el-button  @click="showChart" type="text" size="small">查看历史数据</el-button>
+                            <el-button @click="showChart" type="text" size="small">查看历史数据</el-button>
                         </div>
                         <div class="state-num">30</div>
                         <div class="state-time">2019/03/18 16:00:28</div>
@@ -38,7 +38,7 @@
                 </el-card>
             </el-col>
         </el-row>
-        <el-dialog title="提示" :visible.sync="dialogVisible" :before-close="handleClose">
+        <el-dialog title="提示" :visible.sync="dialogVisible">
             <ve-line :data="chartData"></ve-line>
         </el-dialog>
     </div>
