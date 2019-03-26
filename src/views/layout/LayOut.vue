@@ -4,11 +4,14 @@
             <sidebar-nav :isCollapse="isCollapse"></sidebar-nav>
         </el-aside>
         <el-container class="main-box">
-            <el-header  class="header-box">
+            <el-header class="header-box">
                 <header-nav @listenCollapse="handleCollapse"></header-nav>
             </el-header>
+            <tags-view></tags-view>
             <el-main>
-                <router-view></router-view>
+                <keep-alive>
+                    <router-view></router-view>
+                </keep-alive>
             </el-main>
         </el-container>
     </el-container>
@@ -17,6 +20,7 @@
 <script>
 import SidebarNav from "@/components/sidebar/Index";
 import HeaderNav from "@/components/header/HeaderNav";
+import TagsView from "@/components/tagsView/TagsView";
 export default {
     name: "",
     data() {
@@ -26,7 +30,8 @@ export default {
     },
     components: {
         SidebarNav,
-        HeaderNav
+        HeaderNav,
+        TagsView
     },
     methods: {
         handleCollapse(value) {
@@ -38,10 +43,10 @@ export default {
 <style lang="less">
 .el-aside {
     max-width: 200px !important;
-    width: auto!important;
+    width: auto !important;
     overflow: hidden;
     text-align: left;
-    &>.el-menu {
+    & > .el-menu {
         height: 100%;
     }
 }
@@ -81,7 +86,7 @@ export default {
     color: #333;
 }
 .el-progress__text {
-    font-size: 12px!important;
+    font-size: 12px !important;
 }
 .el-icon-refresh:hover {
     color: @baseColor;
@@ -91,6 +96,10 @@ export default {
 <style lang="less" scoped>
 .header-box {
     height: @menuHeight!important;
+    overflow: hidden !important;
+}
+.clearfix {
+    overflow: hidden;
 }
 </style>
 

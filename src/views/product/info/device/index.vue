@@ -133,8 +133,6 @@ export default {
             upgradeVisible: false,
             chartVisible: false,
             groupVisible: false,
-            title: "",
-            value: "",
             count: "",
             online: "",
             offline: "",

@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 const LayOut = () => import("@/views/layout/LayOut");
 Vue.use(Router);
-const routes = [
+ export const routes = [
     { path: "", component: () => import("@/views/redirect/Index") },
     { path: "/login", component: () => import("@/views/login/LogIn") },
     {
@@ -18,7 +18,9 @@ const routes = [
         children: [
             {
                 path: "product",
-                component: () => import("@/views/product/ProductList")
+                name: "产品列表",
+                component: () => import("@/views/product/ProductList"),
+                meta: { title: '产品列表' }
             },
             {
                 path: "product/:id",
@@ -26,17 +28,17 @@ const routes = [
                 children: [
                     {
                         path: "detail",
-                        component: () => import("@/views/product/info/BaseInfo")
+                        component: () => import("@/views/product/info/BaseInfo"),
                     },
                     {
                         path: "property",
                         component: () =>
-                            import("@/views/product/info/property/PropertyList")
+                            import("@/views/product/info/property/PropertyList"),
                     },
                     {
                         path: "firmware",
                         component: () =>
-                            import("@/views/product/info/firmware/FirmwareList")
+                            import("@/views/product/info/firmware/FirmwareList"),
                     },
                     {
                         path: "device",
@@ -52,7 +54,9 @@ const routes = [
         children: [
             {
                 path: "device",
-                component: () => import("@/views/device/DeviceList")
+                name: "设备列表",
+                component: () => import("@/views/device/DeviceList"),
+                meta: { title: '设备列表' }
             },
             {
                 path: "device/:id",
@@ -77,7 +81,9 @@ const routes = [
         children: [
             {
                 path: "rule",
-                component: () => import("@/views/rule/RuleEngine")
+                name: "规则引擎",
+                component: () => import("@/views/rule/RuleEngine"),
+                meta: { title: '规则引擎' }
             },
             {
                 path: "rule/:id",
@@ -111,9 +117,11 @@ const routes = [
     {
         path: "/monitor",
         component: LayOut,
+
         children: [
-            { path: "/log", component: () => import("@/views/monitor/Log") },
-            { path: "/debug", component: () => import("@/views/monitor/Debug") }
+            { path: "/log", 
+                name: "日志服务", component: () => import("@/views/monitor/Log") },
+            { path: "/debug", name: "设备调试",component: () => import("@/views/monitor/Debug") }
         ]
     },
     {
