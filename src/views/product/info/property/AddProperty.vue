@@ -179,7 +179,6 @@ export default {
     },
     watch: {
         property(newValue) {
-            console.log("newValue: " + JSON.stringify(newValue));
             this.propertForm = newValue;
             if (newValue.dataType.type === "enum") {
                 this.enumList = newValue.dataType.specs;
@@ -225,19 +224,11 @@ export default {
                 });
             }
         },
-        // 修改metedata结构
+        // 枚举类型的数据，需要先转换metedata数据结构
         changeMetadata() {
             if (this.propertForm.dataType.type === "enum") {
                 this.propertForm.dataType.specs = this.enumList;
             }
-            // } else if (this.propertForm.dataType.type === "array") {
-            //     // const propertArray = {};
-            //     // const item = {};
-            //     // item["type"] = this.propertForm.elemenType;
-            //     // propertArray.item = item;
-            //     // propertArray.size = this.propertForm.arraySize;
-            //     // this.propertForm.dataType.specs = propertArray;
-            // }
         },
         // 关闭表单，清空内容
         handleClose() {

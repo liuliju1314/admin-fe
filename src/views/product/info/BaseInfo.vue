@@ -56,8 +56,8 @@
                 </td>
             </tr>-->
         </table>
-        <el-button @click="productOp" style="padding: 10px 22px; margin: 30px 0 0 100px;">编辑</el-button>
-        <product-create :product="product" :visible="visible" @listenOp="listenOp"></product-create>
+        <el-button @click="editProduct" style="padding: 10px 22px; margin: 30px 0 0 100px;">编辑</el-button>
+        <product-create :product="product" :visible="visible" @listenOp="closeDialog"></product-create>
     </div>
 </template>
 
@@ -79,10 +79,10 @@ export default {
     },
     created() {
         this.pid = { pid: this.$route.params.id };
-        this.handleProductOp();
+        this.getProductInfo();
     },
     methods: {
-        handleProductOp() {
+        getProductInfo() {
             getProductInfo(this.pid)
                 .then(res => {
                     this.productInfo = res.payload;
@@ -93,14 +93,16 @@ export default {
                     });
                 });
         },
-        productOp() {
+        //更新产品信息
+        editProduct() {
             this.visible = true;
             this.product = this.productInfo;
         },
-        listenOp(value) {
+        //关闭更新产品信息对话框
+        closeDialog(value) {
             this.product = "";
             this.visible = value;
-            this.handleProductOp();
+            this.getProductInfo();
         }
     }
 };

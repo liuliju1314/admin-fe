@@ -48,9 +48,6 @@
                 <el-table-column label="创建时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
                 </el-table-column>
-                <!-- <el-table-column label="更新时间">
-                    <template slot-scope="scope">{{ changeTimeFormater(scope.row.updatedAt) }}</template>
-                </el-table-column>-->
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
                         <div>
@@ -91,7 +88,7 @@
                 ></el-pagination>
             </div>
         </div>
-        <product-create :visible="visible" :product="opProduct" @listenOp="listenOp"></product-create>
+        <product-create :visible="visible" @listenOp="closeDialog"></product-create>
     </el-card>
 </template>
 
@@ -119,8 +116,7 @@ export default {
             productModel: [], //存放所有产品名称以及产品Id
             count: "",
             productList: [],
-            visible: false,
-            opProduct: ""
+            visible: false
         };
     },
 
@@ -175,12 +171,10 @@ export default {
         },
         // 产品添加
         productOp() {
-            this.opProduct = "";
             this.visible = true;
         },
         // 对话框关闭
-        listenOp() {
-            this.opProduct = "";
+        closeDialog() {
             this.visible = false;
             this.handleProductList(1);
         },
@@ -243,9 +237,7 @@ export default {
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");
         }
-    },
-
-    watch: {}
+    }
 };
 </script>
 <style lang='less' scoped>
