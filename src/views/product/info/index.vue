@@ -28,8 +28,8 @@
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/product/'+productID+'/device'"
-            >设备管理</router-link>
+                :to="'/product/'+productID+'/data'"
+            >数据分析</router-link>
         </div>
 
         <router-view></router-view>
@@ -46,8 +46,10 @@ export default {
     },
     created() {
         this.productID = this.$route.params.id;
+        console.log("this.productID: " + this.productID);
         this.productName = localStorage.getItem("productName");
-    }
+    },
+    components: {}
 };
 </script>
 <style lang="less">
