@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { getProductInfo } from "@/api/product/product";
 export default {
     data() {
         return {
@@ -46,9 +47,27 @@ export default {
     },
     created() {
         this.productID = this.$route.params.id;
-        this.productName = localStorage.getItem("productName");
+        this.handleProductInfo();
     },
-    components: {}
+    watch: {
+        $route() {
+            this.productID = this.$route.params.id;
+            this.handleProductInfo();
+        }
+    },
+    methods: {
+        handleProductInfo() {
+            getProductInfo(this.productID)
+                .then(res => {
+                    this.productName = res.payload.name;
+                })
+                .catch(err => {
+                    this.$message({
+                        message: err.msg
+                    });
+                });
+        }
+    }
 };
 </script>
 <style lang="less">

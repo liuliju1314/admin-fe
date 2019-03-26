@@ -25,7 +25,7 @@ export default {
     name: "",
     data() {
         return {
-            isCollapse: false
+            isCollapse: true
         };
     },
     components: {

@@ -71,11 +71,13 @@ export default {
     },
     methods: {
         isActive(route) {
-            return route.path === this.$route.path;
+            return route.path === this.$route.path || route.title === this.$route.params.id;
         },
         addTags() {
+            
             const { name } = this.$route;
-            if (name) {
+            const id = this.$route.params.id;
+            if (name || id) {
                 this.$store.dispatch("addView", this.$route);
             }
             return false;
@@ -137,7 +139,7 @@ export default {
                 this.$router.push(latestView);
             } else {
                 // You can set another route
-                this.$router.push("/");
+                this.$router.push("/home");
             }
         },
         openMenu(tag, e) {

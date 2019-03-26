@@ -143,11 +143,19 @@ export default {
             }
         };
     },
+    watch: {
+        $route() {
+            this.init();
+        }
+    },
     created() {
-        this.form.pid = this.$route.params.id;
-        this.handlefirmwareList(1);
+        this.init();
     },
     methods: {
+        init() {
+            this.form.pid = this.$route.params.id;
+            this.handlefirmwareList(1);
+        },
         handleGroupFormat(row) {
             if (row.group === "release") {
                 return "正式版";

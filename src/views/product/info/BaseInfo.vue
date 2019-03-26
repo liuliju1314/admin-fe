@@ -77,12 +77,21 @@ export default {
     components: {
         ProductCreate
     },
+
     created() {
-        this.pid = { pid: this.$route.params.id };
-        this.getProductInfo();
+        this.init();
+    },
+    watch: {
+        $route() {
+            this.init();
+        }
     },
     methods: {
-        getProductInfo() {
+        init() {
+            this.pid = { pid: this.$route.params.id };
+            this.handleProductInfo();
+        },
+        handleProductInfo() {
             getProductInfo(this.pid)
                 .then(res => {
                     this.productInfo = res.payload;

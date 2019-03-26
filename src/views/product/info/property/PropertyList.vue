@@ -98,20 +98,28 @@ export default {
         AddProperty,
         CheckProperty
     },
-    watch: {},
+    watch: {
+        $route() {
+            this.init();
+        }
+    },
     computed: {},
     created() {
-        this.pid = this.$route.params.id;
-        getProductInfo({ pid: this.pid })
-            .then(res => {
-                this.proStatus = res.payload.productStatus;
-            })
-            .catch(err => {
-                return err;
-            });
-        this.getProperty();
+        this.init();
     },
     methods: {
+        // 初始化
+        init() {
+            this.pid = this.$route.params.id;
+            getProductInfo({ pid: this.pid })
+                .then(res => {
+                    this.proStatus = res.payload.productStatus;
+                })
+                .catch(err => {
+                    return err;
+                });
+            this.getProperty();
+        },
         // 获取属性列表
         getProperty() {
             const data = {

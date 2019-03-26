@@ -18,7 +18,7 @@ Vue.use(Router);
         children: [
             {
                 path: "product",
-                name: "产品列表",
+                name: "ProductList",
                 component: () => import("@/views/product/ProductList"),
                 meta: { title: '产品列表' }
             },
@@ -54,7 +54,7 @@ Vue.use(Router);
         children: [
             {
                 path: "device",
-                name: "设备列表",
+                name: "DeviceList",
                 component: () => import("@/views/device/DeviceList"),
                 meta: { title: '设备列表' }
             },
@@ -81,7 +81,7 @@ Vue.use(Router);
         children: [
             {
                 path: "rule",
-                name: "规则引擎",
+                name: "RuleEngine",
                 component: () => import("@/views/rule/RuleEngine"),
                 meta: { title: '规则引擎' }
             },
@@ -111,7 +111,7 @@ Vue.use(Router);
         path: "/user",
         component: LayOut,
         children: [
-            { path: "", component: () => import("@/views/user/AccountManage") }
+            { path: "", name: "AccountManage", component: () => import("@/views/user/AccountManage") , meta: { title: '管理员列表' }}
         ]
     },
     {
@@ -120,8 +120,8 @@ Vue.use(Router);
 
         children: [
             { path: "/log", 
-                name: "日志服务", component: () => import("@/views/monitor/Log") },
-            { path: "/debug", name: "设备调试",component: () => import("@/views/monitor/Debug") }
+                name: "Log", component: () => import("@/views/monitor/Log"), meta: {title: '日志服务'} },
+            { path: "/debug", name: "Debug", component: () => import("@/views/monitor/Debug"), meta: { title: '设备调试' } }
         ]
     },
     {
