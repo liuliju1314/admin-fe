@@ -117,8 +117,6 @@ export default {
             dialogVisible: false,
             upgradeVisible: false,
             groupVisible: false,
-            title: "",
-            value: "",
             count: "",
             online: "",
             offline: "",
