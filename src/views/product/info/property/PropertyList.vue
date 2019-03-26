@@ -87,11 +87,11 @@ export default {
             count: "",
             isEdit: "",
             title: "添加属性",
-            property: "",
-            dialogVisible: false,
-            dialogVisibleProperty: false,
-            propertyJson: "",
-            proStatus: ""
+            property: "", //属性编辑时的传输字段
+            dialogVisible: false, //添加属性对话框
+            dialogVisibleProperty: false, //属性文件对话框显示
+            propertyJson: "", //查看属性的json文件
+            proStatus: "" //产品是否已发布
         };
     },
     components: {

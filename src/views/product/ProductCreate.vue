@@ -15,10 +15,7 @@
                 <el-form-item label="产品型号" prop="model">
                     <el-input v-model="form.model"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="产品分类" prop="category">
-                    <el-input v-model="form.category"></el-input>
-                </el-form-item>-->
-                <el-form-item label="产品分类">
+                <el-form-item label="产品分类" prop="category">
                     <el-input v-model="form.category"></el-input>
                 </el-form-item>
                 <el-form-item label="升级方式" prop="upMethod">
@@ -27,7 +24,7 @@
                         <el-radio label="auto">静默升级</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="固件名称">
+                <el-form-item label="固件名称" prop="fwGroup">
                     <div>
                         <span style="display: inline-block; width: 43%">标识符:</span>
                         <span style="display: inline-block; width: 40%">描述:</span>
@@ -58,7 +55,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="beforeClose" style="padding: 10px 22px">取消</el-button>
-                    <el-button type="primary" @click="createProduct" style="padding: 10px 22px">确定</el-button>
+                    <el-button type="primary" @click="isCreatOrEdit" style="padding: 10px 22px">确定</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -72,7 +69,6 @@ export default {
     props: ["product", "visible"],
     data() {
         return {
-            categoryOptions: [{ value: "100", label: "智能家居" }],
             form: {
                 name: "",
                 model: "",
@@ -103,16 +99,15 @@ export default {
                         message: "请选择升级方式",
                         trigger: "blur"
                     }
+                ],
+                category: [
+                    {
+                        required: true,
+                        message: "请添加产品分类",
+                        trigger: "blur"
+                    }
                 ]
-                // category: [
-                //     {
-                //         required: true,
-                //         message: "请添加或选择产品分类",
-                //         trigger: "blur"
-                //     }
-                // ]
-            },
-            dialogVisible: false
+            }
         };
     },
     watch: {
@@ -136,10 +131,11 @@ export default {
     methods: {
         beforeClose() {
             this.$refs.form.resetFields();
+            this.form.fwGroup = [{ name: "", desc: "" }];
             this.$emit("listenOp", false);
         },
-
-        createProduct() {
+        // 点击确定时判断是添加还是更新
+        isCreatOrEdit() {
             this.$refs.form.validate(valid => {
                 if (valid) {
                     if (this.product) {
