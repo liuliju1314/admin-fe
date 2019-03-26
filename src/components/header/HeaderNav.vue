@@ -1,5 +1,5 @@
 <template>
-    <ul class="nav-container">
+    <ul class="nav-container clearfix">
         <li class="icon-box nav-item" @click="triggerCollapse">
             <svg-icon v-if="!isCollapse" icon-class="takeup"></svg-icon>
             <svg-icon v-else icon-class="open"></svg-icon>
@@ -26,12 +26,15 @@
 </template>
 
 <script>
+
 export default {
     name: "HeaderNav",
     data() {
         return {
             isCollapse: false
         };
+    },
+    components: {
     },
     methods: {
         triggerCollapse() {

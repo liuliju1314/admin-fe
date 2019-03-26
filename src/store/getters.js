@@ -1,9 +1,6 @@
 const getters = {
-    // code : state => state.user.code,
-    // phone: state => state.user.user.phone,
-    // username: state => state.user.user.username,
-    // avatar: state => state.user.user.avatar,
-    // uid: state => Number(state.user.uid)
-    token: state => state.user.token
+    token: state => state.user.token,
+    visitedViews: state => state.tagsView.visitedViews,
+    cachedViews: state => state.tagsView.cachedViews
 }
 export default getters
