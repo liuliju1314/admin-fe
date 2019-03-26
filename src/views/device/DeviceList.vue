@@ -6,12 +6,13 @@
         <div class="device-wrapper">
             <el-form :inline="true" class="demo-form-inline" size="small">
                 <!-- 测站类型框 -->
-                <el-form-item label="设备类型">
+                <el-form-item label="产品名称">
                     <el-select
                         v-model="form.pid"
-                        placeholder="请选择设备类型"
+                        placeholder="请选择产品名称"
                         clearable
                         @click.native="getProductModel()"
+                        @change="handleeEquipment"
                     >
                         <el-option
                             v-for="item in productModel"
@@ -22,7 +23,11 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="在线状态">
-                    <el-select v-model="form.status" placeholder="请选择在线状态">
+                    <el-select
+                        v-model="form.status"
+                        placeholder="请选择在线状态"
+                        @change="handleeEquipment"
+                    >
                         <el-option label="全部" value="0"></el-option>
                         <el-option label="在线" value="1"></el-option>
                         <el-option label="离线" value="2"></el-option>
@@ -35,6 +40,7 @@
                     <el-button type="primary" @click="handleeEquipment()">查询</el-button>
                 </el-form-item>
             </el-form>
+            <div class="device-log">当前设备总数： {{count}}，其中在线：{{online}}，离线：{{offline}}.</div>
             <!-- 循环的设备列表 -->
             <el-table
                 :data="deviceList"
@@ -122,7 +128,7 @@
 </template>
 
 <script>
-import VueProgress from "../product/info/device/VueProgress";
+import VueProgress from "./info/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
 import {
     getDeviceList,
@@ -152,6 +158,8 @@ export default {
             title: "",
             value: "",
             count: "",
+            online: "",
+            offline: "",
             btnShow: false,
             progressList: []
         };
@@ -214,6 +222,8 @@ export default {
                 .then(res => {
                     this.deviceList = res.payload.items;
                     this.count = res.payload.total;
+                    this.online = res.payload.online;
+                    this.offline = res.payload.offline;
                 })
                 .catch(error => {
                     return error;

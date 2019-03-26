@@ -78,17 +78,13 @@
             ></el-pagination>
         </div>
         <!-- 添加固件对话框 -->
-        <add-firmware @listenAdd="listenAdd" :visible="visible" :fw="opFw"></add-firmware>
+        <add-firmware @listenAdd="listenAdd" :visible="visible" :fwInfo="opFw"></add-firmware>
     </el-main>
 </template>
 
 <script>
 import AddFirmware from "./AddFirmware";
-import {
-    getfirmwareList,
-    upgradeFirmware,
-    reviewFirmware
-} from "@/api/firmware/firmware";
+import { getfirmwareList, reviewFirmware } from "@/api/firmware/firmware";
 export default {
     components: {
         AddFirmware
@@ -165,10 +161,7 @@ export default {
                 return "测试版";
             }
         },
-        beforeCloseUp() {
-            this.$refs.upForm.resetFields();
-            this.upVisible = false;
-        },
+        //监听表单关闭
         listenAdd(value) {
             this.opFw = "";
             this.visible = value;
@@ -184,6 +177,7 @@ export default {
                 this.firmwareList = res.payload;
             });
         },
+        //固件验证
         FwDisable(fw) {
             reviewFirmware(fw)
                 .then(() => {
@@ -193,33 +187,10 @@ export default {
                     return err;
                 });
         },
-        upgradefirmware(fw) {
-            this.upVisible = true;
-            this.upForm.fw = fw;
-        },
-        submitUpFw() {
-            upgradeFirmware(this.upForm).then(() => {
-                this.$message({
-                    type: "success",
-                    message: "升级成功"
-                });
-            });
-        },
+        //添加或者编辑固件对话框
         showFwDialog(fw) {
             this.visible = true;
             this.opFw = fw;
-        },
-        // 提交固件编辑
-        submitEidtFw() {
-            this.$refs.editFwForm.validate(valid => {
-                if (valid) {
-                    this.$message({
-                        type: "success",
-                        message: "固件更新成功!"
-                    });
-                    this.beforeClose();
-                }
-            });
         }
     }
 };

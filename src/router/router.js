@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 const LayOut = () => import("@/views/layout/LayOut");
 Vue.use(Router);
- export const routes = [
+export const routes = [
     { path: "", component: () => import("@/views/redirect/Index") },
     { path: "/login", component: () => import("@/views/login/LogIn") },
     {
@@ -41,8 +41,8 @@ Vue.use(Router);
                             import("@/views/product/info/firmware/FirmwareList"),
                     },
                     {
-                        path: "device",
-                        component: () => import("@/views/product/info/device")
+                        path: "data",
+                        component: () => import("@/views/errorPage/404")
                     }
                 ]
             }
@@ -122,6 +122,7 @@ Vue.use(Router);
             { path: "/log", 
                 name: "Log", component: () => import("@/views/monitor/Log"), meta: {title: '日志服务'} },
             { path: "/debug", name: "Debug", component: () => import("@/views/monitor/Debug"), meta: { title: '设备调试' } }
+
         ]
     },
     {
