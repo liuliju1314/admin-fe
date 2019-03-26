@@ -146,12 +146,6 @@ export default {
 
     components: { DeviceUpgrade, VueProgress, VeLine },
 
-    computed: {},
-
-    beforeMount() {},
-
-    mounted() {},
-
     created() {
         this.form.pid = this.$route.params.id;
         this.getDevice();

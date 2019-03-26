@@ -103,7 +103,7 @@ import {
 } from "@/api/firmware/firmware";
 export default {
     name: "Addfirmware",
-    props: ["visible", "fw"],
+    props: ["visible", "fwInfo"],
     data() {
         var checkVersion = (rule, value, callback) => {
             if (!value) {
@@ -153,20 +153,21 @@ export default {
     },
     created() {
         this.form.pid = this.$route.params.id;
-        this.handleOp();
+        this.isFwInfo();
         this.getFwName();
     },
     watch: {
-        fw() {
-            this.handleOp();
+        fwInfo() {
+            this.isFwInfo();
         }
     },
     methods: {
-        handleOp() {
-            if (this.fw) {
+        //判断是固件新增还是编辑
+        isFwInfo() {
+            if (this.fwInfo) {
                 this.isEdit = true;
                 this.$nextTick(() => {
-                    this.form = { ...this.form, ...this.fw };
+                    this.form = { ...this.form, ...this.fwInfo };
                 });
             } else {
                 this.isEdit = false;
@@ -179,10 +180,6 @@ export default {
                 this.$refs.form.resetFields();
             });
             this.$emit("listenAdd", false);
-        },
-        clearFile(index) {
-            this.fileList.splice(index, 1, "");
-            this.files.splice(index, 1, "");
         },
         deleteUpload(index) {
             this.upload.splice(index, 1);
@@ -252,7 +249,7 @@ export default {
                             });
                     } else {
                         const data = {
-                            fwID: this.fw.fwID,
+                            fwID: this.fwInfo.fwID,
                             ...this.form
                         };
                         editFirmware(data).then(() => {
