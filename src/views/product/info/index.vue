@@ -47,8 +47,7 @@ export default {
     created() {
         this.productID = this.$route.params.id;
         this.productName = localStorage.getItem("productName");
-    },
-    components: {}
+    }
 };
 </script>
 <style lang="less">
