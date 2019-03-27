@@ -57,7 +57,7 @@ export default {
     },
     methods: {
         handleProductInfo() {
-            getProductInfo(this.productID)
+            getProductInfo({pid: this.productID})
                 .then(res => {
                     this.productName = res.payload.name;
                 })
