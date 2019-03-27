@@ -15,7 +15,7 @@
             <el-form-item label="标识符" prop="name">
                 <el-input v-model="propertForm.name"></el-input>
             </el-form-item>
-            <el-form-item label="属性类型" prop="dataType.type">
+            <el-form-item label="属性类型" prop="type">
                 <el-select v-model="propertForm.dataType.type" placeholder="请选择类型">
                     <el-option label="bool (布尔型)" value="bool"></el-option>
                     <el-option label="string (字符型)" value="text"></el-option>
