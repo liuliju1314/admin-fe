@@ -16,7 +16,7 @@
             <el-form-item label="标识符" prop="label">
                 <el-input v-model="propertForm.label" placeholder="仅支持大小写字母、数字"></el-input>
             </el-form-item>
-            <el-form-item label="属性类型" prop="dataTypeValid">
+            <el-form-item label="属性类型" prop="dataType.type">
                 <el-select v-model="propertForm.dataType.type" placeholder="请选择类型">
                     <el-option label="bool (布尔型)" value="bool"></el-option>
                     <el-option label="string (字符型)" value="text"></el-option>
@@ -129,15 +129,6 @@ import { addProperty, editProperty } from "@/api/property/property";
 export default {
     props: ["property", "isEdit"],
     data() {
-        let typeReg = (rule, value, callback) => {
-            console.log(value);   
-            if (!value) {
-
-                return callback(new Error("属性类型不能为空"));
-            } else {
-                callback();
-            }
-        };
         return {
             labelPosition: "right",
             enumList: [{ propertyValue: "", propertyDesc: "" }],
@@ -174,31 +165,31 @@ export default {
                         trigger: "blur"
                     }
                 ],
-                dataTypeValid: [
+                'dataType.type': [
                     {
                         required: true,
-                        validator: typeReg,
+                        message: "请选择属性类型",
                         trigger: "blur"
                     }
                 ],
                 permission: [
                     {
                         required: true,
-                        message: "请选择属性类型",
+                        message: "请选择读写权限",
                         trigger: "blur"
                     }
                 ],
                 history: [
                     {
                         required: true,
-                        message: "请选择属性类型",
+                        message: "请选择历史数据",
                         trigger: "blur"
                     }
                 ],
                 instant: [
                     {
                         required: true,
-                        message: "请选择属性类型",
+                        message: "请选择采样值",
                         trigger: "blur"
                     }
                 ]
