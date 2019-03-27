@@ -9,13 +9,13 @@
             class="form-box"
             size="small"
         >
-            <el-form-item label="属性名称" prop="label">
-                <el-input v-model="propertForm.label"></el-input>
-            </el-form-item>
-            <el-form-item label="标识符" prop="name">
+            <el-form-item label="属性名称" prop="name">
                 <el-input v-model="propertForm.name"></el-input>
             </el-form-item>
-            <el-form-item label="属性类型" prop="dataType.type">
+            <el-form-item label="标识符" prop="label">
+                <el-input v-model="propertForm.label" placeholder="仅支持大小写字母、数字"></el-input>
+            </el-form-item>
+            <el-form-item label="属性类型" prop="dataTypeValid">
                 <el-select v-model="propertForm.dataType.type" placeholder="请选择类型">
                     <el-option label="bool (布尔型)" value="bool"></el-option>
                     <el-option label="string (字符型)" value="text"></el-option>
@@ -124,11 +124,17 @@
 
 <script>
 import { addProperty, editProperty } from "@/api/property/property";
-// import { nextTick } from "q";
 
 export default {
     props: ["property", "isEdit"],
     data() {
+        let typeReg = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error("属性类型不能为空"));
+            } else {
+                callback();
+            }
+        };
         return {
             labelPosition: "right",
             enumList: [{ propertyValue: "", propertyDesc: "" }],
@@ -136,10 +142,10 @@ export default {
                 pid: "",
                 label: "",
                 name: "",
-                permission: "RW",
+                permission: "",
                 dialogVisible: "",
-                history: true,
-                instant: true,
+                history: "",
+                instant: "",
                 desc: "",
                 default: "",
                 elemenType: "",
@@ -152,8 +158,9 @@ export default {
             formRules: {
                 label: [
                     {
+                        pattern: /^[a-zA-Z\d]+$/,
                         required: true,
-                        message: "请输入属性名称",
+                        message: "请输入正确的格式",
                         trigger: "blur"
                     }
                 ],
@@ -164,7 +171,28 @@ export default {
                         trigger: "blur"
                     }
                 ],
-                type: [
+                dataTypeValid: [
+                    {
+                        required: true,
+                        validator: typeReg,
+                        trigger: "blur"
+                    }
+                ],
+                permission: [
+                    {
+                        required: true,
+                        message: "请选择属性类型",
+                        trigger: "blur"
+                    }
+                ],
+                history: [
+                    {
+                        required: true,
+                        message: "请选择属性类型",
+                        trigger: "blur"
+                    }
+                ],
+                instant: [
                     {
                         required: true,
                         message: "请选择属性类型",

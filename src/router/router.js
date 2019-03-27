@@ -41,7 +41,7 @@ export const routes = [
                             import("@/views/product/info/firmware/FirmwareList"),
                     },
                     {
-                        path: "data",
+                        path: "analyse",
                         component: () => import("@/views/errorPage/404")
                     }
                 ]
@@ -111,7 +111,7 @@ export const routes = [
         path: "/user",
         component: LayOut,
         children: [
-            { path: "", name: "AccountManage", component: () => import("@/views/user/AccountManage") , meta: { title: '管理员列表' }}
+            { path: "", name: "AccountManage", component: () => import("@/views/user/AccountManage"), meta: { title: '管理员列表' } }
         ]
     },
     {
@@ -119,8 +119,10 @@ export const routes = [
         component: LayOut,
 
         children: [
-            { path: "/log", 
-                name: "Log", component: () => import("@/views/monitor/Log"), meta: {title: '日志服务'} },
+            {
+                path: "/log",
+                name: "Log", component: () => import("@/views/monitor/Log"), meta: { title: '日志服务' }
+            },
             { path: "/debug", name: "Debug", component: () => import("@/views/monitor/Debug"), meta: { title: '设备调试' } }
 
         ]

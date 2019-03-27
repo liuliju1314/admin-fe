@@ -28,7 +28,7 @@
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/product/'+pid+'/data'"
+                :to="'/product/'+pid+'/analyse'"
             >数据分析</router-link>
         </div>
 
