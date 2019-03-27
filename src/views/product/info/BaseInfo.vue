@@ -89,7 +89,9 @@ export default {
     methods: {
         init() {
             this.pid = { pid: this.$route.params.id };
-            this.handleProductInfo();
+            if (this.pid) {
+                this.handleProductInfo();
+            }
         },
         handleProductInfo() {
             getProductInfo(this.pid)

@@ -111,14 +111,16 @@ export default {
         // 初始化
         init() {
             this.pid = this.$route.params.id;
-            getProductInfo({ pid: this.pid })
-                .then(res => {
-                    this.proStatus = res.payload.productStatus;
-                })
-                .catch(err => {
-                    return err;
-                });
-            this.getProperty();
+            if (this.pid) {
+                getProductInfo({ pid: this.pid })
+                    .then(res => {
+                        this.proStatus = res.payload.productStatus;
+                    })
+                    .catch(err => {
+                        return err;
+                    });
+                this.getProperty();
+            }
         },
         // 获取属性列表
         getProperty() {

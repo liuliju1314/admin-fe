@@ -112,7 +112,6 @@ export default {
                 pageSize: 10,
                 isPage: true
             },
-            isPage: false, //获取所有产品名称以及产品Id,不分页
             productModel: [], //存放所有产品名称以及产品Id
             count: "",
             productList: [],
@@ -121,7 +120,7 @@ export default {
     },
 
     created() {
-        this.handleProductList();
+        this.handleProductList(1);
     },
 
     components: {
@@ -132,15 +131,13 @@ export default {
         // 获取产品名称和产品id
         getProductModel() {
             this.productModel = [];
-            getProductList(this.isPage)
+            getProductList({isPage: false})
                 .then(res => {
                     res.payload.result.map(item => {
                         const obj = {
-                            pid: "",
-                            name: ""
+                            pid: item.pid,
+                            name: item.name
                         };
-                        obj.pid = item.pid;
-                        obj.name = item.name;
                         this.productModel.push(obj);
                     });
                 })
@@ -186,7 +183,6 @@ export default {
             }).then(() => {
                 deleteProduct({ pid: product.pid })
                     .then(() => {
-                        console.log("删除成功");
                         this.$message({
                             type: "success",
                             message: "删除成功!"

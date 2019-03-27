@@ -52,12 +52,14 @@ export default {
     watch: {
         $route() {
             this.productID = this.$route.params.id;
-            this.handleProductInfo();
+            if (this.productID) {
+                this.handleProductInfo();
+            }
         }
     },
     methods: {
         handleProductInfo() {
-            getProductInfo({pid: this.productID})
+            getProductInfo({ pid: this.productID })
                 .then(res => {
                     this.productName = res.payload.name;
                 })

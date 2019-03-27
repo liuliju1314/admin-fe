@@ -150,7 +150,9 @@ export default {
     methods: {
         init() {
             this.form.pid = this.$route.params.id;
-            this.handlefirmwareList(1);
+            if (this.form.pid) {
+                this.handlefirmwareList(1);
+            }
         },
         handleGroupFormat(row) {
             if (row.group === "release") {
