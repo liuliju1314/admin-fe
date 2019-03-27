@@ -71,7 +71,8 @@ export default {
             pid: "",
             productInfo: [],
             visible: false,
-            product: ""
+            product: "",
+            i: 0
         };
     },
     components: {
@@ -88,13 +89,13 @@ export default {
     },
     methods: {
         init() {
-            this.pid = { pid: this.$route.params.id };
+            this.pid = this.$route.params.id ;
             if (this.pid) {
                 this.handleProductInfo();
             }
         },
         handleProductInfo() {
-            getProductInfo(this.pid)
+            getProductInfo({pid: this.pid})
                 .then(res => {
                     this.productInfo = res.payload;
                 })

@@ -7,28 +7,28 @@
                     style="color: rgba(0,0,0,.45);text-decoration: none;"
                 >产品管理</router-link>
                 <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>
-                {{productID}}
+                {{pid}}
             </div>
             <div class="card-title">{{productName}}</div>
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/product/'+productID+'/detail'"
+                :to="'/product/'+pid+'/detail'"
             >基本信息</router-link>
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/product/'+productID+'/property'"
+                :to="'/product/'+pid+'/property'"
             >属性管理</router-link>
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/product/'+productID+'/firmware'"
+                :to="'/product/'+pid+'/firmware'"
             >固件升级</router-link>
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/product/'+productID+'/data'"
+                :to="'/product/'+pid+'/data'"
             >数据分析</router-link>
         </div>
 
@@ -41,25 +41,25 @@ import { getProductInfo } from "@/api/product/product";
 export default {
     data() {
         return {
-            productID: "",
+            pid: "",
             productName: ""
         };
     },
     created() {
-        this.productID = this.$route.params.id;
+        this.pid = this.$route.params.id;
         this.handleProductInfo();
     },
     watch: {
         $route() {
-            this.productID = this.$route.params.id;
-            if (this.productID) {
+            this.pid = this.$route.params.id;
+            if (this.pid) {
                 this.handleProductInfo();
             }
         }
     },
     methods: {
         handleProductInfo() {
-            getProductInfo({ pid: this.productID })
+            getProductInfo({ pid: this.pid })
                 .then(res => {
                     this.productName = res.payload.name;
                 })

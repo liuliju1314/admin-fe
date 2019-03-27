@@ -60,9 +60,23 @@ export default {
             ]
         };
     },
-    watch: {},
+    watch: {
+        $route() {
+            this.init();
+        }
+    },
     computed: {},
+    created() {
+        this.init();
+    },
+    mounted() {},
     methods: {
+        init() {
+            this.form.did = this.$route.params.id;
+            if (this.form.did) {
+                this.getDevice;
+            }
+        },
         //获取设备列表
         getDevice() {
             getDeviceList(this.form)
@@ -91,12 +105,7 @@ export default {
                 return "离线";
             }
         }
-    },
-    created() {
-        this.form.did = this.$route.params.id;
-        this.getDevice();
-    },
-    mounted() {}
+    }
 };
 </script>
 <style lang="less" scoped>
