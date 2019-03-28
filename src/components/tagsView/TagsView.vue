@@ -20,15 +20,6 @@
                 />
             </router-link>
         </scroll-pane>
-        <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-            <li @click="refreshSelectedTag(selectedTag)">刷新</li>
-            <li
-                v-if="!(selectedTag.meta && selectedTag.meta.affix)"
-                @click="closeSelectedTag(selectedTag)"
-            >关闭</li>
-            <li @click="closeOthersTags">关闭其他</li>
-            <li @click="closeAllTags(selectedTag)">关闭所有</li>
-        </ul>
     </div>
 </template>
 
@@ -38,7 +29,6 @@ export default {
     components: { ScrollPane },
     data() {
         return {
-            visible: false,
             top: 0,
             left: 0,
             selectedTag: {},
@@ -115,22 +105,6 @@ export default {
                 if (this.isActive(view)) {
                     this.toLastView(visitedViews);
                 }
-            });
-        },
-        closeOthersTags() {
-            this.$router.push(this.selectedTag);
-            this.$store
-                .dispatch("delOthersViews", this.selectedTag)
-                .then(() => {
-                    this.moveToCurrentTag();
-                });
-        },
-        closeAllTags(view) {
-            this.$store.dispatch("delAllViews").then(({ visitedViews }) => {
-                if (this.affixTags.some(tag => tag.path === view.path)) {
-                    return;
-                }
-                this.toLastView(visitedViews);
             });
         },
         toLastView(visitedViews) {

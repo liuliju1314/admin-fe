@@ -31,7 +31,7 @@ export default {
     name: "HeaderNav",
     data() {
         return {
-            isCollapse: false
+            isCollapse: true
         };
     },
     components: {
@@ -39,7 +39,6 @@ export default {
     methods: {
         triggerCollapse() {
             this.isCollapse = !this.isCollapse;
-            console.log(this.isCollapse);
             this.$emit("listenCollapse", this.isCollapse);
         },
         handleCommand(command) {
