@@ -114,7 +114,7 @@ export default {
         closeDialog(value) {
             this.product = "";
             this.visible = value;
-            this.getProductInfo();
+            this.handleProductInfo();
         }
     }
 };
