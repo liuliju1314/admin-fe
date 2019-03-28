@@ -42,7 +42,7 @@ export const routes = [
                     },
                     {
                         path: "analyse",
-                        component: () => import("@/views/errorPage/404")
+                        component: () => import("@/views/product/info/dataAnalyse/DataAnalyse")
                     }
                 ]
             }
