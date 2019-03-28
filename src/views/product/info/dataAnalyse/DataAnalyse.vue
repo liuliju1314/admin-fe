@@ -26,6 +26,7 @@
 
 <script>
 export default {
+    name: "DataAnalyse",
     components: {},
     props: {},
     data() {
