@@ -7,7 +7,7 @@
                     style="color: rgba(0,0,0,.45);text-decoration: none;"
                 >产品管理</router-link>
                 <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>
-                {{pid}}
+                产品详情
             </div>
             <div class="card-title">{{productName}}</div>
             <router-link
@@ -28,10 +28,14 @@
             <router-link
                 class="link-item"
                 active-class="active"
+                :to="'/product/'+pid+'/device'"
+            >设备管理</router-link>
+            <router-link
+                class="link-item"
+                active-class="active"
                 :to="'/product/'+pid+'/analyse'"
             >数据分析</router-link>
         </div>
-
         <router-view></router-view>
     </el-card>
 </template>
@@ -85,8 +89,8 @@ export default {
         padding-bottom: 0 !important;
     }
     .card-breadcrumb {
-        font-size: 14px;
-        margin-bottom: 24px;
+        font-size: 13px;
+        margin-bottom: 20px;
     }
     .card-title {
         color: rgba(0, 0, 0, 0.85);
@@ -96,10 +100,11 @@ export default {
     }
     .link-item {
         display: inline-block;
+        font-size: 13px;
         text-decoration: none;
         color: #333;
         margin-right: 32px;
-        padding: 24px 10px 8px 10px;
+        padding: 20px 10px 8px 10px;
     }
     .link-item.active {
         color: @baseColor;

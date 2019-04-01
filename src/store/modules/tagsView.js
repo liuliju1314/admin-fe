@@ -4,11 +4,13 @@ const tagsView = {
         cachedViews: []
     },
     mutations: {
-        ADD_VISITED_VIEW: (state, view) => {
-            if (state.visitedViews.some(v => v.path === view.path || v.title === view.params.id)) return
+        ADD_VISITED_VIEW: (state, { view, rootGetters }) => {
+            const name = rootGetters.name;
+            if (state.visitedViews.some(v => v.path === view.path || v.id === view.params.id || v.id === view.params.did)) return
             state.visitedViews.push(
                 Object.assign({}, view, {
-                    title: view.meta.title || view.params.id || 'no-name'
+                    title: view.meta.title || name || 'no-name',
+                    id: view.params.id || view.params.did || ''
                 })
             )
         },
@@ -76,8 +78,8 @@ const tagsView = {
             dispatch('addVisitedView', view)
             dispatch('addCachedView', view)
         },
-        addVisitedView({ commit }, view) {
-            commit('ADD_VISITED_VIEW', view)
+        addVisitedView({ commit, rootGetters }, view) {
+            commit('ADD_VISITED_VIEW', {view, rootGetters})
         },
         addCachedView({ commit }, view) {
             commit('ADD_CACHED_VIEW', view)

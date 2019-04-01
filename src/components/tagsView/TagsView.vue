@@ -61,12 +61,12 @@ export default {
     },
     methods: {
         isActive(route) {
-            return route.path === this.$route.path || route.title === this.$route.params.id;
+            return route.path === this.$route.path || route.id === this.$route.params.id || route.id === this.$route.params.did;
         },
         addTags() {
             
             const { name } = this.$route;
-            const id = this.$route.params.id;
+            const id = this.$route.params.id ||  this.$route.params.did;
             if (name || id) {
                 this.$store.dispatch("addView", this.$route);
             }

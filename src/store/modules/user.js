@@ -1,6 +1,5 @@
-// import { userLogin, userLogout } from '@/api/user/user'
+
 import { userLogin,userLogout} from "@/api/user/user";
-// import { setToken, getStorage, getJsonStorage, setStorage } from '@/utils/auth';
 import { setToken, removeToken, getStorage, setStorage } from '@/utils/auth';
 
 const user = {

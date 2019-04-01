@@ -41,6 +41,11 @@ export const routes = [
                             import("@/views/product/info/firmware/FirmwareList"),
                     },
                     {
+                        path: "device",
+                        component: () =>
+                            import("@/views/product/device/DeviceList"),
+                    },
+                    {
                         path: "analyse",
                         component: () => import("@/views/product/info/dataAnalyse/DataAnalyse")
                     }
@@ -53,13 +58,7 @@ export const routes = [
         component: LayOut,
         children: [
             {
-                path: "device",
-                name: "DeviceList",
-                component: () => import("@/views/device/DeviceList"),
-                meta: { title: '设备列表' }
-            },
-            {
-                path: "device/:id",
+                path: "device/:did",
                 component: () => import("@/views/device/info"),
                 children: [
                     {

@@ -29,7 +29,18 @@
                         <div>
                             <h3>设备编辑</h3>
                         </div>
-                        <div ref="editor" id="editor" style="height: 48vh"></div>
+                        <div style="margin-bottom: 10px;display: flex;">
+                            <el-select v-model="form.productName" placeholder="请选择功能" size="small" style="margin-right: 10px">
+                                <el-option label="开关" value="1"></el-option>
+                                <el-option label="温度" value="2"></el-option>
+                            </el-select>
+                            <el-select v-model="form.deviceName" placeholder="请选择方法"  size="small">
+                                <el-option label="设置" value="1"></el-option>
+                                <el-option label="获取" value="2"></el-option>
+                            </el-select>
+                        </div>
+
+                        <div ref="editor" id="editor" style="height: 43vh"></div>
                         <el-button
                             size="small"
                             type="primary"
@@ -169,7 +180,7 @@ export default {
     }
     div.jsoneditor-menu {
         background: #efefef;
-                border: 1px solid #efefef;
+        border: 1px solid #efefef;
     }
     div.jsoneditor-statusbar {
         display: none;

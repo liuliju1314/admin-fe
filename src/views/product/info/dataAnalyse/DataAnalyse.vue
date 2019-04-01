@@ -2,7 +2,7 @@
     <el-main>
         <div class="data-analyse">
             <div class="data-analyse-item">
-                <p>在线设备</p>
+                <p>实时在线设备</p>
                 <span>1</span>
             </div>
 
@@ -15,7 +15,6 @@
                 <p>今日新增上线</p>
                 <span>4</span>
             </div>
-
             <div class="data-analyse-item">
                 <p>故障设备</p>
                 <span>6</span>

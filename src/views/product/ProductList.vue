@@ -147,7 +147,7 @@ export default {
         },
         // 进入产品详情
         expandDetail(row) {
-            localStorage.setItem("productName", row.name);
+            this.$store.dispatch("UpdateName", row.name);
             this.$router.push({ path: `/product/${row.pid}/detail` });
         },
         // 获取产品列表
