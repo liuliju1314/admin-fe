@@ -30,11 +30,16 @@
                             <h3>设备编辑</h3>
                         </div>
                         <div style="margin-bottom: 10px;display: flex;">
-                            <el-select v-model="form.productName" placeholder="请选择功能" size="small" style="margin-right: 10px">
+                            <el-select
+                                v-model="form.productName"
+                                placeholder="请选择功能"
+                                size="small"
+                                style="margin-right: 10px"
+                            >
                                 <el-option label="开关" value="1"></el-option>
                                 <el-option label="温度" value="2"></el-option>
                             </el-select>
-                            <el-select v-model="form.deviceName" placeholder="请选择方法"  size="small">
+                            <el-select v-model="form.deviceName" placeholder="请选择方法" size="small">
                                 <el-option label="设置" value="1"></el-option>
                                 <el-option label="获取" value="2"></el-option>
                             </el-select>
@@ -47,6 +52,12 @@
                             style="margin-top: 20px"
                             @click="sendData"
                         >发送</el-button>
+                        <el-button
+                            size="small"
+                            type="primary"
+                            style="margin-top: 20px"
+                            @click="closeLink"
+                        >关闭长连接</el-button>
                     </div>
                 </el-col>
                 <el-col :span="16">
@@ -123,13 +134,12 @@ export default {
             this.editor.set(this.content);
         });
     },
-    // beforeDestroy() {
-    //     this.ws.close();
-    // },
+    beforeDestroy() {
+        this.closeLink();
+    },
     methods: {
         // 发送数据
         sendData() {
-            console.log(this.editor.get());
             this.WebSocketLink();
         },
         doDeviceSearch() {
@@ -138,25 +148,23 @@ export default {
                 }
             });
         },
+        closeLink() {
+            this.ws.close();
+        },
         WebSocketLink() {
             if ("WebSocket" in window) {
                 // 打开一个 web socket
-                this.ws = new WebSocket("ws://localhost:9998/echo");
+                this.ws = new WebSocket("ws://47.107.91.58:9090/ws_message");
 
-                this.ws.onopen = function() {
-                    // Web Socket 已连接上，使用 send() 方法发送数据
-                    //   this.ws.send("发送数据");
-                    alert("数据发送中...");
+                this.ws.onopen = () => {
+                    this.ws.send("1611812280002337");
                 };
 
-                this.ws.onmessage = function(evt) {
+                this.ws.onmessage = evt => {
                     this.wsData = evt.data;
-                    alert("数据已接收...");
                 };
 
-                this.ws.onclose = function() {
-                    // 关闭 websocket
-                    alert("连接已关闭...");
+                this.ws.onclose = () => {
                 };
             } else {
                 // 浏览器不支持 WebSocket
