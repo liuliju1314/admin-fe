@@ -49,8 +49,8 @@
                 </el-form-item>
                 <el-form-item label="执行参数" prop="value">
                     <div>
-                        <span style="display: inline-block; width: 43%">key:</span>
-                        <span style="display: inline-block; width: 40%">value:</span>
+                        <span style="display: inline-block; width: 43%">标志符:</span>
+                        <span style="display: inline-block; width: 40%">描述:</span>
                     </div>
                     <div
                         class="rain-item"
@@ -129,19 +129,27 @@ export default {
         },
         openDialog(value) {
             if (value.action === "edit") {
+                // let value = [];
                 const data = value.data;
-                this.index = data.$index;
-                this.$nextTick(() => {
+                this.index = data.$index;  
+                let arr1 = [...data.row.value.keys()];
+                this.$nextTick(() => {       
+                    value = data.row.value.map(item=>{
+                        return  {
+                            key: Object.keys(item)[0],
+                            value: Object.values(item)[0],
+                        }
+                    });  
+                    this.value = value;
                     this.form = {
                         ...this.form,
                         ...data.row,
-                        value: data.row.join(",")
                     };
                 });
+
             }
             this.isEdit = value.action === "add" ? false : true;
             this.title = value.action === "add" ? "添加Action" : "Action编辑";
-
             this.dialogVisible = true;
         },
         handleRuleInfo() {
