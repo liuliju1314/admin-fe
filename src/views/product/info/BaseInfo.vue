@@ -11,7 +11,7 @@
             </tr>
             <tr>
                 <td class="label">升级方式:</td>
-                <td class="value">{{baseInfo.upMethod}}</td>
+                <td class="value">{{formatterUpMethod(baseInfo.upMethod)}}</td>
             </tr>
             <tr>
                 <td class="label">产品分类:</td>
@@ -77,7 +77,6 @@ export default {
             this.$store.dispatch("BaseInfoGet", { pid: this.pid }).then(() => {
                 this.$store.dispatch("updateVisitedView", this.$route);                
             });
-
         },
         //更新产品信息
         editProduct() {
@@ -89,6 +88,13 @@ export default {
             this.product = "";
             this.visible = value;
             this.handleProductInfo();
+        },
+        formatterUpMethod(value) {
+            if (value === "manual") {
+                return "手动升级"
+            } else if (value === "auto") {
+                return "静默升级"
+            }
         }
     }
 };

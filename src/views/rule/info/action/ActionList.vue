@@ -68,7 +68,7 @@
                             type="text"
                             @click="deleteValuerate(index)"
                             style="display: inline-block;margin-left: 10px"
-                            v-if="value.length >= 1"
+                            v-if="index > 0"
                         >删除</el-button>
                     </div>
                     <el-button type="text" @click="addValuerate">+ 添加执行参数</el-button>
@@ -129,18 +129,16 @@ export default {
         },
         openDialog(value) {
             if (value.action === "edit") {
-                // let value = [];
                 const data = value.data;
                 this.index = data.$index;  
-                let arr1 = [...data.row.value.keys()];
-                this.$nextTick(() => {       
-                    value = data.row.value.map(item=>{
+                this.value = [];
+                this.$nextTick(() => {     
+                    this.value = data.row.value.map(item=>{
                         return  {
                             key: Object.keys(item)[0],
                             value: Object.values(item)[0],
                         }
                     });  
-                    this.value = value;
                     this.form = {
                         ...this.form,
                         ...data.row,
