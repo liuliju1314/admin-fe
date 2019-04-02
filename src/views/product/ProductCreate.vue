@@ -139,13 +139,18 @@ export default {
             this.$refs.form.validate(valid => {
                 if (valid) {
                     if (this.product) {
-                        editProduct(this.form)
+                        this.$store
+                            .dispatch("BaseInfoSet", this.form)
                             .then(() => {
                                 this.$message({
                                     type: "success",
                                     message: "更新成功",
                                     duration: 500
                                 });
+                                this.$store.dispatch(
+                                    "updateVisitedView",
+                                    this.$route
+                                );
                                 this.beforeClose();
                             })
                             .catch(() => {

@@ -3,7 +3,7 @@ import { editProduct, getProductInfo } from "@/api/product/product";
 const product = {
     state: {
         baseInfo: ''
-        
+
     },
     mutations: {
         SET_BASEINFO: (state, data) => {
@@ -25,7 +25,7 @@ const product = {
         },
         BaseInfoSet({ commit }, data) {
             return new Promise((resolve, reject) => {
-                editProduct(data).then( res => {
+                editProduct(data).then(res => {
                     commit('SET_BASEINFO', data)
                     resolve(res);
                 }).catch(error => {

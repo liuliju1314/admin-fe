@@ -9,7 +9,7 @@
                 <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>
                 产品详情
             </div>
-            <div class="card-title">{{productName}}</div>
+            <div class="card-title">{{baseInfo.name}}</div>
             <router-link
                 class="link-item"
                 active-class="active"
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { getProductInfo } from "@/api/product/product";
+import { mapGetters } from "vuex";
 export default {
     data() {
         return {
@@ -51,28 +51,10 @@ export default {
     },
     created() {
         this.pid = this.$route.params.id;
-        this.handleProductInfo();
     },
-    watch: {
-        $route() {
-            this.pid = this.$route.params.id;
-            if (this.pid) {
-                this.handleProductInfo();
-            }
-        }
-    },
-    methods: {
-        handleProductInfo() {
-            getProductInfo({ pid: this.pid })
-                .then(res => {
-                    this.productName = res.payload.name;
-                })
-                .catch(err => {
-                    this.$message({
-                        message: err.msg
-                    });
-                });
-        }
+
+    computed: {
+        ...mapGetters(['baseInfo'])
     }
 };
 </script>
