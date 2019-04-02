@@ -65,7 +65,7 @@ export default {
         padding-bottom: 0 !important;
     }
     .card-breadcrumb {
-        font-size: 14px;
+        font-size: 13px;
         margin-bottom: 24px;
     }
     .card-title {
@@ -78,6 +78,7 @@ export default {
         display: inline-block;
         text-decoration: none;
         color: #333;
+        font-size: 13px;
         margin-right: 32px;
         padding: 24px 10px 8px 10px;
     }
