@@ -135,7 +135,7 @@ export default {
     methods: {
         init() {
             this.form.pid = this.$route.params.id;
-            if (this.form.pid) {
+            if (this.form.pid && this.$route.path.indexOf("product") >= 0) {
                 this.handlefirmwareList(1);
             }
         },

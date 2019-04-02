@@ -117,8 +117,12 @@ export default {
         };
     },
     created() {
-        this.ruleId = this.$route.params.id;
-        this.handleRuleInfo();
+        this.init();
+    },
+    watch: {
+        $route() {
+            this.init();
+        }
     },
     methods: {
         beforeClose() {
@@ -144,20 +148,23 @@ export default {
 
             this.dialogVisible = true;
         },
-        handleRuleInfo() {
-            getRuleInfo({ tid: this.ruleId })
-                .then(res => {
-                    this.base = res.payload;
-                    this.base.actions = JSON.parse(this.base.actions);
-                    this.base.event = JSON.parse(this.base.event);
-                    this.actionList = this.base.actions
-                        ? this._deepClone(this.base.actions)
-                        : [];
-                    this.actions = this.base.actions
-                        ? this._deepClone(this.base.actions)
-                        : [];
-                })
-                .catch(() => {});
+        init() {
+            this.ruleId = this.$route.params.id;
+            if (this.ruleId && this.$route.path.indexOf("rule") >= 0) {
+                getRuleInfo({ tid: this.ruleId })
+                    .then(res => {
+                        this.base = res.payload;
+                        this.base.actions = JSON.parse(this.base.actions);
+                        this.base.event = JSON.parse(this.base.event);
+                        this.actionList = this.base.actions
+                            ? this._deepClone(this.base.actions)
+                            : [];
+                        this.actions = this.base.actions
+                            ? this._deepClone(this.base.actions)
+                            : [];
+                    })
+                    .catch(() => {});
+            }
         },
         deleteAction(scope) {
             this.$confirm(`是否确认删除该Action?`, "提示", {
