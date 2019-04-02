@@ -58,8 +58,10 @@
                             <template slot-scope="scope">{{ changeTimeFormater(scope.row.time) }}</template>
                         </el-table-column>
                         <el-table-column prop="did" label="DeviceName"></el-table-column>
-                        <el-table-column prop="content" label="内容(全部)"></el-table-column>
-                        <el-table-column prop="stateAnalyze" label="状态以及原因分析"></el-table-column>
+                        <el-table-column label="内容(全部)">
+                            <template slot-scope="scope">{{ scope.row.msg}}</template>
+                        </el-table-column>
+                        <el-table-column prop="level" label="状态以及原因分析"></el-table-column>
                     </el-table>
                 </el-tab-pane>
                 <el-tab-pane label="下行消息分析" name="down" key="1">
@@ -73,8 +75,10 @@
                             <template slot-scope="scope">{{ changeTimeFormater(scope.row.time) }}</template>
                         </el-table-column>
                         <el-table-column prop="did" label="DeviceName"></el-table-column>
-                        <el-table-column prop="content" label="内容(全部)"></el-table-column>
-                        <el-table-column prop="stateAnalyze" label="状态以及原因分析"></el-table-column>
+                        <el-table-column label="内容(全部)">
+                            <template slot-scope="scope">{{ scope.row.msg}}</template>
+                        </el-table-column>
+                        <el-table-column prop="level" label="状态以及原因分析"></el-table-column>
                     </el-table>
                 </el-tab-pane>
             </el-tabs>
