@@ -49,8 +49,8 @@
                 </el-form-item>
                 <el-form-item label="执行参数" prop="value">
                     <div>
-                        <span style="display: inline-block; width: 43%">key:</span>
-                        <span style="display: inline-block; width: 40%">value:</span>
+                        <span style="display: inline-block; width: 43%">标志符:</span>
+                        <span style="display: inline-block; width: 40%">描述:</span>
                     </div>
                     <div
                         class="rain-item"
@@ -68,7 +68,7 @@
                             type="text"
                             @click="deleteValuerate(index)"
                             style="display: inline-block;margin-left: 10px"
-                            v-if="value.length >= 1"
+                            v-if="index > 0"
                         >删除</el-button>
                     </div>
                     <el-button type="text" @click="addValuerate">+ 添加执行参数</el-button>
@@ -134,18 +134,24 @@ export default {
         openDialog(value) {
             if (value.action === "edit") {
                 const data = value.data;
-                this.index = data.$index;
-                this.$nextTick(() => {
+                this.index = data.$index;  
+                this.value = [];
+                this.$nextTick(() => {     
+                    this.value = data.row.value.map(item=>{
+                        return  {
+                            key: Object.keys(item)[0],
+                            value: Object.values(item)[0],
+                        }
+                    });  
                     this.form = {
                         ...this.form,
                         ...data.row,
-                        value: data.row.join(",")
                     };
                 });
+
             }
             this.isEdit = value.action === "add" ? false : true;
             this.title = value.action === "add" ? "添加Action" : "Action编辑";
-
             this.dialogVisible = true;
         },
         init() {
