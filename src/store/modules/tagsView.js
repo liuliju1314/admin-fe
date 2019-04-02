@@ -5,7 +5,13 @@ const tagsView = {
     },
     mutations: {
         ADD_VISITED_VIEW: (state, { view, rootGetters }) => {
-            const name = rootGetters.baseInfo.name;
+            let name = '';
+            if (view.path.indexOf('product/') >= 0) {
+                name = rootGetters.baseInfo.name;
+            } else if (view.path.indexOf('rule/') >= 0) {
+                name = rootGetters.ruleInfo.name
+            }
+
             if (state.visitedViews.some(v => v.path === view.path || v.id === view.params.id || v.id === view.params.did)) return
             state.visitedViews.push(
                 Object.assign({}, view, {
@@ -40,7 +46,12 @@ const tagsView = {
         },
 
         UPDATE_VISITED_VIEW: (state, { view, rootGetters }) => {
-            const name = rootGetters.baseInfo.name;
+            let name = '';
+            if (view.path.indexOf('product') >= 0) {
+                name = rootGetters.baseInfo.name;
+            } else if (view.path.indexOf('rule') >= 0) {
+                name = rootGetters.ruleInfo.name
+            }
             for (let v of state.visitedViews) {
                 if (v.path === view.path || v.id === view.params.id || v.id === view.params.did) {
                     Object.assign(v, view, {
@@ -59,7 +70,7 @@ const tagsView = {
             dispatch('addCachedView', view)
         },
         addVisitedView({ commit, rootGetters }, view) {
-            commit('ADD_VISITED_VIEW', {view, rootGetters})
+            commit('ADD_VISITED_VIEW', { view, rootGetters })
         },
         addCachedView({ commit }, view) {
             commit('ADD_CACHED_VIEW', view)
@@ -88,7 +99,7 @@ const tagsView = {
             })
         },
         updateVisitedView({ commit, rootGetters }, view) {
-            commit('UPDATE_VISITED_VIEW', {view, rootGetters})
+            commit('UPDATE_VISITED_VIEW', { view, rootGetters })
         }
     }
 }

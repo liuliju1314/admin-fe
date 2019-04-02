@@ -1,21 +1,21 @@
 
-import { editProduct, getProductInfo } from "@/api/product/product";
-const product = {
+import { getRuleInfo, updateRule } from "@/api/rule/rule";
+const rule = {
     state: {
-        baseInfo: ''
+        ruleInfo: ''
 
     },
     mutations: {
-        SET_BASEINFO: (state, data) => {
-            state.baseInfo = data;
+        SET_RULEINFO: (state, data) => {
+            state.ruleInfo = data;
         }
     },
     actions: {
-        BaseInfoGet({ commit }, data) {
+        RuleInfoGet({ commit }, data) {
             return new Promise((resolve, reject) => {
-                getProductInfo(data).then(res => {
+                getRuleInfo(data).then(res => {
                     const data = res.payload;
-                    commit('SET_BASEINFO', data)
+                    commit('SET_RULEINFO', data)
                     resolve(res)
                 }).catch(error => {
                     reject(error)
@@ -23,10 +23,10 @@ const product = {
             })
 
         },
-        BaseInfoSet({ commit }, data) {
+        RuleInfoSet({ commit }, data) {
             return new Promise((resolve, reject) => {
-                editProduct(data).then(res => {
-                    commit('SET_BASEINFO', data)
+                updateRule(data).then(res => {
+                    commit('SET_RULEINFO', data)
                     resolve(res);
                 }).catch(error => {
                     reject(error)
@@ -37,4 +37,4 @@ const product = {
     }
 }
 
-export default product
+export default rule

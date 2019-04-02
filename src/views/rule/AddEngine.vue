@@ -108,9 +108,8 @@ export default {
                     } else {
                         let actions = JSON.parse(this.rule.actions),
                             event = JSON.parse(this.rule.event);
-                        if (!actions ) {
-                            actions = [
-                            ];
+                        if (!actions) {
+                            actions = [];
                         }
                         if (!event) {
                             event = {
@@ -124,13 +123,24 @@ export default {
                             event: event,
                             ...this.form
                         };
-                        updateRule(data).then(() => {
-                            this.$message({
-                                type: "success",
-                                message: "更新成功"
+                        this.$store
+                            .dispatch("RuleInfoSet", data)
+                            .then(() => {
+                                this.$message({
+                                    type: "success",
+                                    message: "更新成功"
+                                });
+                                this.$store.dispatch(
+                                    "updateVisitedView",
+                                    this.$route
+                                );
+                                this.beforeClose();
+                            })
+                            .catch(() => {
+                                this.$message({
+                                    message: "更新失败"
+                                });
                             });
-                             this.beforeClose();
-                        });
                     }
                 }
             });

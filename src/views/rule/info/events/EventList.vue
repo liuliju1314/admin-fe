@@ -69,13 +69,16 @@ export default {
         };
     },
     created() {
-        this.ruleId = this.$route.params.id;
-        this.handleRuleInfo();
+        this.init();
     },
+    
     watch: {
         ruleEvent() {
             this.isDrag = true;
             this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
+        },
+        $route() {
+            this.init();
         }
     },
     components: {
@@ -129,18 +132,22 @@ export default {
             this.visible = false;
         },
         // 获取Rule信息
-        handleRuleInfo() {
-            getRuleInfo({ tid: this.ruleId })
-                .then(res => {
-                    this.base = res.payload;
-                    this.base.actions = JSON.parse(this.base.actions);
-                    this.base.event = JSON.parse(this.base.event);
-                    this.ruleEvent = this._deepClone(this.base).ruleEvent;
-                    this.ruleEvent = this.ruleEvent ? this.ruleEvent : [];
-                    this.conditionId = this.base.event.rules.length + 1;
-                })
-                .catch(() => {});
+        init() {
+            this.ruleId = this.$route.params.id;
+            if (this.ruleId && this.$route.path.indexOf("rule") >= 0) {
+                getRuleInfo({ tid: this.ruleId })
+                    .then(res => {
+                        this.base = res.payload;
+                        this.base.actions = JSON.parse(this.base.actions);
+                        this.base.event = JSON.parse(this.base.event);
+                        this.ruleEvent = this._deepClone(this.base).ruleEvent;
+                        this.ruleEvent = this.ruleEvent ? this.ruleEvent : [];
+                        this.conditionId = this.base.event.rules.length + 1;
+                    })
+                    .catch(() => {});
+            }
         },
+
         // 取消event编辑
         cancelDrag() {
             this.isDrag = false;
@@ -148,11 +155,11 @@ export default {
         },
         // 更新event编辑
         updateEvent() {
-            if(this.handleFormatToStr(this.ruleEvent).length > 1) {
+            if (this.handleFormatToStr(this.ruleEvent).length > 1) {
                 this.$message({
-                    type: 'warning',
-                    message: '数据格式错误'
-                })
+                    type: "warning",
+                    message: "数据格式错误"
+                });
                 return;
             }
             this.event.logic = this.handleFormatToStr(this.ruleEvent).join(",");
@@ -263,7 +270,6 @@ export default {
             }
         }
         .condition {
-            
         }
     }
 }

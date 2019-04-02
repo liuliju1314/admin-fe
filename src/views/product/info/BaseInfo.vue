@@ -69,7 +69,7 @@ export default {
     methods: {
         init() {
             this.pid = this.$route.params.id;
-            if (this.pid) {
+            if (this.pid && this.$route.path.indexOf("product") >= 0) {
                 this.handleProductInfo();
             }
         },

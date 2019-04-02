@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { addProduct, editProduct } from "@/api/product/product";
+import { addProduct } from "@/api/product/product";
 export default {
     name: "ProductCreate",
     props: ["product", "visible"],

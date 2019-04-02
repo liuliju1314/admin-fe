@@ -4,54 +4,51 @@
             <div class="card-breadcrumb">
                 <router-link to="/rule" style="color: rgba(0,0,0,.45);text-decoration: none;">规则引擎</router-link>
                 <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>
-                {{ruleID}}
+                规则详情
             </div>
-            <div class="card-title">{{base.name}}</div>
+            <div class="card-title">{{ruleInfo.name}}</div>
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/rule/'+ruleID+'/detail'"
+                :to="'/rule/'+ruleId+'/detail'"
             >基本信息</router-link>
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/rule/'+ruleID+'/event'"
+                :to="'/rule/'+ruleId+'/event'"
             >Events</router-link>
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/rule/'+ruleID+'/action'"
+                :to="'/rule/'+ruleId+'/action'"
             >Action</router-link>
         </div>
         <div class="rule-detail-box">
-            <router-view></router-view>
+            <keep-alive>
+                <router-view></router-view>            
+            </keep-alive>
+
         </div>
     </el-card>
 </template>
 
 <script>
-import { getRuleInfo } from "@/api/rule/rule";
+import { mapGetters } from 'vuex';
 export default {
     name: "RuleInfo",
     data() {
         return {
             activeName: "first",
-            ruleID: "",
-            base: ""
+            ruleId: ""
         };
     },
+    computed: {
+        ...mapGetters(['ruleInfo'])
+    },
     created() {
-        this.ruleID = this.$route.params.id;
-        this.handleRuleInfo();
+        this.ruleId = this.$route.params.id;
     },
     methods: {
-        handleRuleInfo() {
-            getRuleInfo({ tid: this.ruleID })
-                .then(res => {
-                    this.base = res.payload;
-                })
-                .catch(() => {});
-        }
     }
 };
 </script>

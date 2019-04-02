@@ -36,7 +36,10 @@
                 :to="'/product/'+pid+'/analyse'"
             >数据分析</router-link>
         </div>
-        <router-view></router-view>
+        <keep-alive>
+            <router-view></router-view>        
+        </keep-alive>
+
     </el-card>
 </template>
 
