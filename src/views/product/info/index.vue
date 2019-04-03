@@ -37,9 +37,8 @@
             >数据分析</router-link>
         </div>
         <keep-alive>
-            <router-view></router-view>        
+            <router-view></router-view>
         </keep-alive>
-
     </el-card>
 </template>
 
@@ -53,11 +52,27 @@ export default {
         };
     },
     created() {
-        this.pid = this.$route.params.id;
+        this.init();
     },
-
+    watch: {
+        $route() {
+            this.init();
+        }
+    },
     computed: {
-        ...mapGetters(['baseInfo'])
+        ...mapGetters(["baseInfo"])
+    },
+    methods: {
+        init() {
+            this.pid = this.$route.params.id;
+            if (this.pid && this.$route.path.indexOf("product") >= 0 && !this.$route.params.did) {
+                this.$store
+                    .dispatch("BaseInfoGet", { pid: this.pid })
+                    .then(() => {
+                        this.$store.dispatch("updateVisitedView", this.$route);
+                    });
+            }
+        }
     }
 };
 </script>

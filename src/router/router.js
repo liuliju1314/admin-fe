@@ -20,7 +20,7 @@ export const routes = [
                 path: "product",
                 name: "ProductList",
                 component: () => import("@/views/product/ProductList"),
-                meta: { title: '产品列表' }
+                meta: { title: '产品管理' }
             },
             {
                 path: "product/:id",
@@ -43,7 +43,7 @@ export const routes = [
                     {
                         path: "device",
                         component: () =>
-                            import("@/views/product/device/DeviceList"),
+                            import("@/views/product/device/DeviceList")
                     },
                     {
                         path: "analyse",
@@ -58,17 +58,17 @@ export const routes = [
         component: LayOut,
         children: [
             {
-                path: "device/:did",
-                component: () => import("@/views/device/info"),
+                path: "product/:id/device/:did",
+                component: () => import("@/views/product/device/info"),
                 children: [
                     {
                         path: "detail",
-                        component: () => import("@/views/device/info/BaseInfo")
+                        component: () => import("@/views/product/device/info/BaseInfo")
                     },
                     {
                         path: "state",
                         component: () =>
-                            import("@/views/device/info/OperateState")
+                            import("@/views/product/device/info/OperateState")
                     }
                 ]
             }

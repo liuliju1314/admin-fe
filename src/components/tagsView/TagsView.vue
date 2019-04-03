@@ -61,12 +61,13 @@ export default {
     },
     methods: {
         isActive(route) {
-            return route.path === this.$route.path || route.id === this.$route.params.id || route.id === this.$route.params.did;
+            return route.path === this.$route.path || (route.id === this.$route.params.id && !this.$route.params.did) || route.id === this.$route.params.did;
         },
         addTags() {
             
             const { name } = this.$route;
-            const id = this.$route.params.id ||  this.$route.params.did;
+            // 这里不能切换did和id的位置，和嵌套路由有关
+            const id = this.$route.params.did || this.$route.params.id;
             if (name || id) {
                 this.$store.dispatch("addView", this.$route);
             }

@@ -3,6 +3,7 @@ const getters = {
     visitedViews: state => state.tagsView.visitedViews,
     cachedViews: state => state.tagsView.cachedViews,
     baseInfo: state => state.product.baseInfo,
-    ruleInfo: state => state.rule.ruleInfo
+    ruleInfo: state => state.rule.ruleInfo,
+    deviceInfo: state => state.device.deviceInfo
 }
 export default getters

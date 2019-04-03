@@ -22,6 +22,7 @@
             style="width: 100%; margin-top: 12px"
             border
             size="small"
+            @row-click="expandDetail"
         >
             <el-table-column prop="did" label="设备编号"></el-table-column>
             <el-table-column prop="group" label="设备分组" width="120">
@@ -140,8 +141,11 @@ export default {
     methods: {
         // 点击跳路由
         expandDetail(row) {
-            this.$store.dispatch("UpdateName", row.did);
-            this.$router.push({ path: `/device/${row.did}/detail` });
+            const pid = this.$route.params.id;
+
+            this.$router.push({
+                path: `/product/${pid}/device/${row.did}/detail`
+            });
         },
         // 获取设备升级进度
         getOtaDetail(device) {
