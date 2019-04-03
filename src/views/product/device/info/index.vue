@@ -14,7 +14,10 @@
                 <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>
                 设备详情
             </div>
-            <div class="card-title">{{did}}</div>
+            <div class="card-title">
+                <span> {{did}} </span>
+                <span class="device-status"><span class="spot"></span>设备在线</span>
+            </div>
             <router-link
                 class="link-item"
                 active-class="active"
@@ -84,6 +87,7 @@ export default {
         margin-bottom: 20px;
     }
     .link-item {
+        font-size: 12px;
         display: inline-block;
         text-decoration: none;
         color: #333;
@@ -93,6 +97,18 @@ export default {
     .link-item.active {
         color: @baseColor;
         border-bottom: 2px solid @baseColor;
+    }
+    .device-status {
+        font-size: 12px;
+        color: #86dff9;
+        .spot {
+            display: inline-block;
+            margin-right: 4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #86dff9;
+        }
     }
 }
 </style>

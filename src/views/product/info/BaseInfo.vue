@@ -42,7 +42,9 @@
 <script>
 import ProductCreate from "@/views/product/ProductCreate";
 import { mapGetters } from 'vuex';
+import proInfo from "./mixins/proInfo";
 export default {
+    mixins: [proInfo],
     name: "BaseInfo",
     data() {
         return {
@@ -58,26 +60,7 @@ export default {
     computed: {
         ...mapGetters(['baseInfo'])
     },
-    created() {
-        this.init();
-    },
-    watch: {
-        $route() {
-            this.init();
-        }
-    },
     methods: {
-        init() {
-            this.pid = this.$route.params.id;
-            if (this.pid && this.$route.path.indexOf("product") >= 0) {
-                this.handleProductInfo();
-            }
-        },
-        handleProductInfo() {
-            this.$store.dispatch("BaseInfoGet", { pid: this.pid }).then(() => {
-                this.$store.dispatch("updateVisitedView", this.$route);                
-            });
-        },
         //更新产品信息
         editProduct() {
             this.visible = true;
@@ -87,7 +70,7 @@ export default {
         closeDialog(value) {
             this.product = "";
             this.visible = value;
-            this.handleProductInfo();
+            this.init();
         },
         formatterUpMethod(value) {
             if (value === "manual") {

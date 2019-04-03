@@ -103,7 +103,6 @@ export default {
         },
         expandDetail(row) {
             this.$router.push({ path: `/rule/${row.tid}/detail` });
-            this.$store.dispatch("UpdateName", row.name);
         },
         handleRuleList(value) {
             this.form.page = value;

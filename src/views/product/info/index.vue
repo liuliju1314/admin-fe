@@ -44,36 +44,18 @@
 
 <script>
 import { mapGetters } from "vuex";
+import proInfo from "./mixins/proInfo";
 export default {
+    mixins: [proInfo],
     data() {
         return {
-            pid: "",
-            productName: ""
+            pid: ""
         };
-    },
-    created() {
-        this.init();
-    },
-    watch: {
-        $route() {
-            this.init();
-        }
     },
     computed: {
         ...mapGetters(["baseInfo"])
     },
-    methods: {
-        init() {
-            this.pid = this.$route.params.id;
-            if (this.pid && this.$route.path.indexOf("product") >= 0 && !this.$route.params.did) {
-                this.$store
-                    .dispatch("BaseInfoGet", { pid: this.pid })
-                    .then(() => {
-                        this.$store.dispatch("updateVisitedView", this.$route);
-                    });
-            }
-        }
-    }
+
 };
 </script>
 <style lang="less">
