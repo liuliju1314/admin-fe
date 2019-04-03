@@ -186,6 +186,7 @@ export default {
         addAction() {
             this.$refs.form.validate(valid => {
                 if (valid) {
+                    this.form.value = [];
                     this.value.forEach(value => {
                         let obj = {};
                         obj[value.key] = value.value;
