@@ -21,9 +21,11 @@
 
 <script>
 import AddEngine from "@/views/rule/AddEngine";
+import ruleInfo from "./mixins/ruleInfo";
 import { mapGetters } from "vuex";
 export default {
     name: "BaseInfo",
+    mixins: [ruleInfo],
     data() {
         return {
             rule: "",
@@ -36,29 +38,10 @@ export default {
     components: {
         AddEngine
     },
-    created() {
-        this.init();
-    },
     computed: {
         ...mapGetters(["ruleInfo"])
     },
-    watch: {
-        $route() {
-            this.init();
-        }
-    },
     methods: {
-        init() {
-                            this.ruleId = this.$route.params.id;
-            if (this.ruleId && this.$route.path.indexOf("rule") >= 0) {
-
-                this.$store
-                    .dispatch("RuleInfoGet", { tid: this.ruleId })
-                    .then(() => {
-                        this.$store.dispatch("updateVisitedView", this.$route);
-                    });
-            }
-        },
         doEdit() {
             this.rule = this.ruleInfo;
             this.dialogVisible = true;
