@@ -6,17 +6,19 @@ const tagsView = {
     mutations: {
         ADD_VISITED_VIEW: (state, { view, rootGetters }) => {
             let name = '';
-            if (view.path.indexOf('product/') >= 0) {
+            if (view.path.indexOf('product/') >= 0 && !view.params.did) {
                 name = rootGetters.baseInfo.name;
             } else if (view.path.indexOf('rule/') >= 0) {
                 name = rootGetters.ruleInfo.name
+            } else {
+                name = rootGetters.deviceInfo.name
             }
 
-            if (state.visitedViews.some(v => v.path === view.path || v.id === view.params.id || v.id === view.params.did)) return
+            if (state.visitedViews.some(v => v.path === view.path || (v.id === view.params.id && !view.params.did) || v.id === view.params.did)) return
             state.visitedViews.push(
                 Object.assign({}, view, {
                     title: view.meta.title || name || 'no-name',
-                    id: view.params.id || view.params.did || ''
+                    id: view.params.did || view.params.id || ''
                 })
             )
         },
@@ -47,16 +49,18 @@ const tagsView = {
 
         UPDATE_VISITED_VIEW: (state, { view, rootGetters }) => {
             let name = '';
-            if (view.path.indexOf('product') >= 0) {
+            if (view.path.indexOf('product') >= 0 && !view.params.did) {
                 name = rootGetters.baseInfo.name;
             } else if (view.path.indexOf('rule') >= 0) {
                 name = rootGetters.ruleInfo.name
+            } else {
+                name = rootGetters.deviceInfo.name
             }
             for (let v of state.visitedViews) {
-                if (v.path === view.path || v.id === view.params.id || v.id === view.params.did) {
+                if (v.path === view.path || (v.id === view.params.id && !view.params.did) || v.id === view.params.did) {
                     Object.assign(v, view, {
                         title: view.meta.title || name || 'no-name',
-                        id: view.params.id || view.params.did || ''
+                        id: view.params.did || view.params.id || ''
                     })
                     break
                 }

@@ -129,7 +129,8 @@ export default {
             this.$refs.form.resetFields();
             this.value = [{ key: "", value: "" }];
             this.dialogVisible = false;
-            // this.handleRuleInfo();
+            this.init();
+
         },
         openDialog(value) {
             if (value.action === "edit") {
@@ -179,7 +180,7 @@ export default {
             }).then(() => {
                 this.actions.splice(scope.$index, 1);
                 this.updateAction("删除");
-                // this.handleRuleInfo();
+                this.init();
             });
         },
         addAction() {

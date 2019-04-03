@@ -2,20 +2,28 @@
     <el-card class="box-card device-detail-wrapper" shadow="never">
         <div slot="header" class="clearfix">
             <div class="card-breadcrumb">
-                <router-link to="/product" style="color: rgba(0,0,0,.45);text-decoration: none;">产品管理</router-link>
+                <router-link
+                    to="/product"
+                    style="color: rgba(0,0,0,.45);text-decoration: none;"
+                >产品管理</router-link>
+                <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>
+                <router-link
+                    :to="'/product/' + pid +'/device'"
+                    style="color: rgba(0,0,0,.45);text-decoration: none;"
+                >设备管理</router-link>
                 <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>
                 设备详情
             </div>
-            <div class="card-title">{{deviceID}}</div>
+            <div class="card-title">{{did}}</div>
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/device/'+deviceID+'/detail'"
+                :to="'/product/'+pid+'/device/'+did+'/detail'"
             >设备信息</router-link>
             <router-link
                 class="link-item"
                 active-class="active"
-                :to="'/device/'+deviceID+'/state'"
+                :to="'/product/'+pid+ '/device/'+did+'/state'"
             >运行状态</router-link>
         </div>
         <router-view></router-view>
@@ -26,13 +34,31 @@
 export default {
     data() {
         return {
-            deviceID: ""
+            did: "",
+            pid: ""
         };
     },
     created() {
-        this.deviceID = this.$route.params.did;
+        this.init();
     },
-    components: {}
+    watch: {
+        $route() {
+            this.init();
+        }
+    },
+    methods: {
+        init() {
+            if (this.$route.params.did) {
+                this.pid = this.$route.params.id;
+                this.did = this.$route.params.did;
+                this.$store
+                    .dispatch("DeviceInfoSet", { name: this.did })
+                    .then(() => {
+                        this.$store.dispatch("updateVisitedView", this.$route);
+                    });
+            }
+        }
+    }
 };
 </script>
 <style lang="less">

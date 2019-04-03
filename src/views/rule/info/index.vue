@@ -25,15 +25,14 @@
         </div>
         <div class="rule-detail-box">
             <keep-alive>
-                <router-view></router-view>            
+                <router-view></router-view>
             </keep-alive>
-
         </div>
     </el-card>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 export default {
     name: "RuleInfo",
     data() {
@@ -43,12 +42,27 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['ruleInfo'])
+        ...mapGetters(["ruleInfo"])
     },
     created() {
-        this.ruleId = this.$route.params.id;
+        this.init();
+    },
+    watch: {
+        $route() {
+            this.init();
+        }
     },
     methods: {
+        init() {
+            this.ruleId = this.$route.params.id;
+            if (this.ruleId && this.$route.path.indexOf("rule") >= 0) {
+                this.$store
+                    .dispatch("RuleInfoGet", { tid: this.ruleId })
+                    .then(() => {
+                        this.$store.dispatch("updateVisitedView", this.$route);
+                    });
+            }
+        }
     }
 };
 </script>
@@ -65,7 +79,7 @@ export default {
         padding-bottom: 0 !important;
     }
     .card-breadcrumb {
-        font-size: 14px;
+        font-size: 13px;
         margin-bottom: 24px;
     }
     .card-title {
@@ -78,6 +92,7 @@ export default {
         display: inline-block;
         text-decoration: none;
         color: #333;
+        font-size: 13px;
         margin-right: 32px;
         padding: 24px 10px 8px 10px;
     }
