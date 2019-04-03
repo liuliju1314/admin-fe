@@ -36,8 +36,11 @@
 </template>
 
 <script>
-import { getDeviceList } from "@/api/device/device";
+import deviceInfo from "../mixins/deviceInfo";
+import { mapGetters } from "vuex";
+
 export default {
+    mixins: [deviceInfo],
     components: {},
     props: {},
     data() {
@@ -60,33 +63,25 @@ export default {
             ]
         };
     },
+    computed: {
+        ...mapGetters(["deviceInfo"])
+    },
+
     watch: {
         $route() {
             this.init();
         }
     },
-    computed: {},
-    created() {
-        this.init();
-    },
-    mounted() {},
+
     methods: {
+
         init() {
             this.form.did = this.$route.params.did;
-            if (this.form.did) {
+            if ( this.$route.path.indexOf("detail") >= 0 && this.form.did) {
                 this.getDevice();
             }
         },
-        //获取设备列表
-        getDevice() {
-            getDeviceList(this.form)
-                .then(res => {
-                    this.deviceList = res.payload.items;
-                })
-                .catch(error => {
-                    return error;
-                });
-        },
+
         formatterGroup(value) {
             if (value === "release") {
                 return "正式组";

@@ -90,9 +90,9 @@
             </el-form-item>
             <el-form-item label="读写属性" prop="permission">
                 <el-radio-group v-model="propertForm.permission">
-                    <el-radio label="RW">可读写</el-radio>
-                    <el-radio label="RO">可读</el-radio>
-                    <el-radio label="WO">可写</el-radio>
+                    <el-radio label="RW">读写</el-radio>
+                    <el-radio label="RO">只读</el-radio>
+                    <el-radio label="WO">只写</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="历史数据" prop="history">
@@ -101,12 +101,19 @@
                     <el-radio :label="false">丢弃</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="采样值" prop="instant">
+            <el-form-item label="属性类别" prop="business">
+                <el-radio-group v-model="propertForm.business">
+                    <el-radio :label="true">业务</el-radio>
+                    <el-radio :label="false">非业务</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <!-- 目前系统暂时不需要 -->
+            <!-- <el-form-item label="采样值" prop="instant">
                 <el-radio-group v-model="propertForm.instant">
                     <el-radio :label="true">瞬时采样</el-radio>
                     <el-radio :label="false">时间段累积采样</el-radio>
                 </el-radio-group>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="默认值" prop="default">
                 <el-input v-model="propertForm.default"></el-input>
             </el-form-item>
@@ -139,7 +146,8 @@ export default {
                 permission: "",
                 dialogVisible: "",
                 history: "",
-                instant: "",
+                business:"",
+                // instant: "",
                 desc: "",
                 default: "",
                 elemenType: "",

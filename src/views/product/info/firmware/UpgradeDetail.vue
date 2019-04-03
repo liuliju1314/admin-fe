@@ -19,7 +19,8 @@
             </el-form-item>
         </el-form>
         <div>版本： V{{fw.version}}；目标设备数： 14；升级成功数：14；升级失败数：0.</div>
-        <el-table :data="tableData" style="width: 100%" border size="small">
+        <!-- <el-table :data="tableData" style="width: 100%" border size="small"> -->
+        <el-table  style="width: 100%" border size="small">
             <el-table-column prop="date" label="设备ID"></el-table-column>
             <el-table-column prop="date" label="当前版本号"></el-table-column>
             <el-table-column prop="date" label="升级进度"></el-table-column>
