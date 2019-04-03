@@ -142,12 +142,12 @@ export default {
         sendData() {
             this.WebSocketLink();
         },
-        doDeviceSearch() {
-            this.$refs.form.validate(valid => {
-                if (valid) {
-                }
-            });
-        },
+        // doDeviceSearch() {
+        //     this.$refs.form.validate(valid => {
+        //         if (valid) {
+        //         }
+        //     });
+        // },
         closeLink() {
             this.ws.close();
         },

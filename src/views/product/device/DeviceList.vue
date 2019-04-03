@@ -97,31 +97,24 @@
 <script>
 import VueProgress from "./info/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
+import deviceInfo from "./mixins/deviceInfo";
+import { mapGetters } from "vuex";
+
 import {
-    getDeviceList,
+    // getDeviceList,
     updateDeviceGroup,
     getOTAProgress
 } from "@/api/device/device";
 export default {
+    mixins: [deviceInfo],
     data() {
         return {
-            form: {
-                page: 1,
-                pageSize: 10,
-                pid: "",
-                did: "",
-                status: "0",
-                isPage: true
-            },
             isPage: false,
             deviceList: [],
             upgradeDevice: "",
             dialogVisible: false,
             upgradeVisible: false,
             groupVisible: false,
-            count: "",
-            online: "",
-            offline: "",
             btnShow: false,
             progressList: []
         };
@@ -129,24 +122,26 @@ export default {
 
     components: { DeviceUpgrade, VueProgress },
 
-    computed: {},
-
-    beforeMount() {},
-
-    mounted() {},
-
-    created() {
-        this.getDevice();
+    computed: {
+        ...mapGetters(["deviceInfo"])
     },
+
     methods: {
+        init() {
+            this.form.pid = this.$route.params.id;
+            if (this.form.pid && this.$route.path.indexOf("device") >= 0 && !this.form.did) {
+                this.getDevice();
+            }
+        },
+
         // 点击跳路由
         expandDetail(row) {
             const pid = this.$route.params.id;
-
             this.$router.push({
                 path: `/product/${pid}/device/${row.did}/detail`
             });
         },
+
         // 获取设备升级进度
         getOtaDetail(device) {
             const data = {
@@ -163,19 +158,7 @@ export default {
                 }
             });
         },
-        //获取设备列表
-        getDevice() {
-            getDeviceList(this.form)
-                .then(res => {
-                    this.deviceList = res.payload.items;
-                    this.count = res.payload.total;
-                    this.online = res.payload.online;
-                    this.offline = res.payload.offline;
-                })
-                .catch(error => {
-                    return error;
-                });
-        },
+
         //更新设备分组
         updateGroup(device) {
             const data = {
@@ -188,6 +171,7 @@ export default {
                     return error;
                 });
         },
+
         //分页
         handlePage(value) {
             this.form.page = value;

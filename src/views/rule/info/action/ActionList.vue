@@ -130,6 +130,7 @@ export default {
             this.value = [{ key: "", value: "" }];
             this.dialogVisible = false;
             this.init();
+
         },
         openDialog(value) {
             if (value.action === "edit") {
@@ -148,7 +149,6 @@ export default {
                         ...data.row,
                     };
                 });
-
             }
             this.isEdit = value.action === "add" ? false : true;
             this.title = value.action === "add" ? "添加Action" : "Action编辑";

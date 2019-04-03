@@ -111,7 +111,7 @@ export default {
         // 初始化
         init() {
             this.pid = this.$route.params.id;
-            if (this.pid && this.$route.path.indexOf("product") >= 0) {
+            if (this.pid && this.$route.path.indexOf("property") >= 0) {
                 getProductInfo({ pid: this.pid })
                     .then(res => {
                         this.proStatus = res.payload.productStatus;
