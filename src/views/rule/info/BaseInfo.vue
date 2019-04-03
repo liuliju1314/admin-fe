@@ -64,7 +64,7 @@ export default {
         },
         listenAdd(value) {
             this.dialogVisible = value;
-            this.handleRuleInfo();
+            // this.handleRuleInfo();
         }
     }
 };

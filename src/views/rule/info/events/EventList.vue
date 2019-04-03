@@ -151,7 +151,7 @@ export default {
         // 取消event编辑
         cancelDrag() {
             this.isDrag = false;
-            this.handleRuleInfo();
+            // this.handleRuleInfo();
         },
         // 更新event编辑
         updateEvent() {

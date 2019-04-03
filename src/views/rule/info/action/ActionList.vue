@@ -129,7 +129,7 @@ export default {
             this.$refs.form.resetFields();
             this.value = [{ key: "", value: "" }];
             this.dialogVisible = false;
-            this.handleRuleInfo();
+            // this.handleRuleInfo();
         },
         openDialog(value) {
             if (value.action === "edit") {
@@ -148,7 +148,6 @@ export default {
                         ...data.row,
                     };
                 });
-
             }
             this.isEdit = value.action === "add" ? false : true;
             this.title = value.action === "add" ? "添加Action" : "Action编辑";
@@ -180,7 +179,7 @@ export default {
             }).then(() => {
                 this.actions.splice(scope.$index, 1);
                 this.updateAction("删除");
-                this.handleRuleInfo();
+                // this.handleRuleInfo();
             });
         },
         addAction() {
