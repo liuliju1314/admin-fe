@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { addRule, updateRule } from "@/api/rule/rule";
+import { addRule } from "@/api/rule/rule";
 export default {
     name: "AddEngine",
     props: ["rule", "visible"],
