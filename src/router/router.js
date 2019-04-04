@@ -93,6 +93,10 @@ export const routes = [
                         component: () => import("@/views/rule/info/BaseInfo")
                     },
                     {
+                        path: "linkage",
+                        component: () => import("@/views/rule/info/SceneLinkage")
+                    },
+                    {
                         path: "event",
                         component: () =>
                             import("@/views/rule/info/events/EventList")
