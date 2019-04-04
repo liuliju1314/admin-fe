@@ -194,10 +194,10 @@ export default {
                         trigger: "blur"
                     }
                 ],
-                business: [
+                businessType: [
                     {
                         required: true,
-                        message: "请选择采样值",
+                        message: "请选择属性类别",
                         trigger: "blur"
                     }
                 ]
