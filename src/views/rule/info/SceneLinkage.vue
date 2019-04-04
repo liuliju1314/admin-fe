@@ -6,7 +6,7 @@
                 <div
                     class="condition-item"
                     v-for="(item, index) in form.triggerList"
-                    :key="item.key"
+                    :key="item.only"
                 >
                     <div class="sort">{{index + 1}}</div>
                     <div class="content">
@@ -46,21 +46,21 @@
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'triggerList.' + index + '.prop'"
+                                :prop="'triggerList.' + index + '.key'"
                                 :rules="{
                                     required: true, message: '请选择属性', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择属性" v-model="item.prop" filterable></el-select>
+                                <el-select placeholder="请选择属性" v-model="item.key" filterable></el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'triggerList.' + index + '.mode'"
+                                :prop="'triggerList.' + index + '.op'"
                                 :rules="{
                                     required: true, message: '请选择比较方式', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择比较模式" v-model="item.mode">
+                                <el-select placeholder="请选择比较模式" v-model="item.op">
                                     <el-option label=">" value=">"></el-option>
                                     <el-option label=">=" value=">="></el-option>
                                     <el-option label="<" value="<"></el-option>
@@ -135,21 +135,21 @@
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'filterList.' + index + '.prop'"
+                                :prop="'filterList.' + index + '.key'"
                                 :rules="{
                                     required: true, message: '请选择属性', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择属性" v-model="item.prop" filterable></el-select>
+                                <el-select placeholder="请选择属性" v-model="item.key" filterable></el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'filterList.' + index + '.mode'"
+                                :prop="'filterList.' + index + '.op'"
                                 :rules="{
                                     required: true, message: '请选择比较方式', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择比较模式" v-model="item.mode">
+                                <el-select placeholder="请选择比较模式" v-model="item.op">
                                     <el-option label=">" value=">"></el-option>
                                     <el-option label=">=" value=">="></el-option>
                                     <el-option label="<" value="<"></el-option>
@@ -224,21 +224,21 @@
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'actionList.' + index + '.prop'"
+                                :prop="'actionList.' + index + '.key'"
                                 :rules="{
                                     required: true, message: '请选择属性', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择属性" v-model="item.prop" filterable></el-select>
+                                <el-select placeholder="请选择属性" v-model="item.key" filterable></el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'actionList.' + index + '.mode'"
+                                :prop="'actionList.' + index + '.op'"
                                 :rules="{
                                     required: true, message: '请选择比较方式', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择比较模式" v-model="item.mode">
+                                <el-select placeholder="请选择比较模式" v-model="item.op">
                                     <el-option label=">" value=">"></el-option>
                                     <el-option label=">=" value=">="></el-option>
                                     <el-option label="<" value="<"></el-option>
@@ -270,13 +270,17 @@
             </div>
             <el-form-item>
                 <el-button type="primary" @click="submitRule">确定并保存</el-button>
-                <el-button>取消</el-button>
+                <el-button @click="cancelEdit">取消</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { getProductList } from '@/api/product/product';
+import { getDeviceList } from '@/api/device/device';
+import { getPropertyList } from '@/api/property/property';
 export default {
     name: "SceneLinkage",
     data() {
@@ -300,20 +304,18 @@ export default {
             }
         };
     },
+    computed: {
+        ...mapGetters(["ruleInfo"])
+    },
     created() {
+        const ruleEvent = JSON.parse(this.ruleInfo.ruleEvent);
+        if(ruleEvent) {
+            this.form = ruleEvent;
+        }
         for (let key in this.form) {
             const arr = this.form[key];
             arr.forEach(item => {
-                if (item.type === "device") {
-                    Object.assign(item, {
-                        pid: "",
-                        did: "",
-                        prop: "",
-                        mode: "",
-                        value: "",
-                        key: Date.now()
-                    });
-                }
+                this.changeTriggerType(item);
             });
         }
     },
@@ -331,15 +333,14 @@ export default {
             }
         },
         changeTriggerType(data) {
-            console.log(data);
             if (data.type === "device") {
                 Object.assign(data, {
                     pid: "",
                     did: "",
-                    prop: "",
-                    mode: "",
+                    key: "",
+                    op: "",
                     value: "",
-                    key: Date.now()
+                    only: Date.now()
                 });
             }
         },
@@ -349,24 +350,59 @@ export default {
                     let count = 1;
                     const event = {
                             rules: [],
-                            logic: ''
+                            logic: ""
                         },
-                        actions = this.form.actionList;
-                    const trigger = [], filter = [];
+                        actions = this.form.actionList,
+                        ruleEvent = this.form;
+                    const trigger = [],
+                        filter = [];
                     for (let key in this.form) {
                         if (key !== "actionList") {
                             const arr = this.form[key];
                             arr.forEach(item => {
-                                key === 'triggerList' ? trigger.push(count) : filter.push(count);
-                                event.rules.push(Object.assign(
-                                    {}, item, {id: count++}
-                                ));
+                                key === "triggerList"
+                                    ? trigger.push(count)
+                                    : filter.push(count);
+                                event.rules.push(
+                                    Object.assign({}, item, { id: count++ })
+                                );
                             });
                         }
                     }
-                    event.logic = '(' + trigger.join(' or ') + ') or (' + filter.join(' and ') + ')';
+                    event.logic =
+                        "(" +
+                        trigger.join(" or ") +
+                        ") or (" +
+                        filter.join(" and ") +
+                        ")";
+
+                    const data = Object.assign(
+                        {},
+                        this.ruleInfo,
+                        event,
+                        actions,
+                        event,
+                        ruleEvent
+                    );
+                    this.$store
+                        .dispatch("RuleInfoSet", data)
+                        .then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "更新成功"
+                            });
+                        })
+                        .catch(() => {
+                            this.$message({
+                                type: "success",
+                                message: "更新失败"
+                            });
+                        });
                 }
             });
+        },
+        cancelEdit() {
+            this.form = JSON.parse(this.ruleInfo.ruleEvent);
         }
     }
 };
