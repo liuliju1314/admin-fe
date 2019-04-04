@@ -21,7 +21,7 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="设备名称" prop="pid">
+                <el-form-item label="设备名称" prop="did">
                     <el-select 
                         v-model="form.did" 
                         filterable 
