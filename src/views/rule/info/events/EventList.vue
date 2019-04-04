@@ -151,7 +151,6 @@ export default {
         // 取消event编辑
         cancelDrag() {
             this.isDrag = false;
-            // this.handleRuleInfo();
         },
         // 更新event编辑
         updateEvent() {
@@ -176,12 +175,14 @@ export default {
                     type: "success",
                     message: "更新成功"
                 });
+                this.init();
                 this.isDrag = false;
             });
         },
         // 将编辑数组转为后台所需格式
         handleFormatToStr(list) {
             let arr = [];
+            this.event.rules = [];
             list.forEach(item => {
                 if (!item.logic) {
                     this.event.rules.push(item);

@@ -199,7 +199,7 @@ export default {
         beforeClose() {
             if (this.isLogic) {
                 this.$nextTick(() => {
-                    this.$refs["logicForm"].resetFields();
+                    this.$refs.logicForm.resetFields();
                 });
             } else {
                 this.$nextTick(() => {
