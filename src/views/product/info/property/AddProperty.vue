@@ -102,9 +102,9 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="属性类别" prop="business">
-                <el-radio-group v-model="propertForm.business">
-                    <el-radio :label="true">业务</el-radio>
-                    <el-radio :label="false">非业务</el-radio>
+                <el-radio-group v-model.number="propertForm.business">
+                    <el-radio :label="1">业务</el-radio>
+                    <el-radio :label="2">非业务</el-radio>
                 </el-radio-group>
             </el-form-item>
             <!-- 目前系统暂时不需要 -->
@@ -194,7 +194,7 @@ export default {
                         trigger: "blur"
                     }
                 ],
-                instant: [
+                business: [
                     {
                         required: true,
                         message: "请选择采样值",

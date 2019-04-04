@@ -21,8 +21,21 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="设备名称" placeholder="请输入设备名称" prop="did">
-                    <el-input v-model="form.did" clearable></el-input>
+                <el-form-item label="设备名称" prop="pid">
+                    <el-select 
+                        v-model="form.did" 
+                        filterable 
+                        placeholder="请选择设备名称"
+                        clearable
+                        @click.native="getDeviceModel()"
+                    >
+                        <el-option
+                        v-for="item in deviceModel"
+                        :key="item.did"
+                        :label="item.did"
+                        :value="item.did"
+                        ></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="日志等级" prop="level">
                     <el-select v-model="form.level" placeholder="请选择日志等级" clearable>
@@ -101,6 +114,7 @@
 import { getProductList } from "@/api/product/product";
 import { getDeviceLog } from "@/api/log/log";
 import { formatDate } from "@/utils/format";
+import { getDeviceList } from "@/api/device/device";
 
 export default {
     data() {
@@ -135,7 +149,8 @@ export default {
             updeviceLogList: [],
             downdeviceLogList: [],
             isPage: false, //获取所有产品名称以及产品Id,不分页
-            productModel: [] //存放所有产品名称以及产品Id
+            productModel: [], //存放所有产品名称以及产品Id
+            deviceModel: [] //存放所有产品名称以及产品Id
         };
     },
     created() {
@@ -161,6 +176,29 @@ export default {
                 .catch(error => {
                     return error;
                 });
+        },
+        // 获取产品下的设备名称
+        getDeviceModel() {
+            this.deviceModel = [];
+            const data = {
+                pid: this.form.pid,
+                ...this.isPage
+            }
+            getDeviceList(data)
+                .then(res => {
+                    res.payload.items.map(item => {
+                        const obj = {
+                            did: "",
+                        };
+                        obj.did = item.did;
+                        this.deviceModel.push(obj);
+                    });
+                })
+                .catch(error => {
+                    return error;
+                });
+
+
         },
         // 获取设备日志列表
         DeviceLogList() {
