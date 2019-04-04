@@ -20,7 +20,8 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="doDeviceSearch">确定</el-button>
+                    <!-- <el-button type="primary" @click="doDeviceSearch">确定</el-button> -->
+                    <el-button type="primary">确定</el-button>
                 </el-form-item>
             </el-form>
             <el-row :gutter="12">
@@ -164,8 +165,7 @@ export default {
                     this.wsData = evt.data;
                 };
 
-                this.ws.onclose = () => {
-                };
+                this.ws.onclose = () => {};
             } else {
                 // 浏览器不支持 WebSocket
                 alert("您的浏览器不支持 WebSocket!");

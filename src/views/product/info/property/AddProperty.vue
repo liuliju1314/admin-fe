@@ -101,8 +101,8 @@
                     <el-radio :label="false">丢弃</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="属性类别" prop="business">
-                <el-radio-group v-model.number="propertForm.business">
+            <el-form-item label="属性类别" prop="businessType">
+                <el-radio-group v-model.number="propertForm.businessType">
                     <el-radio :label="1">业务</el-radio>
                     <el-radio :label="2">非业务</el-radio>
                 </el-radio-group>
@@ -146,7 +146,7 @@ export default {
                 permission: "",
                 dialogVisible: "",
                 history: "",
-                business: "",
+                businessType: "",
                 // instant: "",
                 desc: "",
                 default: "",
@@ -231,7 +231,6 @@ export default {
                                 this.handleClose();
                             })
                             .catch(error => {
-                                console.log("error.message: " + error.message);
                                 return error;
                             });
                     }
