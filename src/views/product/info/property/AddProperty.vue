@@ -113,7 +113,7 @@
                     <el-radio :label="true">瞬时采样</el-radio>
                     <el-radio :label="false">时间段累积采样</el-radio>
                 </el-radio-group>
-            </el-form-item> -->
+            </el-form-item>-->
             <el-form-item label="默认值" prop="default">
                 <el-input v-model="propertForm.default"></el-input>
             </el-form-item>
@@ -146,7 +146,7 @@ export default {
                 permission: "",
                 dialogVisible: "",
                 history: "",
-                business:"",
+                business: "",
                 // instant: "",
                 desc: "",
                 default: "",
@@ -173,7 +173,7 @@ export default {
                         trigger: "blur"
                     }
                 ],
-                'dataType.type': [
+                "dataType.type": [
                     {
                         required: true,
                         message: "请选择属性类型",
@@ -230,8 +230,9 @@ export default {
                                 });
                                 this.handleClose();
                             })
-                            .catch(() => {
-                                this.$message.error("添加失败!");
+                            .catch(error => {
+                                console.log("error.message: " + error.message);
+                                return error;
                             });
                     }
                 });
