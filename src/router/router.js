@@ -95,16 +95,6 @@ export const routes = [
                     {
                         path: "linkage",
                         component: () => import("@/views/rule/info/SceneLinkage")
-                    },
-                    {
-                        path: "event",
-                        component: () =>
-                            import("@/views/rule/info/events/EventList")
-                    },
-                    {
-                        path: "action",
-                        component: () =>
-                            import("@/views/rule/info/action/ActionList")
                     }
                 ]
             }

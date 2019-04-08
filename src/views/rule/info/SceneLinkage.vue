@@ -6,7 +6,7 @@
                 <div
                     class="condition-item"
                     v-for="(item, index) in form.triggerList"
-                    :key="item.key"
+                    :key="item.only"
                 >
                     <div class="sort">{{index + 1}}</div>
                     <div class="content">
@@ -33,7 +33,18 @@
                                     required: true, message: '请选择产品', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择产品" v-model="item.pid"></el-select>
+                                <el-select
+                                    placeholder="请选择产品"
+                                    v-model="item.pid"
+                                    @focus="getProduct"
+                                >
+                                    <el-option
+                                        v-for="product in productList"
+                                        :label="product.name"
+                                        :value="product.pid"
+                                        :key="product.pid"
+                                    ></el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
@@ -42,25 +53,49 @@
                                     required: true, message: '请选择设备', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择设备" v-model="item.did" filterable></el-select>
+                                <el-select
+                                    placeholder="请选择设备"
+                                    v-model="item.did"
+                                    filterable
+                                    @focus="getDevice(item)"
+                                >
+                                    <el-option
+                                        v-for="device in deviceList"
+                                        :label="device.did"
+                                        :value="device.did"
+                                        :key="device.did"
+                                    ></el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'triggerList.' + index + '.prop'"
+                                :prop="'triggerList.' + index + '.key'"
                                 :rules="{
                                     required: true, message: '请选择属性', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择属性" v-model="item.prop" filterable></el-select>
+                                <el-select
+                                    placeholder="请选择属性"
+                                    v-model="item.key"
+                                    filterable
+                                    @focus="getProperty(item)"
+                                >
+                                    <el-option
+                                        v-for="property in propertyList"
+                                        :label="property.label"
+                                        :value="property.id"
+                                        :key="property.id"
+                                    ></el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'triggerList.' + index + '.mode'"
+                                :prop="'triggerList.' + index + '.op'"
                                 :rules="{
                                     required: true, message: '请选择比较方式', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择比较模式" v-model="item.mode">
+                                <el-select placeholder="请选择比较模式" v-model="item.op">
                                     <el-option label=">" value=">"></el-option>
                                     <el-option label=">=" value=">="></el-option>
                                     <el-option label="<" value="<"></el-option>
@@ -111,45 +146,80 @@
                                 v-model="item.type"
                                 @change="changeTriggerType(item)"
                             >
-                                <el-option label="设备触发" value="device"></el-option>
+                                <el-option label="设备过滤" value="device"></el-option>
                             </el-select>
                         </el-form-item>
                         <template v-if="item.type === 'device'">
                             <el-form-item
                                 class="form-item"
-                                :prop="'filterList.' + index + '.pid'"
+                                :prop="'triggerList.' + index + '.pid'"
                                 :rules="{
                                     required: true, message: '请选择产品', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择产品" v-model="item.pid"></el-select>
+                                <el-select
+                                    placeholder="请选择产品"
+                                    v-model="item.pid"
+                                    @focus="getProduct"
+                                >
+                                    <el-option
+                                        v-for="product in productList"
+                                        :label="product.name"
+                                        :value="product.pid"
+                                        :key="product.pid"
+                                    ></el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'filterList.' + index + '.did'"
+                                :prop="'triggerList.' + index + '.did'"
                                 :rules="{
                                     required: true, message: '请选择设备', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择设备" v-model="item.did" filterable></el-select>
+                                <el-select
+                                    placeholder="请选择设备"
+                                    v-model="item.did"
+                                    filterable
+                                    @focus="getDevice(item)"
+                                >
+                                    <el-option
+                                        v-for="device in deviceList"
+                                        :label="device.did"
+                                        :value="device.did"
+                                        :key="device.did"
+                                    ></el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'filterList.' + index + '.prop'"
+                                :prop="'triggerList.' + index + '.key'"
                                 :rules="{
                                     required: true, message: '请选择属性', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择属性" v-model="item.prop" filterable></el-select>
+                                <el-select
+                                    placeholder="请选择属性"
+                                    v-model="item.key"
+                                    filterable
+                                    @focus="getProperty(item)"
+                                >
+                                    <el-option
+                                        v-for="property in propertyList"
+                                        :label="property.label"
+                                        :value="property.id"
+                                        :key="property.id"
+                                    ></el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'filterList.' + index + '.mode'"
+                                :prop="'triggerList.' + index + '.op'"
                                 :rules="{
                                     required: true, message: '请选择比较方式', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择比较模式" v-model="item.mode">
+                                <el-select placeholder="请选择比较模式" v-model="item.op">
                                     <el-option label=">" value=">"></el-option>
                                     <el-option label=">=" value=">="></el-option>
                                     <el-option label="<" value="<"></el-option>
@@ -160,7 +230,7 @@
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'filterList.' + index + '.value'"
+                                :prop="'triggerList.' + index + '.value'"
                                 :rules="{
                                     required: true, message: '请输入比较值', trigger: 'blur'
                                 }"
@@ -176,7 +246,7 @@
                     >删除</el-button>
                 </div>
                 <div>
-                    <el-button type="text" @click="addTrigger('filterList')">+ 新增执行条件</el-button>
+                    <el-button type="text" @click="addTrigger('filterList')">+ 新增过滤条件</el-button>
                 </div>
             </div>
             <div class="condition-box">
@@ -211,7 +281,18 @@
                                     required: true, message: '请选择产品', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择产品" v-model="item.pid"></el-select>
+                                <el-select
+                                    placeholder="请选择产品"
+                                    v-model="item.pid"
+                                    @focus="getProduct"
+                                >
+                                    <el-option
+                                        v-for="product in productList"
+                                        :label="product.name"
+                                        :value="product.pid"
+                                        :key="product.pid"
+                                    ></el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
@@ -220,41 +301,57 @@
                                     required: true, message: '请选择设备', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择设备" v-model="item.did" filterable></el-select>
+                                <el-select
+                                    placeholder="请选择设备"
+                                    v-model="item.did"
+                                    filterable
+                                    @focus="getDevice(item)"
+                                >
+                                    <el-option
+                                        v-for="device in deviceList"
+                                        :label="device.did"
+                                        :value="device.did"
+                                        :key="device.did"
+                                    ></el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
-                                :prop="'actionList.' + index + '.prop'"
+                                :prop="'actionList.' + index + '.key'"
                                 :rules="{
                                     required: true, message: '请选择属性', trigger: 'blur'
                                 }"
                             >
-                                <el-select placeholder="请选择属性" v-model="item.prop" filterable></el-select>
-                            </el-form-item>
-                            <el-form-item
-                                class="form-item"
-                                :prop="'actionList.' + index + '.mode'"
-                                :rules="{
-                                    required: true, message: '请选择比较方式', trigger: 'blur'
-                                }"
-                            >
-                                <el-select placeholder="请选择比较模式" v-model="item.mode">
-                                    <el-option label=">" value=">"></el-option>
-                                    <el-option label=">=" value=">="></el-option>
-                                    <el-option label="<" value="<"></el-option>
-                                    <el-option label="<=" value="<="></el-option>
-                                    <el-option label="==" value="=="></el-option>
-                                    <el-option label="!=" value="!="></el-option>
+                                <el-select
+                                    placeholder="请选择属性"
+                                    v-model="item.key"
+                                    filterable
+                                    @focus="getProperty(item)"
+                                    @change="getMetaData"
+                                >
+                                    <el-option
+                                        v-for="property in propertyList"
+                                        :label="property.label"
+                                        :value="property.id"
+                                        :key="property.id"
+                                    ></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item
                                 class="form-item"
                                 :prop="'actionList.' + index + '.value'"
                                 :rules="{
-                                    required: true, message: '请输入比较值', trigger: 'blur'
+                                    required: true, message: '请输入或选择值', trigger: 'blur'
                                 }"
                             >
-                                <el-input placeholder="请输入比较值" v-model="item.value"></el-input>
+                                <el-select v-model="item.value" placeholder="请输入或选择值">
+                                    <el-option
+                                        v-for="item in metaData"
+                                        :key="item.propertyValue"
+                                        :label="item.propertyDesc"
+                                        :value="item.propertyValue"
+                                    ></el-option>
+                                </el-select>
                             </el-form-item>
                         </template>
                     </div>
@@ -265,18 +362,22 @@
                     >删除</el-button>
                 </div>
                 <div>
-                    <el-button type="text" @click="addTrigger('actionList')">+ 新增过滤条件</el-button>
+                    <el-button type="text" @click="addTrigger('actionList')">+ 新增执行条件</el-button>
                 </div>
             </div>
             <el-form-item>
                 <el-button type="primary" @click="submitRule">确定并保存</el-button>
-                <el-button>取消</el-button>
+                <el-button @click="cancelEdit">取消</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { getProductList } from "@/api/product/product";
+import { getDeviceList } from "@/api/device/device";
+import { getPropertyList } from "@/api/property/property";
 export default {
     name: "SceneLinkage",
     data() {
@@ -294,31 +395,59 @@ export default {
                 ],
                 actionList: [
                     {
-                        type: "device"
+                        type: "device",
+                        name: "123"
                     }
                 ]
-            }
+            },
+            productList: [],
+            deviceList: [],
+            propertyList: [],
+            metaData: []
         };
     },
-    created() {
-        for (let key in this.form) {
-            const arr = this.form[key];
-            arr.forEach(item => {
-                if (item.type === "device") {
-                    Object.assign(item, {
-                        pid: "",
-                        did: "",
-                        prop: "",
-                        mode: "",
-                        value: "",
-                        key: Date.now()
-                    });
-                }
-            });
+    computed: {
+        ...mapGetters(["ruleInfo"])
+    },
+    watch: {
+        $route() {
+            if(this.$route.path.indexOf('rule') >= 0) {
+                this.init();
+            }
         }
+    },
+    created() {
+        this.init();
     },
     components: {},
     methods: {
+        init() {
+            const tid = this.$route.params.id;
+            this.$store.dispatch("RuleInfoGet", { tid }).then(() => {
+                if (this.ruleInfo) {
+                    const ruleEvent = this.ruleInfo.ruleEvent;
+                    if (ruleEvent.length > 0) {
+                        this.form = ruleEvent[0];
+                        for(let key in this.form) {
+                            this.form[key].forEach( data => {
+                                this.getProduct(data);
+                                this.getDevice(data);
+                                this.getProperty(data);
+                                this.getMetaData(data);                            
+                            })
+
+                        }
+                    }
+                }
+            });
+
+            for (let key in this.form) {
+                const arr = this.form[key];
+                arr.forEach(item => {
+                    this.changeTriggerType(item);
+                });
+            }
+        },
         addTrigger(condition) {
             this.form[condition].push({
                 type: ""
@@ -331,15 +460,14 @@ export default {
             }
         },
         changeTriggerType(data) {
-            console.log(data);
             if (data.type === "device") {
-                Object.assign(data, {
+                data = Object.assign({}, data, {
                     pid: "",
                     did: "",
-                    prop: "",
-                    mode: "",
+                    key: "",
+                    op: "",
                     value: "",
-                    key: Date.now()
+                    only: Date.now()
                 });
             }
         },
@@ -349,24 +477,104 @@ export default {
                     let count = 1;
                     const event = {
                             rules: [],
-                            logic: ''
+                            logic: ""
                         },
-                        actions = this.form.actionList;
-                    const trigger = [], filter = [];
+                        actions = this.form.actionList,
+                        ruleEvent = [];
+                    ruleEvent.push(this.form);
+                    const trigger = [],
+                        filter = [];
                     for (let key in this.form) {
                         if (key !== "actionList") {
                             const arr = this.form[key];
                             arr.forEach(item => {
-                                key === 'triggerList' ? trigger.push(count) : filter.push(count);
-                                event.rules.push(Object.assign(
-                                    {}, item, {id: count++}
-                                ));
+                                key === "triggerList"
+                                    ? trigger.push(count)
+                                    : filter.push(count);
+                                event.rules.push(
+                                    Object.assign({}, item, { id: count++ })
+                                );
                             });
                         }
                     }
-                    event.logic = '(' + trigger.join(' or ') + ') or (' + filter.join(' and ') + ')';
+                    const tempA = trigger.length > 1 ? "(" + trigger.join(" or ") + ")" : trigger.join(" or ");
+                    const tempB = filter.length > 1 ? "(" + filter.join(" or ") + ")" : filter.join(" or ");
+                    event.logic = tempA + ' or ' + tempB;
+
+                    const data = Object.assign({}, this.ruleInfo, {
+                        event,
+                        actions,
+                        ruleEvent
+                    });
+                    this.$store
+                        .dispatch("RuleInfoSet", data)
+                        .then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "更新成功"
+                            });
+                        })
+                        .catch(() => {
+                            this.$message({
+                                type: "success",
+                                message: "更新失败"
+                            });
+                        });
                 }
             });
+        },
+        cancelEdit() {
+            this.form = this.ruleInfo.ruleEvent[0];
+        },
+        getProduct() {
+            if (this.productList.length === 0) {
+                getProductList({ isPage: false })
+                    .then(res => {
+                        this.productList = res.payload.result;
+                    })
+                    .catch(error => {
+                        return error;
+                    });
+            }
+        },
+        getDevice(data) {
+            this.deviceList = [];
+            console.log(data);
+            if(data.pid) {
+
+                getDeviceList({ isPage: false, pid: data.pid })
+                    .then(res => {
+                        this.deviceList = res.payload.items;
+                    })
+                    .catch(error => {
+                        return error;
+                    });                
+            }
+
+        },
+        getProperty(data) {
+            this.propertyList = [];
+
+            if(data.did) {
+                getPropertyList({ isPage: false, pid: data.pid, did: data.did })
+                    .then(res => {
+                        this.propertyList = res.payload;
+                    })
+                    .catch(error => {
+                        return error;
+                    });                
+            }
+
+        },
+        getMetaData(value) {
+            this.metaData = [];
+            const curProp = this.propertyList.find(item => item.id === value);
+            if (curProp) {
+                const dataType = curProp.dataType;
+                if (dataType.type === "enum") {
+                    this.metaData = dataType.specs;
+                }
+            }
         }
     }
 };

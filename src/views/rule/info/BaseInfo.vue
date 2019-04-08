@@ -29,9 +29,6 @@ export default {
     data() {
         return {
             rule: "",
-            ruleId: "",
-            base: "",
-            baseInfo: "",
             dialogVisible: false
         };
     },
@@ -48,7 +45,6 @@ export default {
         },
         listenAdd(value) {
             this.dialogVisible = value;
-            // this.handleRuleInfo();
         }
     }
 };

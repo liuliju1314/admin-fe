@@ -17,16 +17,6 @@
                 active-class="active"
                 :to="'/rule/'+ruleId+'/linkage'"
             >场景详情</router-link>
-            <router-link
-                class="link-item"
-                active-class="active"
-                :to="'/rule/'+ruleId+'/event'"
-            >Events</router-link>
-            <router-link
-                class="link-item"
-                active-class="active"
-                :to="'/rule/'+ruleId+'/action'"
-            >Action</router-link>
         </div>
         <div class="rule-detail-box">
             <keep-alive>
