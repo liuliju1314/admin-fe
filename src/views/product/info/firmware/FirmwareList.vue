@@ -104,7 +104,6 @@ export default {
         AddFirmware,
         UpgradeDetail
     },
-    props: {},
     data() {
         return {
             firmwareList: [],

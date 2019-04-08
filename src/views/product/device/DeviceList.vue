@@ -98,13 +98,8 @@
 import VueProgress from "./info/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
 import deviceInfo from "./mixins/deviceInfo";
-import { mapGetters } from "vuex";
 
-import {
-    // getDeviceList,
-    updateDeviceGroup,
-    getOTAProgress
-} from "@/api/device/device";
+import { updateDeviceGroup, getOTAProgress } from "@/api/device/device";
 export default {
     mixins: [deviceInfo],
     data() {
@@ -122,18 +117,7 @@ export default {
 
     components: { DeviceUpgrade, VueProgress },
 
-    computed: {
-        ...mapGetters(["deviceInfo"])
-    },
-
     methods: {
-        init() {
-            this.form.pid = this.$route.params.id;
-            if (this.form.pid && this.$route.path.indexOf("device") >= 0 && !this.form.did) {
-                this.getDevice();
-            }
-        },
-
         // 点击跳路由
         expandDetail(row) {
             const pid = this.$route.params.id;

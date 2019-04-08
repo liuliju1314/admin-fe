@@ -54,8 +54,7 @@ export default {
     },
     computed: {
         ...mapGetters(["baseInfo"])
-    },
-
+    }
 };
 </script>
 <style lang="less">
