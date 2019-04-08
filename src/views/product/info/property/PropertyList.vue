@@ -72,7 +72,8 @@
 import AddProperty from "./AddProperty";
 import CheckProperty from "./CheckProperty";
 import { getPropertyList, deleteProduce } from "@/api/property/property";
-import { getProductInfo } from "@/api/product/product";
+import { mapGetters } from "vuex";
+
 export default {
     name: "PropertyList",
     data() {
@@ -103,22 +104,18 @@ export default {
             this.init();
         }
     },
-    computed: {},
     created() {
         this.init();
+    },
+    computed: {
+        ...mapGetters(["baseInfo"])
     },
     methods: {
         // 初始化
         init() {
             this.pid = this.$route.params.id;
             if (this.pid && this.$route.path.indexOf("property") >= 0) {
-                getProductInfo({ pid: this.pid })
-                    .then(res => {
-                        this.proStatus = res.payload.productStatus;
-                    })
-                    .catch(err => {
-                        return err;
-                    });
+                this.proStatus = this.baseInfo.productStatus;
                 this.getProperty();
             }
         },

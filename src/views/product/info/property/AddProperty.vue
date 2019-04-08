@@ -14,7 +14,7 @@
             </el-form-item>
 
             <el-form-item label="标识符" prop="label">
-                <el-input v-model="propertForm.label" placeholder="仅支持大小写字母、数字"></el-input>
+                <el-input v-model="propertForm.label" placeholder="仅支持大小写字母、数字，同产品下不可重复"></el-input>
             </el-form-item>
             <el-form-item label="属性类型" prop="dataType.type">
                 <el-select v-model="propertForm.dataType.type" placeholder="请选择类型">
@@ -101,10 +101,10 @@
                     <el-radio :label="false">丢弃</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="属性类别" prop="business">
-                <el-radio-group v-model="propertForm.business">
-                    <el-radio :label="true">业务</el-radio>
-                    <el-radio :label="false">非业务</el-radio>
+            <el-form-item label="属性类别" prop="businessType">
+                <el-radio-group v-model.number="propertForm.businessType">
+                    <el-radio :label="1">业务</el-radio>
+                    <el-radio :label="2">非业务</el-radio>
                 </el-radio-group>
             </el-form-item>
             <!-- 目前系统暂时不需要 -->
@@ -113,7 +113,7 @@
                     <el-radio :label="true">瞬时采样</el-radio>
                     <el-radio :label="false">时间段累积采样</el-radio>
                 </el-radio-group>
-            </el-form-item> -->
+            </el-form-item>-->
             <el-form-item label="默认值" prop="default">
                 <el-input v-model="propertForm.default"></el-input>
             </el-form-item>
@@ -146,7 +146,7 @@ export default {
                 permission: "",
                 dialogVisible: "",
                 history: "",
-                business:"",
+                businessType: "",
                 // instant: "",
                 desc: "",
                 default: "",
@@ -173,7 +173,7 @@ export default {
                         trigger: "blur"
                     }
                 ],
-                'dataType.type': [
+                "dataType.type": [
                     {
                         required: true,
                         message: "请选择属性类型",
@@ -194,10 +194,10 @@ export default {
                         trigger: "blur"
                     }
                 ],
-                instant: [
+                businessType: [
                     {
                         required: true,
-                        message: "请选择采样值",
+                        message: "请选择属性类别",
                         trigger: "blur"
                     }
                 ]
@@ -213,9 +213,15 @@ export default {
             if (newValue.dataType.type === "enum") {
                 this.enumList = newValue.dataType.specs;
             }
+        },
+        $route() {
+            this.init();
         }
     },
     methods: {
+        init() {
+            this.propertForm.pid = this.$route.params.id;
+        },
         // 点击确定按钮
         submitProperty() {
             if (this.isEdit === false) {
@@ -230,8 +236,8 @@ export default {
                                 });
                                 this.handleClose();
                             })
-                            .catch(() => {
-                                this.$message.error("添加失败!");
+                            .catch(error => {
+                                return error;
                             });
                     }
                 });

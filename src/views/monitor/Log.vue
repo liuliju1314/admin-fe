@@ -21,8 +21,21 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="设备名称" placeholder="请输入设备名称" prop="did">
-                    <el-input v-model="form.did" clearable></el-input>
+                <el-form-item label="设备名称" prop="did">
+                    <el-select
+                        v-model="form.did"
+                        filterable
+                        placeholder="请选择设备名称"
+                        clearable
+                        @click.native="getDeviceModel()"
+                    >
+                        <el-option
+                            v-for="item in deviceModel"
+                            :key="item.did"
+                            :label="item.did"
+                            :value="item.did"
+                        ></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="日志等级" prop="level">
                     <el-select v-model="form.level" placeholder="请选择日志等级" clearable>
@@ -39,8 +52,8 @@
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
-                        value-format="timestamp">
-                    </el-date-picker>
+                        value-format="timestamp"
+                    ></el-date-picker>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -101,6 +114,7 @@
 import { getProductList } from "@/api/product/product";
 import { getDeviceLog } from "@/api/log/log";
 import { formatDate } from "@/utils/format";
+import { getDeviceList } from "@/api/device/device";
 
 export default {
     data() {
@@ -125,7 +139,7 @@ export default {
                 pid: "",
                 did: "",
                 linkType: "up",
-                level:"",
+                level: "",
                 page: 1,
                 pageSize: 10,
                 isPage: true
@@ -135,13 +149,15 @@ export default {
             updeviceLogList: [],
             downdeviceLogList: [],
             isPage: false, //获取所有产品名称以及产品Id,不分页
-            productModel: [] //存放所有产品名称以及产品Id
+            productModel: [], //存放所有产品名称以及产品Id
+            deviceModel: [] //存放所有产品名称以及产品Id
         };
     },
     created() {
         // this.DeviceLogList();
     },
     computed: {},
+
     methods: {
         // 获取产品名称和产品id
         getProductModel() {
@@ -162,16 +178,37 @@ export default {
                     return error;
                 });
         },
+        // 获取产品下的设备名称
+        getDeviceModel() {
+            this.deviceModel = [];
+            const data = {
+                pid: this.form.pid,
+                ...this.isPage
+            };
+            getDeviceList(data)
+                .then(res => {
+                    res.payload.items.map(item => {
+                        const obj = {
+                            did: ""
+                        };
+                        obj.did = item.did;
+                        this.deviceModel.push(obj);
+                    });
+                })
+                .catch(error => {
+                    return error;
+                });
+        },
         // 获取设备日志列表
         DeviceLogList() {
             const data = {
                 ...this.form,
                 start: this.timeRange[0] ? this.timeRange[0] : "",
-                end: this.timeRange[1]  ? this.timeRange[1] : "",
-            }
+                end: this.timeRange[1] ? this.timeRange[1] : ""
+            };
             getDeviceLog(data)
                 .then(res => {
-                    if(this.form.linkType === "up") {
+                    if (this.form.linkType === "up") {
                         this.updeviceLogList = res.payload.items;
                     } else if (this.form.linkType === "down") {
                         this.downdeviceLogList = res.payload.items;
@@ -206,7 +243,7 @@ export default {
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");
         }
-    },
+    }
 };
 </script>
 <style lang="less" scoped>

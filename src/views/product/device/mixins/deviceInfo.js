@@ -16,27 +16,35 @@ export default {
     },
 
     created() {
-        this.init();
+        this.getDevice();
     },
 
     watch: {
         $route() {
-            this.init();
+            this.getDevice();
         }
     },
 
     methods: {
         getDevice() {
-            getDeviceList(this.form)
-                .then(res => {
-                    this.deviceList = res.payload.items;
-                    this.count = res.payload.total;
-                    this.online = res.payload.online;
-                    this.offline = res.payload.offline;
-                })
-                .catch(error => {
-                    return error;
-                });
+            this.form.pid = this.$route.params.id;
+            if (
+                this.form.pid &&
+                this.$route.path.indexOf("device") >= 0 &&
+                !this.form.did
+            ) {
+                getDeviceList(this.form)
+                    .then(res => {
+                        this.deviceList = res.payload.items;
+                        this.count = res.payload.total;
+                        this.online = res.payload.online;
+                        this.offline = res.payload.offline;
+                    })
+                    .catch(error => {
+                        return error;
+                    });
+            }
+
         },
     },
 }
