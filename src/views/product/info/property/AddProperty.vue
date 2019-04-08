@@ -14,7 +14,7 @@
             </el-form-item>
 
             <el-form-item label="标识符" prop="label">
-                <el-input v-model="propertForm.label" placeholder="仅支持大小写字母、数字"></el-input>
+                <el-input v-model="propertForm.label" placeholder="仅支持大小写字母、数字，同产品下不可重复"></el-input>
             </el-form-item>
             <el-form-item label="属性类型" prop="dataType.type">
                 <el-select v-model="propertForm.dataType.type" placeholder="请选择类型">
@@ -213,9 +213,15 @@ export default {
             if (newValue.dataType.type === "enum") {
                 this.enumList = newValue.dataType.specs;
             }
+        },
+        $route() {
+            this.init();
         }
     },
     methods: {
+        init() {
+            this.propertForm.pid = this.$route.params.id;
+        },
         // 点击确定按钮
         submitProperty() {
             if (this.isEdit === false) {
