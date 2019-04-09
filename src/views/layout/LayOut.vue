@@ -22,7 +22,6 @@ import SidebarNav from "@/components/sidebar/Index";
 import HeaderNav from "@/components/header/HeaderNav";
 import TagsView from "@/components/tagsView/TagsView";
 export default {
-    name: "",
     data() {
         return {
             isCollapse: true
