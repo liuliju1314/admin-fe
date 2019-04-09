@@ -61,7 +61,7 @@ export default {
             }
         }
     },
-    computed: {
+    methods: {
         formatterFwVersion(value) {
             if(typeof value === 'object') {
                 const keys = Object.keys(value);
