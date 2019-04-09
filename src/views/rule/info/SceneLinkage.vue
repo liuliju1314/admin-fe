@@ -138,7 +138,7 @@
                             class="form-item"
                             :prop="'filterList.' + index + '.type'"
                             :rules="{
-                            required: true, message: '请选择过滤类型', trigger: 'blur'
+                            message: '请选择过滤类型', trigger: 'blur'
                         }"
                         >
                             <el-select
@@ -154,7 +154,7 @@
                                 class="form-item"
                                 :prop="'triggerList.' + index + '.pid'"
                                 :rules="{
-                                    required: true, message: '请选择产品', trigger: 'blur'
+                                    message: '请选择产品', trigger: 'blur'
                                 }"
                             >
                                 <el-select
@@ -174,7 +174,7 @@
                                 class="form-item"
                                 :prop="'triggerList.' + index + '.did'"
                                 :rules="{
-                                    required: true, message: '请选择设备', trigger: 'blur'
+                                    message: '请选择设备', trigger: 'blur'
                                 }"
                             >
                                 <el-select
@@ -195,7 +195,7 @@
                                 class="form-item"
                                 :prop="'triggerList.' + index + '.key'"
                                 :rules="{
-                                    required: true, message: '请选择属性', trigger: 'blur'
+                                    message: '请选择属性', trigger: 'blur'
                                 }"
                             >
                                 <el-select
@@ -216,7 +216,7 @@
                                 class="form-item"
                                 :prop="'triggerList.' + index + '.op'"
                                 :rules="{
-                                    required: true, message: '请选择比较方式', trigger: 'blur'
+                                    message: '请选择比较方式', trigger: 'blur'
                                 }"
                             >
                                 <el-select placeholder="请选择比较模式" v-model="item.op">
@@ -232,7 +232,7 @@
                                 class="form-item"
                                 :prop="'triggerList.' + index + '.value'"
                                 :rules="{
-                                    required: true, message: '请输入比较值', trigger: 'blur'
+                                     message: '请输入比较值', trigger: 'blur'
                                 }"
                             >
                                 <el-input placeholder="请输入比较值" v-model="item.value"></el-input>
@@ -411,7 +411,10 @@ export default {
     },
     watch: {
         $route() {
-            if(this.$route.path.indexOf('rule') >= 0) {
+            if (
+                this.$route.path.indexOf("rule") >= 0 &&
+                this.$route.params.id
+            ) {
                 this.init();
             }
         }
@@ -427,15 +430,19 @@ export default {
                 if (this.ruleInfo) {
                     const ruleEvent = this.ruleInfo.ruleEvent;
                     if (ruleEvent.length > 0) {
-                        this.form = ruleEvent[0];
-                        for(let key in this.form) {
-                            this.form[key].forEach( data => {
+                        const curRule = ruleEvent[0];
+                        if (!curRule.filterList.length === 0) {
+                            this.form.filterList = curRule.filterList;
+                        }
+                        this.form.triggerList = curRule.triggerList;
+                        this.form.actionList = curRule.actionList;
+                        for (let key in this.form) {
+                            this.form[key].forEach(data => {
                                 this.getProduct(data);
                                 this.getDevice(data);
                                 this.getProperty(data);
-                                this.getMetaData(data);                            
-                            })
-
+                                this.getMetaData(data);
+                            });
                         }
                     }
                 }
@@ -474,6 +481,19 @@ export default {
         submitRule() {
             this.$refs.form.validate(valid => {
                 if (valid) {
+                    if (this.form.triggerList.length === 0) {
+                        this.$message({
+                            type: "warning",
+                            message: "请输入触发条件"
+                        });
+                        return;
+                    } else if (this.form.actionList.length === 0) {
+                        this.$message({
+                            type: "warning",
+                            message: "请输入执行条件"
+                        });
+                        return;
+                    }
                     let count = 1;
                     const event = {
                             rules: [],
@@ -484,9 +504,22 @@ export default {
                     ruleEvent.push(this.form);
                     const trigger = [],
                         filter = [];
+
                     for (let key in this.form) {
                         if (key !== "actionList") {
-                            const arr = this.form[key];
+                            let arr = this.form[key];
+                            if (key === "filterList") {
+                                arr = this.form[key].map(item => {
+                                    let index = 0;
+                                    for (let key in item) {
+                                        if (item[key] === "") {
+                                            index++;
+                                        }
+                                    }
+                                    if (index === 0) return item;
+                                });
+                            }
+
                             arr.forEach(item => {
                                 key === "triggerList"
                                     ? trigger.push(count)
@@ -497,9 +530,16 @@ export default {
                             });
                         }
                     }
-                    const tempA = trigger.length > 1 ? "(" + trigger.join(" or ") + ")" : trigger.join(" or ");
-                    const tempB = filter.length > 1 ? "(" + filter.join(" or ") + ")" : filter.join(" or ");
-                    event.logic = tempA + ' or ' + tempB;
+
+                    const tempA =
+                        trigger.length > 1
+                            ? "(" + trigger.join(" or ") + ")"
+                            : trigger.join(" or ");
+                    const tempB =
+                        filter.length > 1
+                            ? "(" + filter.join(" or ") + ")"
+                            : filter.join(" or ");
+                    event.logic = tempA + " or " + tempB;
 
                     const data = Object.assign({}, this.ruleInfo, {
                         event,
@@ -540,31 +580,28 @@ export default {
         getDevice(data) {
             this.deviceList = [];
             console.log(data);
-            if(data.pid) {
-
+            if (data.pid) {
                 getDeviceList({ isPage: false, pid: data.pid })
                     .then(res => {
                         this.deviceList = res.payload.items;
                     })
                     .catch(error => {
                         return error;
-                    });                
+                    });
             }
-
         },
         getProperty(data) {
             this.propertyList = [];
 
-            if(data.did) {
+            if (data.did) {
                 getPropertyList({ isPage: false, pid: data.pid, did: data.did })
                     .then(res => {
                         this.propertyList = res.payload;
                     })
                     .catch(error => {
                         return error;
-                    });                
+                    });
             }
-
         },
         getMetaData(value) {
             this.metaData = [];
