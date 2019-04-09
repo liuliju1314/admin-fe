@@ -344,7 +344,7 @@
                                     required: true, message: '请输入或选择值', trigger: 'blur'
                                 }"
                             >
-                                <el-select v-model="item.value" placeholder="请输入或选择值">
+                                <el-select v-model="item.value" placeholder="请输入或选择值" allow-create filterable>
                                     <el-option
                                         v-for="item in metaData"
                                         :key="item.propertyValue"

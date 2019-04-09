@@ -4,84 +4,72 @@
             <tr>
                 <th>产品名称:</th>
                 <td>
-                    <span>{{deviceList[0].name}}</span>
+                    <span>{{deviceInfo.name}}</span>
                 </td>
                 <th>产品型号:</th>
-                <td>{{deviceList[0].model}}</td>
+                <td>{{deviceInfo.model}}</td>
                 <th>设备编号:</th>
-                <td>{{deviceList[0].did}}</td>
+                <td>{{deviceInfo.did}}</td>
             </tr>
             <tr>
                 <th>设备分组:</th>
                 <td>
-                    <span>{{formatterGroup(deviceList[0].group)}}</span>
+                    <span>{{formatterGroup(deviceInfo.group)}}</span>
                 </td>
                 <th>固件版本号:</th>
-                <td>{{deviceList[0].fwVersion.app}}</td>
+                <td>{{formatterFwVersion(deviceInfo.fwVersion)}}</td>
                 <th>硬件版本号:</th>
-                <td>{{deviceList[0].hwVersion}}</td>
+                <td>{{deviceInfo.hwVersion}}</td>
             </tr>
             <tr>
                 <th>在线状态:</th>
                 <td>
-                    <span>{{isOnline(deviceList[0].status)}}</span>
+                    <span>{{isOnline(deviceInfo.status)}}</span>
                 </td>
-                <th></th>
-                <td></td>
-                <th></th>
-                <td></td>
             </tr>
         </table>
     </div>
 </template>
 
 <script>
-import deviceInfo from "../mixins/deviceInfo";
-import { mapGetters } from "vuex";
-
+import deviceList from "../mixins/deviceList";
 export default {
-    mixins: [deviceInfo],
+    mixins: [deviceList],
     components: {},
     props: {},
     data() {
         return {
             form: {
-                page: 1,
-                pageSize: 10,
-                pid: "",
                 did: "",
-                status: "0",
-                isPage: true
+                isPage: false
             },
-            deviceList: [
-                {
-                    name: "",
-                    fwVersion: {
-                        app: ""
-                    }
-                }
-            ]
+            deviceInfo: ""
         };
     },
-    computed: {
-        ...mapGetters(["deviceInfo"])
+    created() {
+        this.form.did = this.$route.params.did;
     },
-
     watch: {
         $route() {
-            this.init();
-        }
-    },
-
-    methods: {
-
-        init() {
-            this.form.did = this.$route.params.did;
-            if ( this.$route.path.indexOf("detail") >= 0 && this.form.did) {
+            if (this.$route.params.did) {
                 this.getDevice();
             }
         },
-
+        deviceList() {
+            if (this.$route.params.did) {
+                this.deviceInfo = this.deviceList.items[0];
+            }
+        }
+    },
+    computed: {
+        formatterFwVersion(value) {
+            if(typeof value === 'object') {
+                const keys = Object.keys(value);
+                return keys.reduce( (total,key) =>  value[key] + ' ' + total, '' )
+            } else {
+                return value;
+            }
+        },
         formatterGroup(value) {
             if (value === "release") {
                 return "正式组";
