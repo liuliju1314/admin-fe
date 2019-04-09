@@ -66,7 +66,8 @@ export default {
         handleUpgrade(fw) {
             const data = {
                 fwID: fw.fwID,
-                did: this.device.did
+                did: this.device.did,
+                pid: this.$route.params.id
             };
             OTAForDevice(data).then(() => {
                 this.$message({

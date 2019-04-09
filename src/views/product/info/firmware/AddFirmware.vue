@@ -54,7 +54,22 @@
                     >+ 新增固件</el-button>
                 </div>
             </div>
-            <el-form-item label="固件名称" prop="fwName" v-if="fwNameList && fwNameList !== []">
+
+            <el-form-item label="固件分组" prop="group">
+                <el-radio-group v-model="form.group" placeholder="请选择">
+                    <el-radio label="release">正式版</el-radio>
+                    <el-radio label="debug">测试版</el-radio>
+                    <el-radio label="develop">开发版</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="固件版本" prop="version">
+                <el-input
+                    :disabled="isEdit"
+                    v-model="form.version"
+                    placeholder="建议采用版本递增进行管理,如：1.0.0"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="固件名称" prop="fwName" v-if="fwNameList.length > 0">
                 <el-select
                     v-model="form.fwName"
                     filterable
@@ -69,20 +84,6 @@
                         :value="item.name"
                     ></el-option>
                 </el-select>
-            </el-form-item>
-            <el-form-item label="固件分组" prop="group">
-                <el-radio-group v-model="form.group" placeholder="请选择">
-                    <el-radio label="release">正式版</el-radio>
-                    <el-radio label="debug">测试版</el-radio>
-                    <el-radio label="develop">开发版</el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item label="固件版本" prop="version">
-                <el-input
-                    :disabled="isEdit"
-                    v-model="form.version"
-                    placeholder="建议采用版本递增进行管理,如：1.0.0"
-                ></el-input>
             </el-form-item>
             <el-form-item label="描述" prop="desc">
                 <el-input type="textarea" v-model="form.desc"></el-input>

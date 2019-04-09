@@ -16,7 +16,6 @@
             </div>
             <div class="card-title">
                 <span> {{did}} </span>
-                <span class="device-status"><span class="spot"></span>设备在线</span>
             </div>
             <router-link
                 class="link-item"

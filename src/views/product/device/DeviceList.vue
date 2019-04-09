@@ -15,10 +15,10 @@
                 <el-button type="primary" @click="handleeEquipment()">查询</el-button>
             </el-form-item>
         </el-form>
-        <div class="device-log">当前设备总数： {{count}}，其中在线：{{online}}，离线：{{offline}}.</div>
+        <div class="device-log">当前设备总数： {{deviceList.count}}，其中在线：{{deviceList.online}}，离线：{{deviceList.offline}}.</div>
         <!-- 循环的设备列表 -->
         <el-table
-            :data="deviceList"
+            :data="deviceList.items"
             style="width: 100%; margin-top: 12px"
             border
             size="small"
@@ -67,12 +67,12 @@
             </el-table-column>
         </el-table>
         <!-- 分页逻辑 -->
-        <div class="pagination-box" v-if="form.pageSize < count">
+        <div class="pagination-box" v-if="form.pageSize < deviceList.total">
             <el-pagination
                 :page-size="form.pageSize"
                 :page="form.page"
                 layout="prev, pager, next"
-                :total="count"
+                :total="total"
                 @current-change="handlePage"
             ></el-pagination>
         </div>
@@ -97,15 +97,19 @@
 <script>
 import VueProgress from "./info/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
-import deviceInfo from "./mixins/deviceInfo";
+import deviceList from "./mixins/deviceList";
 
 import { updateDeviceGroup, getOTAProgress } from "@/api/device/device";
 export default {
-    mixins: [deviceInfo],
+    mixins: [deviceList],
     data() {
         return {
-            isPage: false,
-            deviceList: [],
+            form: {
+                did: "",
+                status: "",
+                page: 1,
+                pageSize: 10
+            },
             upgradeDevice: "",
             dialogVisible: false,
             upgradeVisible: false,
