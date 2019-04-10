@@ -201,15 +201,16 @@ export default {
 </script>
 <style lang='less' scoped>
 .el-content {
-    margin: 20px;
+    margin: 30px;
     background-color: #fff;
+    .label {
+        color: #909399;
+    }
+    .text {
+        color: #606266;
+    }
 }
-.label {
-    color: #909399;
-}
-.text {
-    color: #606266;
-}
+
 p > span {
     display: inline-block;
     vertical-align: middle;
@@ -218,7 +219,7 @@ p > span {
 
 .product-info {
     border-right: 1px dashed #ebeef5;
-    padding: 30px;
+    padding: 20px;
     .product-content {
         min-height: 120px;
         .product-name {
@@ -255,7 +256,7 @@ p > span {
 }
 .device-info {
     border-right: 1px dashed #ebeef5;
-    padding: 30px;
+    padding: 20px;
     .device-content {
         min-height: 120px;
         .device-num {
@@ -275,7 +276,7 @@ p > span {
     }
 }
 .firmware-info {
-    padding: 30px;
+    padding: 20px;
     .firmware-content {
         min-height: 120px;
         .firmware-num {
