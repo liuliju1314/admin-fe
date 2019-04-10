@@ -6,6 +6,13 @@
                 <td class="value">{{baseInfo.name}}</td>
             </tr>
             <tr>
+                <td class="label">产品ID:</td>
+                <td class="value">
+                    {{baseInfo.pid}}
+                    <el-button class="copy-box" size="mini" @click="copyPid(baseInfo.pid)" round>复制</el-button>
+                </td>
+            </tr>
+            <tr>
                 <td class="label">产品型号:</td>
                 <td class="value">{{baseInfo.model}}</td>
             </tr>
@@ -41,7 +48,7 @@
 
 <script>
 import ProductCreate from "@/views/product/ProductCreate";
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 export default {
     name: "BaseInfo",
     data() {
@@ -56,7 +63,7 @@ export default {
         ProductCreate
     },
     computed: {
-        ...mapGetters(['baseInfo'])
+        ...mapGetters(["baseInfo"])
     },
     methods: {
         //更新产品信息
@@ -71,27 +78,35 @@ export default {
         },
         formatterUpMethod(value) {
             if (value === "manual") {
-                return "手动升级"
+                return "手动升级";
             } else if (value === "auto") {
-                return "静默升级"
+                return "静默升级";
             }
+        },
+        copyPid(pid) {
+            let aux = document.createElement("input"); // 创建元素用于复制
+            // 获取复制内容
+            let content = pid;
+            // 设置元素内容
+            aux.setAttribute("value", content);
+            // 将元素插入页面进行调用
+            document.body.appendChild(aux);
+            // 复制内容
+            aux.select();
+            //aux.setSelectionRange(0, inputText.value.length);
+            // 将内容复制到剪贴板
+            document.execCommand("copy", true);
+            // 删除创建元素
+            document.body.removeChild(aux);
+            this.$message({
+                type: "success",
+                message: "复制成功"
+            });
         }
     }
 };
 </script>
-<style lang="less">
-// .base-info-box {
-//     .notEdit {
-//         input {
-//             border: 0;
-//             padding: 0;
-//             height: 30px;
-//             font-size: 16px;
-//             color: #333;
-//         }
-//     }
-// }
-</style>
+
 <style lang='less' scoped>
 .fwname-box {
     display: inline-block;
@@ -117,6 +132,9 @@ export default {
     }
     .value {
         padding: 12px 0;
+    }
+    .copy-box {
+        margin-left: 10px;
     }
 }
 </style>

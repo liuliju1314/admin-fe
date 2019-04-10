@@ -1,14 +1,26 @@
 <template>
     <div class="operate-state-wrapper">
         <el-row :gutter="20">
-            <el-col :span="6" v-for="(prop, index) in propList" :key="index">
+            <el-col
+                :span="6"
+                v-for="(prop, index) in propList"
+                :key="index"
+                style="margin-bottom: 20px;"
+            >
                 <el-card shadow="hover">
                     <div class="state-content">
                         <div class="state-name">
                             <span>{{prop.name}}</span>
-                            <el-button @click="showChart" type="text" size="small" v-if="prop.history">查看历史数据</el-button>
+                            <el-button
+                                @click="showChart"
+                                type="text"
+                                size="small"
+                                v-if="prop.history"
+                            >查看历史数据</el-button>
                         </div>
-                        <div class="state-num">{{prop.value}}</div>
+                        <div
+                            :class="prop.value ? 'state-num': 'not-state-num'"
+                        >{{prop.value ? prop.value: '暂无数据'}}</div>
                         <div class="state-time">{{formatTime(prop.timestamp)}}</div>
                     </div>
                 </el-card>
@@ -50,17 +62,17 @@ export default {
         const data = {
             did: this.$route.params.did,
             pid: this.$route.params.id
-        }
-        getDeviceProps(data).then((res) => {
+        };
+        getDeviceProps(data).then(res => {
             this.propList = res.payload;
-        })
+        });
     },
     methods: {
         showChart() {
             this.dialogVisible = true;
         },
         formatTime(data) {
-            return formatDate(data*1000)
+            return formatDate(data * 1000);
         }
     }
 };
@@ -72,6 +84,7 @@ export default {
     .state-name {
         text-align: left;
         display: flex;
+        height: 32px;
         justify-content: space-between;
         align-items: center;
         span {
@@ -81,10 +94,18 @@ export default {
     }
     .state-num {
         overflow: hidden;
+        height: 35px;
+        line-height: 35px;
         white-space: nowrap;
         text-overflow: ellipsis;
         width: 85%;
         font-size: 28px;
+    }
+    .not-state-num {
+        height: 35px;
+        line-height: 35px;
+        font-size: 13px;
+        color: #999;
     }
     .state-time {
         color: #999;
