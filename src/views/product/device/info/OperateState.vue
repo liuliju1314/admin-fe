@@ -13,7 +13,9 @@
                                 v-if="prop.history"
                             >查看历史数据</el-button>
                         </div>
-                        <div class="state-num">{{prop.value}}</div>
+                        <div
+                            :class="prop.value ? 'state-num': 'not-state-num'"
+                        >{{prop.value ? prop.value: '暂无数据'}}</div>
                         <div class="state-time">{{formatTime(prop.timestamp)}}</div>
                     </div>
                 </el-card>
