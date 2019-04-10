@@ -2,7 +2,7 @@
     <div class="operate-state-wrapper">
         <el-row :gutter="20">
             <el-col :span="6" v-for="(prop, index) in propList" :key="index">
-                <el-card shadow="hover">
+                <el-card shadow="hover" class="state">
                     <div class="state-content">
                         <div class="state-name">
                             <span>{{prop.name}}</span>
@@ -71,30 +71,37 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.state-content {
-    padding: 20px;
-    height: 100px;
-    .state-name {
-        text-align: left;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        span {
-            font-size: 16px;
-            color: #333;
+.state {
+    margin: 10px 0;
+    .state-content {
+        padding: 20px 0 0;
+        height: 100px;
+        div {
+            height: 30px;
+            line-height: 30px;
         }
-    }
-    .state-num {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        width: 85%;
-        font-size: 28px;
-    }
-    .state-time {
-        color: #999;
-        font-size: 13px;
-        line-height: 40px;
+        .state-name {
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            span {
+                font-size: 16px;
+                color: #333;
+            }
+        }
+        .state-num {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 85%;
+            font-size: 28px;
+        }
+        .state-time {
+            color: #999;
+            font-size: 13px;
+            line-height: 40px;
+        }
     }
 }
 </style>
