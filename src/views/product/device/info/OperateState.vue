@@ -5,8 +5,13 @@
                 <el-card shadow="hover">
                     <div class="state-content">
                         <div class="state-name">
-                            <span>{{prop.property.name}}</span>
-                            <el-button @click="showChart" type="text" size="small" v-if="prop.property.history">查看历史数据</el-button>
+                            <span>{{prop.name}}</span>
+                            <el-button
+                                @click="showChart"
+                                type="text"
+                                size="small"
+                                v-if="prop.history"
+                            >查看历史数据</el-button>
                         </div>
                         <div class="state-num">{{prop.value}}</div>
                         <div class="state-time">{{formatTime(prop.timestamp)}}</div>
@@ -50,17 +55,17 @@ export default {
         const data = {
             did: this.$route.params.did,
             pid: this.$route.params.id
-        }
-        getDeviceProps(data).then((res) => {
+        };
+        getDeviceProps(data).then(res => {
             this.propList = res.payload;
-        })
+        });
     },
     methods: {
         showChart() {
             this.dialogVisible = true;
         },
         formatTime(data) {
-            return formatDate(data*1000)
+            return formatDate(data * 1000);
         }
     }
 };
