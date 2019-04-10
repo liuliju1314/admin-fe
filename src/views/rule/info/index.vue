@@ -28,10 +28,8 @@
 
 <script>
 import { mapGetters } from "vuex";
-import ruleInfo from "./mixins/ruleInfo";
 export default {
     name: "RuleInfo",
-    mixins: [ruleInfo],
     data() {
         return {
             activeName: "first",
@@ -40,6 +38,26 @@ export default {
     },
     computed: {
         ...mapGetters(["ruleInfo"])
+    },
+    created() {
+        this.init();
+    },
+    watch: {
+        $route() {
+            this.init();
+        }
+    },
+    methods: {
+        init() {
+            this.ruleId = this.$route.params.id;
+            if (this.ruleId && this.$route.path.indexOf("rule") >= 0) {
+                this.$store
+                    .dispatch("RuleInfoGet", { tid: this.ruleId })
+                    .then(() => {
+                        this.$store.dispatch("updateVisitedView", this.$route);
+                    });
+            }
+        }
     }
 };
 </script>

@@ -118,9 +118,14 @@ export default {
             progressList: []
         };
     },
-
     components: { DeviceUpgrade, VueProgress },
-
+    watch: {
+        $route() {
+            if(this.$route.path.indexOf('device') >= 0 && !this.$route.params.did) {
+                this.getDevice();
+            }
+        }
+    },
     methods: {
         // 点击跳路由
         expandDetail(row) {
