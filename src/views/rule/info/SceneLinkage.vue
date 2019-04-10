@@ -579,7 +579,6 @@ export default {
         },
         getDevice(data) {
             this.deviceList = [];
-            console.log(data);
             if (data.pid) {
                 getDeviceList({ isPage: false, pid: data.pid })
                     .then(res => {
