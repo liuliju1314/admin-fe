@@ -1,6 +1,6 @@
 <template>
     <div class="box-card" shadow="never">
-        <el-row>
+        <el-row :gutter="20">
             <el-col :span="12">
                 <el-row class="el-content">
                     <!-- 产品信息 -->
@@ -65,113 +65,6 @@
                                     class="device-btn"
                                     size="small"
                                 >查看设备详情</el-button>
-                            </p>
-                        </div>
-                    </el-col>
-                    <!-- 固件信息 -->
-                    <el-col :span="7">
-                        <div class="firmware-info">
-                            <div class="firmware-content">
-                                <p>
-                                    <span class="label">当前固件数量：</span>
-                                    <span class="firmware-num">10</span>
-                                </p>
-                            </div>
-                            <p>
-                                <el-button
-                                    type="primary"
-                                    round
-                                    class="firmware-btn"
-                                    size="small"
-                                >查看固件详情</el-button>
-                            </p>
-                        </div>
-                    </el-col>
-                </el-row>
-            </el-col>
-            <el-col :span="12">
-                <el-row class="el-content">
-                    <!-- 产品信息 -->
-                    <el-col :span="10">
-                        <div class="product-info">
-                            <div class="product-content">
-                                <p class="product-name">
-                                    <span>测试产品</span>
-                                    <span class="product-circle"></span>
-                                    <span style="font-size: 13px;margin:5px 0 0 0">开发中</span>
-                                    <span style="float: right">
-                                        <el-button
-                                            type="primary"
-                                            icon="el-icon-upload"
-                                            size="small"
-                                        >发布</el-button>
-                                    </span>
-                                </p>
-                                <p>
-                                    <span class="label">产品ID：</span>
-                                    <span class="text">ck8bufgjc3k</span>
-                                </p>
-                                <p>
-                                    <span class="label">创建时间：</span>
-                                    <span class="text">2019-04-01</span>
-                                </p>
-                            </div>
-                            <div class="button-box">
-                                <p>
-                                    <el-button
-                                        type="primary"
-                                        round
-                                        class="button-details"
-                                        size="small"
-                                    >查看产品详情</el-button>
-                                    <el-button type="text" style="float:right;">删除</el-button>
-                                </p>
-                            </div>
-                        </div>
-                    </el-col>
-                    <!-- 设备信息 -->
-                    <el-col :span="7">
-                        <div class="device-info">
-                            <div class="device-content">
-                                <p>
-                                    <span class="label">当前设备总数：</span>
-                                    <span class="device-num">20</span>
-                                </p>
-                                <p>
-                                    <span class="label">当前在线设备：</span>
-                                    <span class="device-num">20</span>
-                                </p>
-                                <p>
-                                    <span class="label">当前离线设备：</span>
-                                    <span class="device-num">0</span>
-                                </p>
-                            </div>
-                            <p>
-                                <el-button
-                                    type="primary"
-                                    round
-                                    class="device-btn"
-                                    size="small"
-                                >查看设备详情</el-button>
-                            </p>
-                        </div>
-                    </el-col>
-                    <!-- 固件信息 -->
-                    <el-col :span="7">
-                        <div class="firmware-info">
-                            <div class="firmware-content">
-                                <p>
-                                    <span class="label">当前固件数量：</span>
-                                    <span class="firmware-num">10</span>
-                                </p>
-                            </div>
-                            <p>
-                                <el-button
-                                    type="primary"
-                                    round
-                                    class="firmware-btn"
-                                    size="small"
-                                >查看固件详情</el-button>
                             </p>
                         </div>
                     </el-col>
@@ -255,7 +148,6 @@ p > span {
     }
 }
 .device-info {
-    border-right: 1px dashed #ebeef5;
     padding: 20px;
     .device-content {
         min-height: 120px;
