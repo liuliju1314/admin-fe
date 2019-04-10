@@ -34,13 +34,7 @@
             </el-form>
             <el-button type="primary" @click="productOp" size="small">+新建产品</el-button>
             <!-- 开发中的产品 -->
-            <el-table
-                :data="productList"
-                style="width: 100%; margin-top: 12px"
-                border
-                size="small"
-                @row-click="expandDetail"
-            >
+            <el-table :data="productList" style="width: 100%; margin-top: 12px" border size="small">
                 <el-table-column prop="pid" label="产品ID"></el-table-column>
                 <el-table-column prop="name" label="产品名称"></el-table-column>
                 <el-table-column prop="model" label="产品型号"></el-table-column>
@@ -51,6 +45,13 @@
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
                         <div>
+                            <el-button
+                                @click.stop="expandDetail(scope.row)"
+                                type="text"
+                                size="small"
+                                icon="el-icon-edit"
+                                v-if="scope.row.productStatus === '0'"
+                            >查看</el-button>
                             <el-button
                                 @click.stop="releaseProduct(scope.row)"
                                 type="text"
@@ -131,7 +132,7 @@ export default {
         // 获取产品名称和产品id
         getProductModel() {
             this.productModel = [];
-            getProductList({isPage: false})
+            getProductList({ isPage: false })
                 .then(res => {
                     res.payload.result.map(item => {
                         const obj = {
