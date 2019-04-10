@@ -20,6 +20,7 @@
                         placeholder="请选择设备"
                         v-model="form.did"
                         @focus="getDevice(form)"
+                        @change="doDeviceSearch(form)"
                         filterable
                     >
                         <el-option
@@ -30,9 +31,6 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="doDeviceSearch">确定</el-button>
-                </el-form-item>
             </el-form>
             <el-row :gutter="12">
                 <el-col :span="8">
@@ -42,15 +40,20 @@
                         </div>
                         <div style="margin-bottom: 10px;display: flex;">
                             <el-select
-                                v-model="form.productName"
+                                v-model="propId"
                                 placeholder="请选择功能"
                                 size="small"
                                 style="margin-right: 10px"
+                                @change="setProp"
                             >
-                                <el-option label="开关" value="1"></el-option>
-                                <el-option label="温度" value="2"></el-option>
+                                <el-option
+                                    v-for="prop in propList"
+                                    :label="prop.name"
+                                    :value="prop.label"
+                                    :key="prop.id"
+                                ></el-option>
                             </el-select>
-                            <el-select v-model="form.deviceName" placeholder="请选择方法" size="small">
+                            <el-select v-model="method" placeholder="请选择方法" size="small">
                                 <el-option label="设置" value="1"></el-option>
                                 <el-option label="获取" value="2"></el-option>
                             </el-select>
@@ -93,6 +96,7 @@ import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList } from "@/api/device/device";
+import { getDeviceProps } from "@/api/device/device";
 export default {
     components: {},
     props: {},
@@ -102,6 +106,8 @@ export default {
                 pid: "",
                 did: ""
             },
+            propId: "",
+            method: "",
             rules: {
                 pid: [
                     { required: true, message: "请选择产品", trigger: "blur" }
@@ -114,36 +120,18 @@ export default {
             wsData: [],
             // 富文本
             editor: "",
-            content: "",
+            content: {},
             editorOption: {
                 mode: "code",
                 modes: ["text", "code"]
             },
             productList: [],
             deviceList: [],
-            propertyList: []
+            propList: []
         };
     },
     created() {
         this.getProduct();
-        this.content = {
-            content: "1",
-            content2: "1",
-            a: {
-                b: {
-                    c: {
-                        d: {
-                            e: 1,
-                            f: {
-                                r: {
-                                    3: 2
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
     },
     mounted() {
         this.$nextTick(() => {
@@ -160,9 +148,8 @@ export default {
             this.WebSocketLink();
         },
         doDeviceSearch() {
-            this.$refs.form.validate(valid => {
-                if (valid) {
-                }
+            getDeviceProps(this.form).then(res => {
+                this.propList = res.payload;
             });
         },
         closeLink() {
@@ -209,6 +196,12 @@ export default {
                         return error;
                     });
             }
+        },
+        setProp(value) {
+            this.content = {};
+            const prop = this.propList.find(item => item.label === value);
+            this.content = Object.assign({}, { [prop.label]: prop.value });
+            this.editor.set(this.content);
         }
     }
 };
