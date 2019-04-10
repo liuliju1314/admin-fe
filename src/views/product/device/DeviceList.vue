@@ -94,22 +94,31 @@
                 </div>
             </div>
         </el-dialog>
-        <el-dialog title="批量添加设备" :visible.sync="batchVisible">
-            <el-form>
-                <el-form-item label="添加方式">
-                    <el-radio-group v-model="form.resource">
+        <el-dialog title="批量添加设备" :visible.sync="batchVisible" center>
+            <el-form
+                size="small"
+                style="margin: auto;"
+                ref="batchForm"
+                :rules="rules"
+                :model="batchForm"
+            >
+                <el-form-item label="添加方式" prop="addMothod">
+                    <el-radio-group v-model="batchForm.addMothod">
                         <el-radio label="自动生成"></el-radio>
                         <el-radio label="批量上传"></el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="设备数量">
+                <el-form-item label="设备数量" prop="deviceNum">
                     <el-input-number
-                        v-model="num1"
+                        v-model="batchForm.deviceNum"
                         @change="handleChange"
                         :min="1"
                         :max="10"
                         label="描述文字"
                     ></el-input-number>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary">确定并导出证书</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -131,6 +140,22 @@ export default {
                 status: "",
                 page: 1,
                 pageSize: 10
+            },
+            batchForm: {
+                addMothod: "",
+                deviceNum: ""
+            },
+            rules: {
+                addMothod: {
+                    required: true,
+                    message: "请选择添加方式",
+                    trigger: "blur"
+                },
+                deviceNum: {
+                    required: true,
+                    message: "请输入设备数量",
+                    trigger: "blur"
+                }
             },
             upgradeDevice: "",
             dialogVisible: false,
