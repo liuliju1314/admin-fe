@@ -63,9 +63,12 @@ export default {
     },
     methods: {
         formatterFwVersion(value) {
-            if(typeof value === 'object') {
+            if (typeof value === "object") {
                 const keys = Object.keys(value);
-                return keys.reduce( (total,key) =>  value[key] + ' ' + total, '' )
+                return keys.reduce(
+                    (total, key) => value[key] + " " + total,
+                    ""
+                );
             } else {
                 return value;
             }
