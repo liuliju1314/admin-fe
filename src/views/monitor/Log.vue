@@ -222,7 +222,7 @@ export default {
         // 点击tab标签页
         handleClick(tab) {
             this.form.linkType = tab.name;
-            this.DeviceLogList();
+            this.onSubmit();
         },
         //查询不同的请求
         onSubmit() {
