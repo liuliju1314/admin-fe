@@ -35,3 +35,12 @@ export function updateDeviceGroup(data) {
         data
     })
 }
+
+// 
+export function getDeviceProps(data) {
+    return service({
+        url: '/api/device/props',
+        method: 'GET',
+        params: data
+    })
+}

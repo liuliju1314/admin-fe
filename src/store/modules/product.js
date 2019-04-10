@@ -1,5 +1,6 @@
 
 import { editProduct, getProductInfo } from "@/api/product/product";
+import _cloneDeep from 'lodash.clonedeep';
 const product = {
     state: {
         baseInfo: ''
@@ -24,9 +25,10 @@ const product = {
 
         },
         BaseInfoSet({ commit }, data) {
+            const newData = _cloneDeep(data)
             return new Promise((resolve, reject) => {
                 editProduct(data).then( res => {
-                    commit('SET_BASEINFO', data)
+                    commit('SET_BASEINFO', newData)
                     resolve(res);
                 }).catch(error => {
                     reject(error)

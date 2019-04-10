@@ -120,7 +120,7 @@ export default {
                     ) {
                         this.product.fwGroup = [{ name: "", desc: "" }];
                     }
-                    this.form = { ...this.form, ...this.product };
+                    this.form = Object.assign({},this.form, this.product);
                     this.title = "产品编辑";
                 } else {
                     this.title = "添加产品";
@@ -131,7 +131,6 @@ export default {
     methods: {
         beforeClose() {
             this.$refs.form.resetFields();
-            this.form.fwGroup = [{ name: "", desc: "" }];
             this.$emit("listenOp", false);
         },
         // 点击确定时判断是添加还是更新
@@ -139,6 +138,7 @@ export default {
             this.$refs.form.validate(valid => {
                 if (valid) {
                     if (this.product) {
+                        console.log(this.form);
                         this.$store
                             .dispatch("BaseInfoSet", this.form)
                             .then(() => {

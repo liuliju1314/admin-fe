@@ -42,9 +42,7 @@
 <script>
 import ProductCreate from "@/views/product/ProductCreate";
 import { mapGetters } from 'vuex';
-import proInfo from "./mixins/proInfo";
 export default {
-    mixins: [proInfo],
     name: "BaseInfo",
     data() {
         return {
@@ -70,7 +68,6 @@ export default {
         closeDialog(value) {
             this.product = "";
             this.visible = value;
-            this.init();
         },
         formatterUpMethod(value) {
             if (value === "manual") {

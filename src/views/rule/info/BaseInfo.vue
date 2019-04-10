@@ -21,11 +21,9 @@
 
 <script>
 import AddEngine from "@/views/rule/AddEngine";
-import ruleInfo from "./mixins/ruleInfo";
 import { mapGetters } from "vuex";
 export default {
     name: "BaseInfo",
-    mixins: [ruleInfo],
     data() {
         return {
             rule: "",

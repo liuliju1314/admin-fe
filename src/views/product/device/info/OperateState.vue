@@ -1,39 +1,15 @@
 <template>
     <div class="operate-state-wrapper">
         <el-row :gutter="20">
-            <el-col :span="6">
+            <el-col :span="6" v-for="(prop, index) in propList" :key="index">
                 <el-card shadow="hover">
                     <div class="state-content">
                         <div class="state-name">
-                            <span>实时充电电压</span>
-                            <el-button @click="showChart" type="text" size="small">查看历史数据</el-button>
+                            <span>{{prop.property.name}}</span>
+                            <el-button @click="showChart" type="text" size="small" v-if="prop.property.history">查看历史数据</el-button>
                         </div>
-                        <div class="state-num">30</div>
-                        <div class="state-time">2019/03/18 16:00:28</div>
-                    </div>
-                </el-card>
-            </el-col>
-            <el-col :span="6">
-                <el-card shadow="hover">
-                    <div class="state-content">
-                        <div class="state-name">
-                            <span>实时充电电压</span>
-                            <el-button @click="showChart" type="text" size="small">查看历史数据</el-button>
-                        </div>
-                        <div class="state-num">30</div>
-                        <div class="state-time">2019/03/18 16:00:28</div>
-                    </div>
-                </el-card>
-            </el-col>
-            <el-col :span="6">
-                <el-card shadow="hover">
-                    <div class="state-content">
-                        <div class="state-name">
-                            <span>实时充电电压</span>
-                            <el-button @click="showChart" type="text" size="small">查看历史数据</el-button>
-                        </div>
-                        <div class="state-num">30</div>
-                        <div class="state-time">2019/03/18 16:00:28</div>
+                        <div class="state-num">{{prop.value}}</div>
+                        <div class="state-time">{{formatTime(prop.timestamp)}}</div>
                     </div>
                 </el-card>
             </el-col>
@@ -46,10 +22,13 @@
 
 <script>
 import VeLine from "v-charts/lib/line.common";
+import { getDeviceProps } from "@/api/device/device";
+import { formatDate } from "@/utils/format";
 export default {
     props: {},
     data() {
         return {
+            propList: [],
             dialogVisible: false,
             chartData: {
                 columns: ["date", "PV"],
@@ -67,10 +46,21 @@ export default {
     components: {
         VeLine
     },
-
+    created() {
+        const data = {
+            did: this.$route.params.did,
+            pid: this.$route.params.id
+        }
+        getDeviceProps(data).then((res) => {
+            this.propList = res.payload;
+        })
+    },
     methods: {
         showChart() {
             this.dialogVisible = true;
+        },
+        formatTime(data) {
+            return formatDate(data*1000)
         }
     }
 };
@@ -78,6 +68,7 @@ export default {
 <style lang="less" scoped>
 .state-content {
     padding: 20px;
+    height: 100px;
     .state-name {
         text-align: left;
         display: flex;

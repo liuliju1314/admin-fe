@@ -1,5 +1,6 @@
 
 import { getRuleInfo, updateRule } from "@/api/rule/rule";
+import _cloneDeep from 'lodash.clonedeep';
 const rule = {
     state: {
         ruleInfo: ''
@@ -24,9 +25,10 @@ const rule = {
 
         },
         RuleInfoSet({ commit }, data) {
+            const newData = _cloneDeep(data)
             return new Promise((resolve, reject) => {
                 updateRule(data).then(res => {
-                    commit('SET_RULEINFO', data)
+                    commit('SET_RULEINFO', newData)
                     resolve(res);
                 }).catch(error => {
                     reject(error)
