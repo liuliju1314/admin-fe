@@ -5,23 +5,33 @@
         </div>
         <div class="text-wrapper">
             <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small">
-                <el-form-item label="产品名称" prop="productName">
-                    <el-select v-model="form.productName" placeholder="请选择产品">
-                        <el-option label="智能电灯" value="1"></el-option>
-                        <el-option label="智能水位计" value="2"></el-option>
-                        <el-option label="智能雨量计" value="3"></el-option>
+                <el-form-item class="form-item" filterable>
+                    <el-select placeholder="请选择产品" v-model="form.pid">
+                        <el-option
+                            v-for="product in productList"
+                            :label="product.name"
+                            :value="product.pid"
+                            :key="product.pid"
+                        ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="设备名称" prop="deviceName">
-                    <el-select v-model="form.deviceName" placeholder="请选择设备">
-                        <el-option label="设备1" value="4"></el-option>
-                        <el-option label="设备2" value="5"></el-option>
-                        <el-option label="设备3" value="6"></el-option>
+                <el-form-item class="form-item">
+                    <el-select
+                        placeholder="请选择设备"
+                        v-model="form.did"
+                        @focus="getDevice(form)"
+                        filterable
+                    >
+                        <el-option
+                            v-for="device in deviceList"
+                            :label="device.did"
+                            :value="device.did"
+                            :key="device.did"
+                        ></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <!-- <el-button type="primary" @click="doDeviceSearch">确定</el-button> -->
-                    <el-button type="primary">确定</el-button>
+                    <el-button type="primary" @click="doDeviceSearch">确定</el-button>
                 </el-form-item>
             </el-form>
             <el-row :gutter="12">
@@ -81,20 +91,22 @@
 <script>
 import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
+import { getProductList } from "@/api/product/product";
+import { getDeviceList } from "@/api/device/device";
 export default {
     components: {},
     props: {},
     data() {
         return {
             form: {
-                productName: "",
-                deviceName: ""
+                pid: "",
+                did: ""
             },
             rules: {
-                productName: [
+                pid: [
                     { required: true, message: "请选择产品", trigger: "blur" }
                 ],
-                deviceName: [
+                did: [
                     { required: true, message: "请选择设备", trigger: "blur" }
                 ]
             },
@@ -106,10 +118,14 @@ export default {
             editorOption: {
                 mode: "code",
                 modes: ["text", "code"]
-            }
+            },
+            productList: [],
+            deviceList: [],
+            propertyList: []
         };
     },
     created() {
+        this.getProduct();
         this.content = {
             content: "1",
             content2: "1",
@@ -143,12 +159,12 @@ export default {
         sendData() {
             this.WebSocketLink();
         },
-        // doDeviceSearch() {
-        //     this.$refs.form.validate(valid => {
-        //         if (valid) {
-        //         }
-        //     });
-        // },
+        doDeviceSearch() {
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                }
+            });
+        },
         closeLink() {
             this.ws.close();
         },
@@ -169,6 +185,29 @@ export default {
             } else {
                 // 浏览器不支持 WebSocket
                 alert("您的浏览器不支持 WebSocket!");
+            }
+        },
+        getProduct() {
+            if (this.productList.length === 0) {
+                getProductList({ isPage: false })
+                    .then(res => {
+                        this.productList = res.payload.result;
+                    })
+                    .catch(error => {
+                        return error;
+                    });
+            }
+        },
+        getDevice(data) {
+            this.deviceList = [];
+            if (data.pid) {
+                getDeviceList({ isPage: false, pid: data.pid })
+                    .then(res => {
+                        this.deviceList = res.payload.items;
+                    })
+                    .catch(error => {
+                        return error;
+                    });
             }
         }
     }

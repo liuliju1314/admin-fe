@@ -13,9 +13,12 @@
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="handleeEquipment()">查询</el-button>
+                <el-button @click="batchVisible=true">批量添加设备</el-button>
             </el-form-item>
         </el-form>
-        <div class="device-log">当前设备总数： {{deviceList.count}}，其中在线：{{deviceList.online}}，离线：{{deviceList.offline}}.</div>
+        <div
+            class="device-log"
+        >当前设备总数： {{deviceList.count}}，其中在线：{{deviceList.online}}，离线：{{deviceList.offline}}.</div>
         <!-- 循环的设备列表 -->
         <el-table
             :data="deviceList.items"
@@ -91,6 +94,25 @@
                 </div>
             </div>
         </el-dialog>
+        <el-dialog title="批量添加设备" :visible.sync="batchVisible">
+            <el-form>
+                <el-form-item label="添加方式">
+                    <el-radio-group v-model="form.resource">
+                        <el-radio label="自动生成"></el-radio>
+                        <el-radio label="批量上传"></el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="设备数量">
+                    <el-input-number
+                        v-model="num1"
+                        @change="handleChange"
+                        :min="1"
+                        :max="10"
+                        label="描述文字"
+                    ></el-input-number>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
@@ -113,15 +135,17 @@ export default {
             upgradeDevice: "",
             dialogVisible: false,
             upgradeVisible: false,
-            groupVisible: false,
-            btnShow: false,
+            batchVisible: false,
             progressList: []
         };
     },
     components: { DeviceUpgrade, VueProgress },
     watch: {
         $route() {
-            if(this.$route.path.indexOf('device') >= 0 && !this.$route.params.did) {
+            if (
+                this.$route.path.indexOf("device") >= 0 &&
+                !this.$route.params.did
+            ) {
                 this.getDevice();
             }
         }
@@ -138,7 +162,8 @@ export default {
         // 获取设备升级进度
         getOtaDetail(device) {
             const data = {
-                did: device.did
+                did: device.did,
+                pid: this.$route.params.id
             };
             getOTAProgress(data).then(res => {
                 this.progressList = res.payload;

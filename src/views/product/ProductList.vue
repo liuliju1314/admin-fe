@@ -50,7 +50,6 @@
                                 type="text"
                                 size="small"
                                 icon="el-icon-edit"
-                                v-if="scope.row.productStatus === '0'"
                             >查看</el-button>
                             <el-button
                                 @click.stop="releaseProduct(scope.row)"
