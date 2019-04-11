@@ -37,6 +37,13 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="消息类型" prop="linkType">
+                    <el-select v-model="form.linkType" placeholder="请选择日志等级" clearable>
+                        <el-option label="全部消息分析" value="all"></el-option>
+                        <el-option label="上行消息分析" value="up"></el-option>
+                        <el-option label="下行消息分析" value="down"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="日志等级" prop="level">
                     <el-select v-model="form.level" placeholder="请选择日志等级" clearable>
                         <el-option label="调试" value="debug"></el-option>
@@ -55,46 +62,27 @@
                         value-format="timestamp"
                     ></el-date-picker>
                 </el-form-item>
+
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-tabs type="card" @tab-click="handleClick" v-model="form.linkType">
-                <el-tab-pane label="上行消息分析" name="up" key="0">
-                    <el-table
-                        :data="updeviceLogList"
-                        style="width: 100%; margin-top: 12px"
-                        border
-                        size="small"
-                    >
-                        <el-table-column label="时间">
-                            <template slot-scope="scope">{{ changeTimeFormater(scope.row.time) }}</template>
-                        </el-table-column>
-                        <el-table-column prop="did" label="DeviceName"></el-table-column>
-                        <el-table-column label="内容(全部)">
-                            <template slot-scope="scope">{{ scope.row.msg}}</template>
-                        </el-table-column>
-                        <el-table-column prop="level" label="状态以及原因分析"></el-table-column>
-                    </el-table>
-                </el-tab-pane>
-                <el-tab-pane label="下行消息分析" name="down" key="1">
-                    <el-table
-                        :data="downdeviceLogList"
-                        style="width: 100%; margin-top: 12px"
-                        border
-                        size="small"
-                    >
-                        <el-table-column label="时间">
-                            <template slot-scope="scope">{{ changeTimeFormater(scope.row.time) }}</template>
-                        </el-table-column>
-                        <el-table-column prop="did" label="DeviceName"></el-table-column>
-                        <el-table-column label="内容(全部)">
-                            <template slot-scope="scope">{{ scope.row.msg}}</template>
-                        </el-table-column>
-                        <el-table-column prop="level" label="状态以及原因分析"></el-table-column>
-                    </el-table>
-                </el-tab-pane>
-            </el-tabs>
+
+            <el-table
+                :data="deviceLogList"
+                style="width: 100%; margin-top: 12px"
+                border
+                size="small"
+            >
+                <el-table-column label="时间">
+                    <template slot-scope="scope">{{ changeTimeFormater(scope.row.time) }}</template>
+                </el-table-column>
+                <el-table-column prop="did" label="DeviceName"></el-table-column>
+                <el-table-column label="内容(全部)">
+                    <template slot-scope="scope">{{ scope.row.msg}}</template>
+                </el-table-column>
+                <el-table-column prop="level" label="状态以及原因分析"></el-table-column>
+            </el-table>
 
             <!-- 分页逻辑 -->
             <div class="pagination-box" v-if="form.pageSize < total">
@@ -138,7 +126,7 @@ export default {
             form: {
                 pid: "",
                 did: "",
-                linkType: "up",
+                linkType: "all",
                 level: "",
                 page: 1,
                 pageSize: 10,
@@ -146,17 +134,12 @@ export default {
             },
             timeRange: "",
             total: "",
-            updeviceLogList: [],
-            downdeviceLogList: [],
+            deviceLogList: [],
             isPage: false, //获取所有产品名称以及产品Id,不分页
             productModel: [], //存放所有产品名称以及产品Id
             deviceModel: [] //存放所有产品名称以及产品Id
         };
     },
-    created() {
-        // this.DeviceLogList();
-    },
-    computed: {},
 
     methods: {
         // 获取产品名称和产品id
@@ -208,21 +191,12 @@ export default {
             };
             getDeviceLog(data)
                 .then(res => {
-                    if (this.form.linkType === "up") {
-                        this.updeviceLogList = res.payload.items;
-                    } else if (this.form.linkType === "down") {
-                        this.downdeviceLogList = res.payload.items;
-                    }
+                    this.deviceLogList = res.payload.items;
                     this.total = res.payload.total;
                 })
                 .catch(error => {
                     return error;
                 });
-        },
-        // 点击tab标签页
-        handleClick(tab) {
-            this.form.linkType = tab.name;
-            this.onSubmit();
         },
         //查询不同的请求
         onSubmit() {

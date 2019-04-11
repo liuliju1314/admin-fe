@@ -4,7 +4,7 @@
             <el-col :span="12">
                 <el-row class="el-content">
                     <!-- 产品信息 -->
-                    <el-col :span="10">
+                    <el-col :span="14">
                         <div class="product-info">
                             <div class="product-content">
                                 <p class="product-name">
@@ -42,7 +42,7 @@
                         </div>
                     </el-col>
                     <!-- 设备信息 -->
-                    <el-col :span="7">
+                    <el-col :span="8">
                         <div class="device-info">
                             <div class="device-content">
                                 <p>
