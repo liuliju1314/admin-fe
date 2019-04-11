@@ -1,84 +1,73 @@
 <template>
     <div class="box-card" shadow="never">
-        <el-row :gutter="20">
+        <el-row class="product-item" :gutter="10">
+            <!-- 产品信息 -->
             <el-col :span="8">
-                <el-row class="el-content">
-                    <!-- 产品信息 -->
-                    <el-col :span="24">
-                        <div class="product-item">
-                            <div class="product-content">
-                                <div class="product-name">
-                                    <span style="font-size: 22px; line-height: 32px;">测试产品</span>
-                                    <span>
-                                        <span class="product-circle"></span>
-                                        <span style="font-size: 13px; color: #606266">开发中</span>
-                                    </span>
+                <div class="base-box">
+                    <div class="product-content">
+                        <div class="product-name">
+                            <span style="font-size: 22px; line-height: 32px;">测试产品</span>
+                            <span>
+                                <span class="product-circle"></span>
+                                <span style="font-size: 13px; color: #606266">开发中</span>
+                            </span>
 
-                                    <span style="float: right">
-                                        <el-button type="primary" size="small">发布</el-button>
-                                    </span>
-                                </div>
-                                <div class="product-info">
-                                    <div>
-                                        <span class="label">产品ID：</span>
-                                        <span class="text">
-                                            ck8bufgjc3k
-                                            <el-button
-                                                class="copy-box"
-                                                size="mini"
-                                                @click="copyPid('ck8bufgjc3k')"
-                                                round
-                                            >复制</el-button>
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <span class="label">创建时间：</span>
-                                        <span class="text">2019-04-01</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="button-box">
-                                <div>
-                                    <el-button
-                                        type="primary"
-                                        round
-                                        class="button-details"
-                                        size="small"
-                                    >查看产品详情</el-button>
-                                    <el-button type="text" style="float:right;" size="small">删除</el-button>
-                                </div>
-                            </div>
+                            <span style="float: right">
+                                <el-button type="primary" size="small">发布</el-button>
+                            </span>
                         </div>
-                    </el-col>
-                    <!-- 设备信息 -->
-
-                    <!-- <el-col :span="7">
-                        <div class="device-info">
-                            <div class="device-content">
-                                <div>
-                                    <span class="label">当前设备总数：</span>
-                                    <span class="device-num">20</span>
-                                </div>
-                                <div>
-                                    <span class="label">当前在线设备：</span>
-                                    <span class="device-num">20</span>
-                                </div>
-                                <div>
-                                    <span class="label">当前离线设备：</span>
-                                    <span class="device-num">0</span>
-                                </div>
+                        <div class="product-info">
+                            <div>
+                                <span class="label">产品ID：</span>
+                                <span class="text">
+                                    ck8bufgjc3k
+                                    <el-button
+                                        class="copy-box"
+                                        size="mini"
+                                        @click="copyPid('ck8bufgjc3k')"
+                                        round
+                                    >复制</el-button>
+                                </span>
                             </div>
                             <div>
-                                <el-button
-                                    type="primary"
-                                    round
-                                    class="device-btn"
-                                    size="small"
-                                >查看设备详情</el-button>
+                                <span class="label">创建时间：</span>
+                                <span class="text">2019-04-01</span>
                             </div>
                         </div>
-                    </el-col>-->
-                </el-row>
+                    </div>
+                    <div class="button-box">
+                        <div>
+                            <el-button
+                                type="primary"
+                                round
+                                class="button-details"
+                                size="small"
+                            >查看产品详情</el-button>
+                            <el-button type="text" style="float:right;" size="small">删除</el-button>
+                        </div>
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="16">
+                <div class="base-box">
+                    <div class="device-content">
+                        <div>
+                            <div class="label">当前设备总数：</div>
+                            <div class="device-num">20</div>
+                        </div>
+                        <div>
+                            <div class="label">当前在线设备：</div>
+                            <div class="device-num">20</div>
+                        </div>
+                        <div>
+                            <div class="label">当前离线设备：</div>
+                            <div class="device-num">0</div>
+                        </div>
+                    </div>
+                    <div>
+                        <el-button type="primary" round class="device-btn" size="small">查看设备详情</el-button>
+                    </div>
+                </div>
             </el-col>
         </el-row>
     </div>
@@ -119,28 +108,13 @@ export default {
 </style>
 
 <style lang='less' scoped>
-.el-content {
-    margin: 0px;
-    background-color: #fff;
-    .label {
-        display: inline-block;
-        width: 70px;
-        color: #909399;
-    }
-    .text {
-        color: #606266;
-    }
-}
-
-p > span {
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 8px;
-}
-
 .product-item {
-    // border-right: 1px dashed #ebeef5;
-    padding: 20px;
+    height: 192px;
+    box-sizing: border-box;
+    .base-box {
+        background: #fff;
+        padding: 20px;
+    }
     .product-content {
         height: 120px;
         .product-name {
@@ -156,6 +130,15 @@ p > span {
             .copy-box {
                 margin-left: 4px;
             }
+            .label {
+                font-size: 13px;
+                display: inline-block;
+                width: 70px;
+                color: #909399;
+            }
+            .text {
+                color: #606266;
+            }
         }
         .product-circle {
             width: 6px;
@@ -167,37 +150,24 @@ p > span {
             background-color: #1890ff;
         }
     }
-    // .button-box {
-    //     .button-details {
-    //         color: #999;
-    //         background-color: #fff;
-    //         border: 1px solid rgb(24, 144, 255);
-    //     }
-    //     .button-details:hover {
-    //         color: #fff;
-    //         background-color: rgb(24, 144, 255);
-    //         border: 1px solid rgb(24, 144, 255);
-    //     }
-    // }
-}
-.device-info {
-    padding: 20px;
+
     .device-content {
-        min-height: 120px;
+        display: flex;
+        align-items: center;
+        height: 120px;
+        & > div {
+            margin-right: 20px;
+        }
         .device-num {
+            text-align: center;
+            margin: 12px 0;
             font-size: 25px;
             color: #606266;
         }
-    }
-    .device-btn {
-        color: #999;
-        background-color: #fff;
-        border: 1px solid rgb(24, 144, 255);
-    }
-    .device-btn:hover {
-        color: #fff;
-        background-color: rgb(24, 144, 255);
-        border: 1px solid rgb(24, 144, 255);
+        .label {
+            color: #909399;
+            font-size: 13px;
+        }
     }
 }
 .firmware-info {

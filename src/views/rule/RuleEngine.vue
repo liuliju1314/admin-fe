@@ -76,15 +76,10 @@ export default {
                 pageSize: 10,
                 isPage: true
             },
-            ruleList: [
-                {
-                    id: "1sdfdfc323",
-                    name: "1",
-                    desc: "2324"
-                }
-            ],
+            ruleList: [],
             count: 0,
-            dialogVisible: false
+            dialogVisible: false,
+            loading: false
         };
     },
 
