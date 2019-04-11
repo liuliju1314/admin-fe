@@ -189,7 +189,6 @@ export default {
                         this.handleProductList();
                     })
                     .catch(error => {
-                        console.log(error);
                         this.$message({
                             message: "删除失败!"
                         });
