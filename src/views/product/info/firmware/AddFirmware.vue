@@ -200,7 +200,7 @@ export default {
             getFirmwareName({ pid: this.form.pid })
                 .then(res => {
                     if (res.payload === null) {
-                        this.fwNameList = [{ name: "", desc: "" }];
+                        this.fwNameList = [];
                     } else {
                         this.fwNameList = res.payload;
                     }

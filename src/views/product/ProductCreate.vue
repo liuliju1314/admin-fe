@@ -18,10 +18,11 @@
 
                 <el-form-item label="产品分类" prop="category">
                     <el-select v-model="form.category" placeholder="请选择方法" size="small">
-                        <el-option label="雨情产品" value="雨情产品"></el-option>
-                        <el-option label="水位产品" value="水位产品"></el-option>
-                        <el-option label="图像产品" value="图像产品"></el-option>
-                        <el-option label="测试产品" value="测试产品"></el-option>
+                        <el-option label="雨情" value="雨情"></el-option>
+                        <el-option label="水位" value="水位"></el-option>
+                        <el-option label="图像" value="图像"></el-option>
+                        <el-option label="测试" value="测试"></el-option>
+                        <el-option label="其他" value="其他"></el-option>
                     </el-select>
                 </el-form-item>
 
@@ -34,28 +35,68 @@
                         <el-radio label="auto">静默升级</el-radio>
                     </el-radio-group>
                 </el-form-item>
+
+                <el-form-item label="节点类型" prop="nodeType">
+                    <el-radio-group v-model="form.nodeType">
+                        <el-radio label="manual">设备</el-radio>
+                        <el-radio label="auto">网关</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item label="连网方式" prop="netMode">
+                    <el-select v-model="form.netMode" placeholder="请选择连网方式" size="small">
+                        <el-option label="WIFF" value="WIFF"></el-option>
+                        <el-option label="蜂窝 (2G / 3G / 4G) " value="cellularNet"></el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="数据格式" prop="dataType">
+                    <el-select v-model="form.dataType" placeholder="请选择数据格式" size="small">
+                        <el-option label="TCP " value="MQTT"></el-option>
+                        <el-option label="MQTT" value="MQTT"></el-option>
+                    </el-select>
+                </el-form-item>
+
                 <el-form-item label="固件名称" prop="fwGroup">
-                    <div>
-                        <span style="display: inline-block; width: 43%">标识符:</span>
-                        <span style="display: inline-block; width: 40%">描述:</span>
-                    </div>
+                    <div></div>
                     <div
                         class="rain-item"
                         v-for="(item,index) in form.fwGroup"
                         :key="index"
                         style="margin: 0px 0px 10px 0px;"
                     >
-                        <el-input v-model="item.name" class="small-width"></el-input>
+                        <el-form-item v-if="index == 0">
+                            <span style="display: inline-block; width: 43%">标识符:</span>
+                        </el-form-item>
+                        <el-form-item
+                            :prop="'fwGroup.' + index + '.name'"
+                            :rules="{
+                            required: true, message: '请输入标识符', trigger: 'blur'
+                            }"
+                        >
+                            <el-input v-model="item.name" class="small-width"></el-input>
+                        </el-form-item>
                         <span
                             class="span"
                             style="display: inline-block;width: 3%;text-align: center"
                         >~</span>
-                        <el-input v-model="item.desc" class="small-width"></el-input>
+                        <el-form-item v-if="index == 0">
+                            <span style="display: inline-block; width: 40%">描述:</span>
+                        </el-form-item>
+
+                        <el-form-item
+                            :prop="'fwGroup.' + index + '.desc'"
+                            :rules="{
+                            required: true, message: '请输入描述', trigger: 'blur'
+                        }"
+                        >
+                            <el-input v-model="item.desc" class="small-width"></el-input>
+                        </el-form-item>
+
                         <el-button
                             type="text"
                             @click="deleteFw(index)"
                             style="display: inline-block;margin-left: 10px"
-                            v-if="index > 0"
                         >删除</el-button>
                     </div>
                     <el-button type="text" @click="form.fwGroup.push({name: '', desc: ''})">+ 添加固件名称</el-button>
@@ -86,7 +127,10 @@ export default {
                 // category1: [],
                 desc: "",
                 upMethod: "",
-                fwGroup: [{ name: "", desc: "" }]
+                nodeType: "",
+                netMode: "",
+                dataType: "",
+                fwGroup: []
             },
             // options: [
             //     {
@@ -135,6 +179,27 @@ export default {
                     {
                         required: true,
                         message: "请添加产品分类",
+                        trigger: "blur"
+                    }
+                ],
+                nodeType: [
+                    {
+                        required: true,
+                        message: "请选择节点类型",
+                        trigger: "blur"
+                    }
+                ],
+                netMode: [
+                    {
+                        required: true,
+                        message: "请选择连网方式",
+                        trigger: "blur"
+                    }
+                ],
+                dataType: [
+                    {
+                        required: true,
+                        message: "请选择数据格式",
                         trigger: "blur"
                     }
                 ]
