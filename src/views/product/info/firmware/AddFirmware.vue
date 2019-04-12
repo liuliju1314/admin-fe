@@ -206,7 +206,7 @@ export default {
                     }
                 })
                 .catch(() => {
-                    this.$message.error("获取失败!");
+                    this.$message.error("获取失败");
                 });
         },
         // 文件上传成功后返回值
