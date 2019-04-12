@@ -199,10 +199,14 @@ export default {
         getFwName() {
             getFirmwareName({ pid: this.form.pid })
                 .then(res => {
-                    this.fwNameList = res.payload;
+                    if (res.payload === null) {
+                        this.fwNameList = [];
+                    } else {
+                        this.fwNameList = res.payload;
+                    }
                 })
                 .catch(() => {
-                    this.$message.error("获取失败!");
+                    this.$message.error("获取失败");
                 });
         },
         // 文件上传成功后返回值

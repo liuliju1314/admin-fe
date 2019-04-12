@@ -40,6 +40,15 @@
                         </div>
                         <div style="margin-bottom: 10px;display: flex;">
                             <el-select
+                                v-model="device"
+                                placeholder="请选择调试设备类型"
+                                style="margin-right: 10px"
+                                size="small"
+                            >
+                                <el-option label="真实设备" value="1"></el-option>
+                                <el-option label="虚拟设备" value="2"></el-option>
+                            </el-select>
+                            <el-select
                                 v-model="propId"
                                 placeholder="请选择功能"
                                 size="small"
@@ -53,6 +62,7 @@
                                     :key="prop.id"
                                 ></el-option>
                             </el-select>
+
                             <el-select v-model="method" placeholder="请选择方法" size="small">
                                 <el-option label="设置" value="1"></el-option>
                                 <el-option label="获取" value="2"></el-option>
@@ -108,6 +118,7 @@ export default {
             },
             propId: "",
             method: "",
+            device: "",
             rules: {
                 pid: [
                     { required: true, message: "请选择产品", trigger: "blur" }
