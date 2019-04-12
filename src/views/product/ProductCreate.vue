@@ -120,7 +120,7 @@ export default {
                     ) {
                         this.product.fwGroup = [{ name: "", desc: "" }];
                     }
-                    this.form = Object.assign({},this.form, this.product);
+                    this.form = Object.assign({}, this.form, this.product);
                     this.title = "产品编辑";
                 } else {
                     this.title = "添加产品";
@@ -138,7 +138,6 @@ export default {
             this.$refs.form.validate(valid => {
                 if (valid) {
                     if (this.product) {
-                        console.log(this.form);
                         this.$store
                             .dispatch("BaseInfoSet", this.form)
                             .then(() => {

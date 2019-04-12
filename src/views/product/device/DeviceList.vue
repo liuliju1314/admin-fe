@@ -224,7 +224,7 @@ export default {
             this.getDevice();
         },
         handleTest() {
-            console.log("测试");
+            // console.log("测试");
         },
         handleUpgrade(device) {
             this.upgradeDevice = {

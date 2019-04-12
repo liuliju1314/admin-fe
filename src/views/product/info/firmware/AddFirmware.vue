@@ -153,16 +153,24 @@ export default {
         };
     },
     created() {
-        this.form.pid = this.$route.params.id;
         this.isFwInfo();
-        this.getFwName();
+        this.init();
     },
     watch: {
+        $route() {
+            this.init();
+        },
         fwInfo() {
             this.isFwInfo();
         }
     },
     methods: {
+        init() {
+            this.form.pid = this.$route.params.id;
+            if (this.form.pid && this.$route.path.indexOf("firmware") >= 0) {
+                this.getFwName();
+            }
+        },
         //判断是固件新增还是编辑
         isFwInfo() {
             if (this.fwInfo) {
