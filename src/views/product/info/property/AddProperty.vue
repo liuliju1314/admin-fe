@@ -14,7 +14,10 @@
             </el-form-item>
 
             <el-form-item label="标识符" prop="label">
-                <el-input v-model="propertForm.label" placeholder="仅支持大小写字母、数字，同产品下不可重复"></el-input>
+                <el-input
+                    v-model="propertForm.label"
+                    placeholder="支持字母、数字，首单词不支持数字，同产品下不可重复，多个单词请使用小驼峰命名"
+                ></el-input>
             </el-form-item>
             <el-form-item label="属性类型" prop="dataType.type">
                 <el-select v-model="propertForm.dataType.type" placeholder="请选择类型">
@@ -160,7 +163,7 @@ export default {
             formRules: {
                 label: [
                     {
-                        pattern: /^[a-zA-Z\d]+$/,
+                        pattern: /^[^\d]+[a-zA-Z\d]+$/,
                         required: true,
                         message: "请输入正确的格式",
                         trigger: "blur"

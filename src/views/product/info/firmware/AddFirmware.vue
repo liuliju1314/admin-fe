@@ -199,7 +199,11 @@ export default {
         getFwName() {
             getFirmwareName({ pid: this.form.pid })
                 .then(res => {
-                    this.fwNameList = res.payload;
+                    if (res.payload === null) {
+                        this.fwNameList = [{ name: "", desc: "" }];
+                    } else {
+                        this.fwNameList = res.payload;
+                    }
                 })
                 .catch(() => {
                     this.$message.error("获取失败!");

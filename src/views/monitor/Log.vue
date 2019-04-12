@@ -74,14 +74,14 @@
                 border
                 size="small"
             >
-                <el-table-column label="时间">
+                <el-table-column label="时间" width="300px">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.time) }}</template>
                 </el-table-column>
-                <el-table-column prop="did" label="DeviceName"></el-table-column>
+                <el-table-column prop="did" label="DeviceName" width="300px"></el-table-column>
                 <el-table-column label="内容(全部)">
                     <template slot-scope="scope">{{ scope.row.msg}}</template>
                 </el-table-column>
-                <el-table-column prop="level" label="状态以及原因分析"></el-table-column>
+                <el-table-column prop="level" label="状态以及原因分析" width="400px"></el-table-column>
             </el-table>
 
             <!-- 分页逻辑 -->
@@ -215,7 +215,7 @@ export default {
         },
         // 时间格式更改
         changeTimeFormater(cellvalue) {
-            return formatDate(cellvalue, "y-m-d");
+            return formatDate(cellvalue, "y-m-d h:i:s");
         }
     }
 };

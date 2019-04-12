@@ -15,9 +15,19 @@
                 <el-form-item label="产品型号" prop="model">
                     <el-input v-model="form.model"></el-input>
                 </el-form-item>
+
                 <el-form-item label="产品分类" prop="category">
-                    <el-input v-model="form.category"></el-input>
+                    <el-select v-model="form.category" placeholder="请选择方法" size="small">
+                        <el-option label="雨情产品" value="雨情产品"></el-option>
+                        <el-option label="水位产品" value="水位产品"></el-option>
+                        <el-option label="图像产品" value="图像产品"></el-option>
+                        <el-option label="测试产品" value="测试产品"></el-option>
+                    </el-select>
                 </el-form-item>
+
+                <!-- <el-form-item label="产品分类" prop="category">
+                    <el-cascader :options="options" v-model="form.category1" @change="handleChange"></el-cascader>
+                </el-form-item>-->
                 <el-form-item label="升级方式" prop="upMethod">
                     <el-radio-group v-model="form.upMethod">
                         <el-radio label="manual">手动升级</el-radio>
@@ -73,10 +83,31 @@ export default {
                 name: "",
                 model: "",
                 category: "",
+                // category1: [],
                 desc: "",
                 upMethod: "",
                 fwGroup: [{ name: "", desc: "" }]
             },
+            // options: [
+            //     {
+            //         value: "zhinan",
+            //         label: "智能水利",
+            //         children: [
+            //             {
+            //                 value: "shuiwei",
+            //                 label: "水位计"
+            //             },
+            //             {
+            //                 value: "yuliang",
+            //                 label: "雨量计"
+            //             },
+            //             {
+            //                 value: "tuxiang",
+            //                 label: "图像"
+            //             }
+            //         ]
+            //     }
+            // ],
             title: "",
             formRules: {
                 name: [
@@ -129,6 +160,9 @@ export default {
         }
     },
     methods: {
+        handleChange(value) {
+            console.log(value);
+        },
         beforeClose() {
             this.$refs.form.resetFields();
             this.$emit("listenOp", false);
