@@ -33,8 +33,12 @@
                 <td class="value">{{baseInfo.netMode}}</td>
             </tr>
             <tr>
-                <td class="label">数据格式:</td>
-                <td class="value">{{baseInfo.dataType}}</td>
+                <td class="label">协议类型:</td>
+                <td class="value">{{baseInfo.protocolType}}</td>
+            </tr>
+            <tr>
+                <td class="label">编码格式:</td>
+                <td class="value">{{baseInfo.codeFormat}}</td>
             </tr>
             <tr>
                 <td class="label">

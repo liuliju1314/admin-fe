@@ -12,7 +12,7 @@
                         <div class="state-name">
                             <span>{{prop.name}}</span>
                             <el-button
-                                @click="showChart"
+                                @click="showChart(prop)"
                                 type="text"
                                 size="small"
                                 v-if="prop.history"
@@ -28,7 +28,7 @@
                 </el-card>
             </el-col>
         </el-row>
-        <el-dialog title="提示" :visible.sync="dialogVisible">
+        <el-dialog :title="chartTitle" :visible.sync="dialogVisible" class="header">
             <ve-line :data="chartData"></ve-line>
         </el-dialog>
     </div>
@@ -36,24 +36,22 @@
 
 <script>
 import VeLine from "v-charts/lib/line.common";
-import { getDeviceProps } from "@/api/device/device";
+import { getDeviceProps, getPropsChart } from "@/api/device/device";
 import { formatDate } from "@/utils/format";
 export default {
     props: {},
     data() {
         return {
+            did: "",
+            pid: "",
+            label: "",
+            time: "",
+            chartTitle: "",
             propList: [],
             dialogVisible: false,
             chartData: {
-                columns: ["date", "PV"],
-                rows: [
-                    { date: "01-01", PV: 1231 },
-                    { date: "01-02", PV: 1223 },
-                    { date: "01-03", PV: 2123 },
-                    { date: "01-04", PV: 4123 },
-                    { date: "01-05", PV: 3123 },
-                    { date: "01-06", PV: 7123 }
-                ]
+                columns: [],
+                rows: []
             }
         };
     },
@@ -61,17 +59,32 @@ export default {
         VeLine
     },
     created() {
-        const data = {
-            did: this.$route.params.did,
-            pid: this.$route.params.id
-        };
-        getDeviceProps(data).then(res => {
+        this.did = this.$route.params.did;
+        this.pid = this.$route.params.id;
+        getDeviceProps({ did: this.did, pid: this.pid }).then(res => {
             this.propList = res.payload;
         });
     },
     methods: {
-        showChart() {
+        showChart(value) {
+            this.label = value.label;
+            this.chartTitle = value.name;
             this.dialogVisible = true;
+            this.propsChart();
+        },
+        propsChart() {
+            const data = {
+                pid: this.pid,
+                did: this.did,
+                label: this.label
+            };
+            getPropsChart(data).then(res => {
+                this.chartData.rows = res.payload.rows.map(item => {
+                    item.time = this.formatTime(item.time);
+                });
+                this.chartData.rows = res.payload.rows;
+                this.chartData.columns = res.payload.columns;
+            });
         },
         formatTime(data) {
             return formatDate(data * 1000);
@@ -79,6 +92,11 @@ export default {
     }
 };
 </script>
+<style lang="less">
+.header {
+    text-align: center;
+}
+</style>
 <style lang="less" scoped>
 .state-content {
     padding: 20px;
