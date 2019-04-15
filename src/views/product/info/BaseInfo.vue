@@ -17,12 +17,24 @@
                 <td class="value">{{baseInfo.model}}</td>
             </tr>
             <tr>
+                <td class="label">产品分类:</td>
+                <td class="value">{{baseInfo.category}}</td>
+            </tr>
+            <tr>
                 <td class="label">升级方式:</td>
                 <td class="value">{{formatterUpMethod(baseInfo.upMethod)}}</td>
             </tr>
             <tr>
-                <td class="label">产品分类:</td>
-                <td class="value">{{baseInfo.category}}</td>
+                <td class="label">节点类型:</td>
+                <td class="value">{{baseInfo.nodeType}}</td>
+            </tr>
+            <tr>
+                <td class="label">连网方式:</td>
+                <td class="value">{{baseInfo.netMode}}</td>
+            </tr>
+            <tr>
+                <td class="label">数据格式:</td>
+                <td class="value">{{baseInfo.dataType}}</td>
             </tr>
             <tr>
                 <td class="label">
@@ -49,7 +61,7 @@
 <script>
 import ProductCreate from "@/views/product/ProductCreate";
 import { mapGetters } from "vuex";
-import copy from '@/views/mixins/copy';
+import copy from "@/views/mixins/copy";
 export default {
     mixins: [copy],
     name: "BaseInfo",
@@ -84,8 +96,7 @@ export default {
             } else if (value === "auto") {
                 return "静默升级";
             }
-        },
-
+        }
     }
 };
 </script>

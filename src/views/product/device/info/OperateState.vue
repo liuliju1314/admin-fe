@@ -21,7 +21,9 @@
                         <div
                             :class="prop.value ? 'state-num': 'not-state-num'"
                         >{{prop.value ? prop.value: '暂无数据'}}</div>
-                        <div class="state-time">{{formatTime(prop.timestamp)}}</div>
+                        <div
+                            class="state-time"
+                        >{{prop.timestamp === 0 ? "年-月-日 时:分:秒" : formatTime(prop.timestamp)}}</div>
                     </div>
                 </el-card>
             </el-col>

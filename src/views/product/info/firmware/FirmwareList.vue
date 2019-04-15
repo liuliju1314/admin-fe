@@ -156,9 +156,13 @@ export default {
         },
         //固件验证
         FwDisable(fw) {
+            // console.log(JSON.stringify(fw));
             reviewFirmware(fw)
                 .then(() => {
                     this.handlefirmwareList();
+                    if (fw.status === 1) {
+                        this.$message.success("验证成功!");
+                    }
                 })
                 .catch(err => {
                     return err;

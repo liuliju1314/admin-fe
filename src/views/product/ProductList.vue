@@ -42,7 +42,7 @@
                 <el-table-column label="创建时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
                 </el-table-column>
-                <el-table-column label="操作" width="180">
+                <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
                         <div>
                             <el-button
@@ -73,6 +73,13 @@
                                 v-if="!(scope.row.productStatus === '0')"
                                 disabled
                             >已发布</el-button>
+                            <el-button
+                                type="text"
+                                size="small"
+                                icon="el-icon-bell"
+                                v-if="!(scope.row.productStatus === '0')"
+                                disabled
+                            >撤销发布</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -170,8 +177,9 @@ export default {
             this.visible = true;
         },
         // 对话框关闭
-        closeDialog() {
-            this.visible = false;
+        closeDialog(value) {
+            console.log("value: " + value);
+            this.visible = value;
             this.handleProductList(1);
         },
         // 删除产品

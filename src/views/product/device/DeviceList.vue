@@ -109,13 +109,7 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="设备数量" prop="deviceNum">
-                    <el-input-number
-                        v-model="batchForm.deviceNum"
-                        @change="handleChange"
-                        :min="1"
-                        :max="10"
-                        label="描述文字"
-                    ></el-input-number>
+                    <el-input-number v-model="batchForm.deviceNum" :min="1" :max="10" label="描述文字"></el-input-number>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary">确定并导出证书</el-button>
