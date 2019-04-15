@@ -108,6 +108,7 @@
                 <el-radio-group v-model.number="propertForm.businessType">
                     <el-radio :label="1">业务</el-radio>
                     <el-radio :label="2">非业务</el-radio>
+                    <el-radio :label="3">不区分类别</el-radio>
                 </el-radio-group>
             </el-form-item>
             <!-- 目前系统暂时不需要 -->

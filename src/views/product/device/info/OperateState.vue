@@ -29,6 +29,16 @@
             </el-col>
         </el-row>
         <el-dialog :title="chartTitle" :visible.sync="dialogVisible" class="header">
+            <span style="margin-right: 3%">时间范围：</span>
+            <el-date-picker
+                v-model="timeRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                format="yyyy-MM-dd"
+                value-format="timestamp"
+            ></el-date-picker>
             <ve-line :data="chartData"></ve-line>
         </el-dialog>
     </div>
@@ -45,7 +55,7 @@ export default {
             did: "",
             pid: "",
             label: "",
-            time: "",
+            timeRange: "",
             chartTitle: "",
             propList: [],
             dialogVisible: false,
@@ -61,6 +71,8 @@ export default {
     created() {
         this.did = this.$route.params.did;
         this.pid = this.$route.params.id;
+        this.handleDefaultformat();
+
         getDeviceProps({ did: this.did, pid: this.pid }).then(res => {
             this.propList = res.payload;
         });
@@ -77,6 +89,8 @@ export default {
                 pid: this.pid,
                 did: this.did,
                 label: this.label
+                // start: this.timeRange[0],
+                // end: this.timeRange[1]
             };
             getPropsChart(data).then(res => {
                 this.chartData.rows = res.payload.rows.map(item => {
@@ -88,6 +102,15 @@ export default {
         },
         formatTime(data) {
             return formatDate(data * 1000);
+        },
+        // 设置默认日期格式
+        handleDefaultformat() {
+            let curDate = new Date(),
+                lastDate = new Date();
+            curDate = new Date();
+            lastDate = new Date().getTime() - 3600 * 1000 * 24;
+            this.timeRange = [];
+            this.timeRange.push(lastDate, curDate);
         }
     }
 };
