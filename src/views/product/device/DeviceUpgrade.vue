@@ -11,12 +11,16 @@
             <!-- 循环的设备列表 -->
             <el-table :data="firmwareList.items" style="width: 100%; margin-top: 12px" size="small">
                 <el-table-column prop="fwID" label="固件ID"></el-table-column>
-                <el-table-column prop="name" label="固件名称"></el-table-column>
+                <el-table-column prop="fwName" label="固件名称"></el-table-column>
                 <el-table-column prop="version" label="版本"></el-table-column>
                 <el-table-column prop="desc" label="分组"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button @click.stop="handleUpgrade(scope.row)" type="text" size="small">升级</el-button>
+                        <el-button
+                            @click.stop="handleUpgrade(scope.row)"
+                            type="text"
+                            size="small"
+                        >升级</el-button>
                     </template>
                 </el-table-column>
             </el-table>

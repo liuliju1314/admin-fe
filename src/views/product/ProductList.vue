@@ -74,12 +74,13 @@
                                 disabled
                             >已发布</el-button>
                             <el-button
+                                @click.stop="unreleaseProduct(scope.row)"
                                 type="text"
                                 size="small"
-                                icon="el-icon-bell"
                                 v-if="!(scope.row.productStatus === '0')"
-                                disabled
-                            >撤销发布</el-button>
+                            >
+                                <svg-icon icon-class="revoke"></svg-icon>撤销发布
+                            </el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -103,7 +104,8 @@
 import {
     getProductList,
     deleteProduct,
-    editProduct
+    editProduct,
+    unReleaseProduct
 } from "@/api/product/product";
 
 import { formatDate } from "@/utils/format";
@@ -234,6 +236,22 @@ export default {
                         });
                     });
             });
+        },
+        // 撤销发布产品
+        unreleaseProduct(product) {
+            unReleaseProduct({ pid: product.pid })
+                .then(() => {
+                    this.$message({
+                        type: "success",
+                        message: "撤销成功!"
+                    });
+                    this.handleProductList();
+                })
+                .catch(() => {
+                    this.$message({
+                        message: "撤销失败!"
+                    });
+                });
         },
         // 更改时间格式
         changeTimeFormater(cellvalue) {

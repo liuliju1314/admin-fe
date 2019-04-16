@@ -29,25 +29,39 @@
             </el-col>
         </el-row>
         <el-dialog :title="chartTitle" :visible.sync="dialogVisible" class="header">
-            <span style="margin-right: 3%">时间范围：</span>
-            <el-date-picker
-                v-model="timeRange"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                format="yyyy-MM-dd"
-                value-format="timestamp"
-            ></el-date-picker>
-            <ve-line :data="chartData"></ve-line>
+            <div style="margin-bottom: 20px;text-align: left">
+                <span style="margin-right: 3%;">时间范围：</span>
+                <el-date-picker
+                    v-model="timeRange"
+                    size="small"
+                    type="daterange"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :default-time="['00:00:00', '23:59:59']"
+                    format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd"
+                ></el-date-picker>
+                <el-button size="small" type="primary" @click="handleChart()">查询</el-button>
+            </div>
+
+            <div style="text-align: left">
+                <el-button-group>
+                    <el-button size="small" @click="changeChartType(1)">折线图</el-button>
+                    <el-button size="small" @click="changeChartType(2)">柱状图</el-button>
+                </el-button-group>
+            </div>
+            <ve-line v-if="veLine" :data="chartData"></ve-line>
+            <ve-histogram v-else :data="chartData"></ve-histogram>
         </el-dialog>
     </div>
 </template>
 
 <script>
 import VeLine from "v-charts/lib/line.common";
+import VeHistogram from "v-charts/lib/histogram.common";
 import { getDeviceProps, getPropsChart } from "@/api/device/device";
-import { formatDate } from "@/utils/format";
+import { formatDate, setTimeFormat } from "@/utils/timeFormat";
+
 export default {
     props: {},
     data() {
@@ -55,9 +69,10 @@ export default {
             did: "",
             pid: "",
             label: "",
-            timeRange: "",
-            chartTitle: "",
-            propList: [],
+            timeRange: [],
+            propList: [], //运行状态列表
+            chartTitle: "", //图表对话框的title
+            veLine: true, //图表切换
             dialogVisible: false,
             chartData: {
                 columns: [],
@@ -66,31 +81,51 @@ export default {
         };
     },
     components: {
-        VeLine
+        VeLine,
+        VeHistogram
     },
     created() {
         this.did = this.$route.params.did;
         this.pid = this.$route.params.id;
-        this.handleDefaultformat();
-
         getDeviceProps({ did: this.did, pid: this.pid }).then(res => {
             this.propList = res.payload;
         });
     },
     methods: {
+        // 设置默认日期格式
+        handleDefaultformat() {
+            let curDate = new Date(),
+                lastDate = new Date();
+            curDate = new Date();
+            lastDate = new Date().getTime() - 3600 * 1000 * 24;
+            this.timeRange = [];
+            this.timeRange.push(
+                formatDate(lastDate, "y-m-d"),
+                formatDate(curDate, "y-m-d")
+            );
+        },
+        // 点击查看历史数据图表
         showChart(value) {
             this.label = value.label;
             this.chartTitle = value.name;
             this.dialogVisible = true;
+            this.veLine = true;
+            this.handleDefaultformat();
             this.propsChart();
         },
+        // 查询时间图表
+        handleChart() {
+            this.propsChart();
+        },
+        // 获取图表数据接口
         propsChart() {
+            let timeRange = setTimeFormat(this.timeRange);
             const data = {
                 pid: this.pid,
                 did: this.did,
-                label: this.label
-                // start: this.timeRange[0],
-                // end: this.timeRange[1]
+                label: this.label,
+                start: timeRange[0],
+                end: timeRange[1]
             };
             getPropsChart(data).then(res => {
                 this.chartData.rows = res.payload.rows.map(item => {
@@ -100,17 +135,17 @@ export default {
                 this.chartData.columns = res.payload.columns;
             });
         },
+        // 格式化时间戳
         formatTime(data) {
             return formatDate(data * 1000);
         },
-        // 设置默认日期格式
-        handleDefaultformat() {
-            let curDate = new Date(),
-                lastDate = new Date();
-            curDate = new Date();
-            lastDate = new Date().getTime() - 3600 * 1000 * 24;
-            this.timeRange = [];
-            this.timeRange.push(lastDate, curDate);
+        // 点击按钮切换不同图表
+        changeChartType(value) {
+            if (value === 1) {
+                this.veLine = true;
+            } else {
+                this.veLine = false;
+            }
         }
     }
 };

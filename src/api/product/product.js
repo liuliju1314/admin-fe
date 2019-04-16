@@ -45,3 +45,12 @@ export function editProduct(data) {
         data
     })
 }
+
+// 撤销发布产品
+export function unReleaseProduct(data) {
+    return service({
+        url: '/api/product/unrelease',
+        method: 'PATCH',
+        data
+    })
+}

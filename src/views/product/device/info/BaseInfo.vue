@@ -17,7 +17,7 @@
                     <span>{{formatterGroup(deviceInfo.group)}}</span>
                 </td>
                 <th>固件版本号:</th>
-                <td>{{formatterFwVersion(deviceInfo.fwVersion)}}</td>
+                <td>{{deviceInfo.fwVersion === null?" ":formatterFwVersion(deviceInfo.fwVersion)}}</td>
                 <th>硬件版本号:</th>
                 <td>{{deviceInfo.hwVersion}}</td>
             </tr>
@@ -51,6 +51,7 @@ export default {
     },
     watch: {
         $route() {
+            this.form.did = this.$route.params.did;
             if (this.$route.params.did) {
                 this.getDevice();
             }
@@ -58,6 +59,7 @@ export default {
         deviceList() {
             if (this.$route.params.did) {
                 this.deviceInfo = this.deviceList.items[0];
+                console.log(this.deviceInfo);
             }
         }
     },

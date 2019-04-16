@@ -63,14 +63,15 @@
                     <span>{{ handleFormatter(scope.row, 'status', scope.row.status) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click.stop="handleUpgrade(scope.row)">升级</el-button>
+                    <el-button type="text" size="small" @click.stop="handleState(scope.row)">查看运行状态</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <!-- 分页逻辑 -->
-        <div class="pagination-box" v-if="form.pageSize < deviceList.total">
+        <div class="pagination-box" v-if="form.pageSize < total">
             <el-pagination
                 :page-size="form.pageSize"
                 :page="form.page"
@@ -102,14 +103,34 @@
                 :rules="rules"
                 :model="batchForm"
             >
-                <el-form-item label="添加方式" prop="addMothod">
-                    <el-radio-group v-model="batchForm.addMothod">
-                        <el-radio label="自动生成"></el-radio>
-                        <el-radio label="批量上传"></el-radio>
+                <el-form-item label="添加方式：" prop="addMothod">
+                    <el-radio-group v-model="batchForm.addMothod" @change="addName">
+                        <el-radio label="auto">自动生成</el-radio>
+                        <el-radio label="manual">批量上传</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="设备数量" prop="deviceNum">
+                <el-form-item label="设备数量：" prop="deviceNum" v-if="addMothodName === 'auto'">
                     <el-input-number v-model="batchForm.deviceNum" :min="1" :max="10" label="描述文字"></el-input-number>
+                </el-form-item>
+                <el-form-item label="批量上传文件：" prop="deviceNum" v-if="addMothodName === 'manual'">
+                    <div class="upload-demo">
+                        <div tabindex="0" class="el-upload el-upload--text">
+                            <button
+                                type="button"
+                                class="el-button el-button--primary el-button--small"
+                            >
+                                <i class="el-icon-upload"></i>
+                                <span>选择文件</span>
+                            </button>
+                            <input
+                                type="file"
+                                name="file"
+                                class="el-upload__input"
+                                @change="addFile(index,$event)"
+                            >
+                        </div>
+                        <el-button type="text" style="margin: 0 10px">下载csv模板</el-button>
+                    </div>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary">确定并导出证书</el-button>
@@ -136,7 +157,7 @@ export default {
                 pageSize: 10
             },
             batchForm: {
-                addMothod: "",
+                addMothod: "auto",
                 deviceNum: ""
             },
             rules: {
@@ -151,6 +172,7 @@ export default {
                     trigger: "blur"
                 }
             },
+            addMothodName: "auto",
             upgradeDevice: "",
             dialogVisible: false,
             upgradeVisible: false,
@@ -170,6 +192,9 @@ export default {
         }
     },
     methods: {
+        addName(value) {
+            this.addMothodName = value;
+        },
         // 点击跳路由
         expandDetail(row) {
             const pid = this.$route.params.id;
@@ -195,7 +220,6 @@ export default {
                 }
             });
         },
-
         //更新设备分组
         updateGroup(device) {
             const data = {
@@ -216,9 +240,6 @@ export default {
         },
         handleeEquipment() {
             this.getDevice();
-        },
-        handleTest() {
-            // console.log("测试");
         },
         handleUpgrade(device) {
             this.upgradeDevice = {
@@ -253,11 +274,35 @@ export default {
                     break;
             }
             return result;
+        },
+        // 跳转至运行状态接口
+        handleState(value) {
+            console.log(JSON.stringify(value));
+            this.$router.push({
+                path: `/product/${value.pid}/device/${value.did}/state`
+            });
         }
     }
 };
 </script>
 <style lang='less' scoped>
+.el-upload__input {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    opacity: 0;
+}
+.el-upload-list {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 0px 14px;
+    border: 1px dashed #ddd;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
 .upgrade-wrapper {
     display: flex;
     text-align: center;

@@ -57,7 +57,11 @@
                 <td class="value">{{baseInfo.desc}}</td>
             </tr>
         </table>
-        <el-button @click="editProduct" style="padding: 10px 22px; margin: 30px 0 0 100px;">编辑</el-button>
+        <el-button
+            v-if="productStatus == '0'"
+            @click="editProduct"
+            style="padding: 10px 22px; margin: 30px 0 0 100px;"
+        >编辑</el-button>
         <product-create :product="product" :visible="visible" @listenOp="closeDialog"></product-create>
     </div>
 </template>
@@ -71,6 +75,7 @@ export default {
     name: "BaseInfo",
     data() {
         return {
+            productStatus: "",
             pid: "",
             visible: false,
             product: "",
@@ -82,6 +87,11 @@ export default {
     },
     computed: {
         ...mapGetters(["baseInfo"])
+    },
+    watch: {
+        baseInfo(newValue) {
+            this.productStatus = newValue.productStatus;
+        }
     },
     methods: {
         //更新产品信息
