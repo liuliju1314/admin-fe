@@ -36,10 +36,19 @@ export function updateDeviceGroup(data) {
     })
 }
 
-// 
+// 获取设备全部属性
 export function getDeviceProps(data) {
     return service({
         url: '/api/device/props',
+        method: 'GET',
+        params: data
+    })
+}
+
+// 获取设备属性下的图表
+export function getPropsChart(data) {
+    return service({
+        url: '/api/chart/props',
         method: 'GET',
         params: data
     })

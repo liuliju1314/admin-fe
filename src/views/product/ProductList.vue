@@ -42,7 +42,7 @@
                 <el-table-column label="创建时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdAt) }}</template>
                 </el-table-column>
-                <el-table-column label="操作" width="180">
+                <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
                         <div>
                             <el-button
@@ -73,6 +73,14 @@
                                 v-if="!(scope.row.productStatus === '0')"
                                 disabled
                             >已发布</el-button>
+                            <el-button
+                                @click.stop="unreleaseProduct(scope.row)"
+                                type="text"
+                                size="small"
+                                v-if="!(scope.row.productStatus === '0')"
+                            >
+                                <svg-icon icon-class="revoke"></svg-icon>撤销发布
+                            </el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -96,7 +104,8 @@
 import {
     getProductList,
     deleteProduct,
-    editProduct
+    editProduct,
+    unReleaseProduct
 } from "@/api/product/product";
 
 import { formatDate } from "@/utils/format";
@@ -170,8 +179,9 @@ export default {
             this.visible = true;
         },
         // 对话框关闭
-        closeDialog() {
-            this.visible = false;
+        closeDialog(value) {
+            console.log("value: " + value);
+            this.visible = value;
             this.handleProductList(1);
         },
         // 删除产品
@@ -226,6 +236,22 @@ export default {
                         });
                     });
             });
+        },
+        // 撤销发布产品
+        unreleaseProduct(product) {
+            unReleaseProduct({ pid: product.pid })
+                .then(() => {
+                    this.$message({
+                        type: "success",
+                        message: "撤销成功!"
+                    });
+                    this.handleProductList();
+                })
+                .catch(() => {
+                    this.$message({
+                        message: "撤销失败!"
+                    });
+                });
         },
         // 更改时间格式
         changeTimeFormater(cellvalue) {

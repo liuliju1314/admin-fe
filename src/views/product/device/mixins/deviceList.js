@@ -2,9 +2,9 @@ import { getDeviceList } from "@/api/device/device";
 export default {
     data() {
         return {
+            total: "",
             form: {
                 pid: '',
-
             },
             deviceList: ''
         }
@@ -23,6 +23,7 @@ export default {
                 getDeviceList(this.form)
                     .then(res => {
                         this.deviceList = res.payload;
+                        this.total = res.payload.total;
                     })
                     .catch(error => {
                         return error;

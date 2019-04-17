@@ -37,60 +37,71 @@
                 </el-form-item>
 
                 <el-form-item label="节点类型" prop="nodeType">
+                    <!-- <el-radio-group v-model="form.nodeType" :disabled="isEdit"> -->
                     <el-radio-group v-model="form.nodeType">
-                        <el-radio label="manual">设备</el-radio>
-                        <el-radio label="auto">网关</el-radio>
+                        <el-radio label="device">设备</el-radio>
+                        <el-radio label="gateWay">网关</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
                 <el-form-item label="连网方式" prop="netMode">
+                    <!-- <el-select
+                        v-model="form.netMode"
+                        placeholder="请选择连网方式"
+                        size="small"
+                        :disabled="isEdit"
+                    >-->
                     <el-select v-model="form.netMode" placeholder="请选择连网方式" size="small">
-                        <el-option label="WIFF" value="WIFF"></el-option>
+                        <el-option label="WIFF" value="wiff"></el-option>
                         <el-option label="蜂窝 (2G / 3G / 4G) " value="cellularNet"></el-option>
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="数据格式" prop="dataType">
-                    <el-select v-model="form.dataType" placeholder="请选择数据格式" size="small">
-                        <el-option label="TCP " value="MQTT"></el-option>
+                <el-form-item label="协议类型" prop="protocolType">
+                    <el-select v-model="form.protocolType" placeholder="请选择协议类型" size="small">
+                        <el-option label="TCP " value="TCP"></el-option>
                         <el-option label="MQTT" value="MQTT"></el-option>
                     </el-select>
                 </el-form-item>
 
+                <el-form-item label="编码格式" prop="codeFormat">
+                    <el-select v-model="form.codeFormat" placeholder="请选择编码格式" size="small">
+                        <el-option label="JSON " value="JSON"></el-option>
+                    </el-select>
+                </el-form-item>
+
                 <el-form-item label="固件名称" prop="fwGroup">
-                    <div></div>
                     <div
                         class="rain-item"
                         v-for="(item,index) in form.fwGroup"
                         :key="index"
                         style="margin: 0px 0px 10px 0px;"
                     >
-                        <el-form-item v-if="index == 0">
+                        <div v-if="index === 0">
                             <span style="display: inline-block; width: 43%">标识符:</span>
-                        </el-form-item>
+                            <span style="display: inline-block; width: 40%">描述:</span>
+                        </div>
                         <el-form-item
                             :prop="'fwGroup.' + index + '.name'"
                             :rules="{
                             required: true, message: '请输入标识符', trigger: 'blur'
                             }"
+                            style="display: inline-block;width: 33%;"
                         >
-                            <el-input v-model="item.name" class="small-width"></el-input>
+                            <el-input v-model="item.name"></el-input>
                         </el-form-item>
                         <span
                             class="span"
-                            style="display: inline-block;width: 3%;text-align: center"
+                            style="display: inline-block;width: 3%;margin:0 3%;text-align: center"
                         >~</span>
-                        <el-form-item v-if="index == 0">
-                            <span style="display: inline-block; width: 40%">描述:</span>
-                        </el-form-item>
-
                         <el-form-item
                             :prop="'fwGroup.' + index + '.desc'"
+                            style="    display: inline-block;width: 33%;"
                             :rules="{
                             required: true, message: '请输入描述', trigger: 'blur'
                         }"
                         >
-                            <el-input v-model="item.desc" class="small-width"></el-input>
+                            <el-input v-model="item.desc"></el-input>
                         </el-form-item>
 
                         <el-button
@@ -101,7 +112,7 @@
                     </div>
                     <el-button type="text" @click="form.fwGroup.push({name: '', desc: ''})">+ 添加固件名称</el-button>
                 </el-form-item>
-                <el-form-item label="产品描述">
+                <el-form-item label="产品描述" prop="desc">
                     <el-input type="textarea" v-model="form.desc"></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -129,7 +140,7 @@ export default {
                 upMethod: "",
                 nodeType: "",
                 netMode: "",
-                dataType: "",
+                protocolType: "",
                 fwGroup: []
             },
             // options: [
@@ -152,6 +163,7 @@ export default {
             //         ]
             //     }
             // ],
+            // isEdit: false,
             title: "",
             formRules: {
                 name: [
@@ -196,10 +208,17 @@ export default {
                         trigger: "blur"
                     }
                 ],
-                dataType: [
+                protocolType: [
                     {
                         required: true,
-                        message: "请选择数据格式",
+                        message: "请选择协议类型",
+                        trigger: "blur"
+                    }
+                ],
+                codeFormat: [
+                    {
+                        required: true,
+                        message: "请选择编码格式",
                         trigger: "blur"
                     }
                 ]
@@ -218,6 +237,7 @@ export default {
                     }
                     this.form = Object.assign({}, this.form, this.product);
                     this.title = "产品编辑";
+                    // this.isEdit = true;
                 } else {
                     this.title = "添加产品";
                 }
@@ -229,7 +249,7 @@ export default {
             console.log(value);
         },
         beforeClose() {
-            this.$refs.form.resetFields();
+            // this.$refs.form.resetFields();
             this.$emit("listenOp", false);
         },
         // 点击确定时判断是添加还是更新
@@ -298,9 +318,6 @@ export default {
     .link-item {
         text-decoration: none;
         padding-right: 22px;
-    }
-    .small-width {
-        width: 40%;
     }
 }
 </style>

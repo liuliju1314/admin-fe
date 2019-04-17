@@ -17,12 +17,28 @@
                 <td class="value">{{baseInfo.model}}</td>
             </tr>
             <tr>
+                <td class="label">产品分类:</td>
+                <td class="value">{{baseInfo.category}}</td>
+            </tr>
+            <tr>
                 <td class="label">升级方式:</td>
                 <td class="value">{{formatterUpMethod(baseInfo.upMethod)}}</td>
             </tr>
             <tr>
-                <td class="label">产品分类:</td>
-                <td class="value">{{baseInfo.category}}</td>
+                <td class="label">节点类型:</td>
+                <td class="value">{{baseInfo.nodeType}}</td>
+            </tr>
+            <tr>
+                <td class="label">连网方式:</td>
+                <td class="value">{{baseInfo.netMode}}</td>
+            </tr>
+            <tr>
+                <td class="label">协议类型:</td>
+                <td class="value">{{baseInfo.protocolType}}</td>
+            </tr>
+            <tr>
+                <td class="label">编码格式:</td>
+                <td class="value">{{baseInfo.codeFormat}}</td>
             </tr>
             <tr>
                 <td class="label">
@@ -41,7 +57,11 @@
                 <td class="value">{{baseInfo.desc}}</td>
             </tr>
         </table>
-        <el-button @click="editProduct" style="padding: 10px 22px; margin: 30px 0 0 100px;">编辑</el-button>
+        <el-button
+            v-if="productStatus == '0'"
+            @click="editProduct"
+            style="padding: 10px 22px; margin: 30px 0 0 100px;"
+        >编辑</el-button>
         <product-create :product="product" :visible="visible" @listenOp="closeDialog"></product-create>
     </div>
 </template>
@@ -49,12 +69,13 @@
 <script>
 import ProductCreate from "@/views/product/ProductCreate";
 import { mapGetters } from "vuex";
-import copy from '@/views/mixins/copy';
+import copy from "@/views/mixins/copy";
 export default {
     mixins: [copy],
     name: "BaseInfo",
     data() {
         return {
+            productStatus: "",
             pid: "",
             visible: false,
             product: "",
@@ -66,6 +87,11 @@ export default {
     },
     computed: {
         ...mapGetters(["baseInfo"])
+    },
+    watch: {
+        baseInfo(newValue) {
+            this.productStatus = newValue.productStatus;
+        }
     },
     methods: {
         //更新产品信息
@@ -84,8 +110,7 @@ export default {
             } else if (value === "auto") {
                 return "静默升级";
             }
-        },
-
+        }
     }
 };
 </script>
