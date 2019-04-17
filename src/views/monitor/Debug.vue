@@ -64,8 +64,8 @@
                             </el-select>
 
                             <el-select v-model="method" placeholder="请选择方法" size="small">
-                                <el-option label="设置" value="1"></el-option>
-                                <el-option label="获取" value="2"></el-option>
+                                <el-option label="设置" value="get"></el-option>
+                                <el-option label="获取" value="set"></el-option>
                             </el-select>
                         </div>
 
@@ -169,10 +169,23 @@ export default {
         WebSocketLink() {
             if ("WebSocket" in window) {
                 // 打开一个 web socket
-                this.ws = new WebSocket("ws://47.107.91.58:9090/ws_message");
+                this.ws = new WebSocket(
+                    "ws://47.107.91.58:11021/api/ws_message"
+                );
+                // this.ws = new WebSocket(
+                //     "ws://" + location.host + "/api/ws_message"
+                // );
 
                 this.ws.onopen = () => {
-                    this.ws.send("1611812280002337");
+                    const data = {
+                        pid: this.form.pid,
+                        did: this.form.did,
+                        payload: {
+                            action: this.method,
+                            data: this.propId
+                        }
+                    };
+                    this.ws.send(data);
                 };
 
                 this.ws.onmessage = evt => {
