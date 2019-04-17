@@ -64,18 +64,25 @@
                             </el-select>
 
                             <el-select v-model="method" placeholder="请选择方法" size="small">
-                                <el-option label="设置" value="get"></el-option>
-                                <el-option label="获取" value="set"></el-option>
+                                <el-option label="设置" value="set"></el-option>
+                                <el-option label="获取" value="get"></el-option>
                             </el-select>
                         </div>
 
                         <div ref="editor" id="editor" style="height: 43vh"></div>
+
                         <el-button
                             size="small"
                             type="primary"
                             style="margin-top: 20px"
                             @click="sendData"
                         >发送</el-button>
+                        <!-- <el-button
+                            size="small"
+                            type="primary"
+                            style="margin-top: 20px"
+                            @click="openLink"
+                        >开启长连接</el-button>-->
                         <el-button
                             size="small"
                             type="primary"
@@ -156,12 +163,36 @@ export default {
     methods: {
         // 发送数据
         sendData() {
+            const data = {
+                pid: this.form.pid,
+                did: this.form.did,
+                payload: {}
+            };
+            if (this.method == "get") {
+                const payload = {
+                    action: this.method,
+                    data: this.propId
+                };
+                data.payload = payload;
+            } else if (this.method == "set") {
+                console.log("this.content: " + JSON.stringify(this.content));
+                const payload = {
+                    action: this.method,
+                    key: Object.keys(this.content).toString(),
+                    value: Object.values(this.content).toString()
+                };
+                data.payload = payload;
+            }
+            this.ws.send(JSON.stringify(data));
+        },
+        openLink() {
             this.WebSocketLink();
         },
         doDeviceSearch() {
             getDeviceProps(this.form).then(res => {
                 this.propList = res.payload;
             });
+            this.openLink();
         },
         closeLink() {
             this.ws.close();
@@ -172,28 +203,23 @@ export default {
                 this.ws = new WebSocket(
                     "ws://47.107.91.58:11021/api/ws_message"
                 );
+
                 // this.ws = new WebSocket(
                 //     "ws://" + location.host + "/api/ws_message"
                 // );
 
                 this.ws.onopen = () => {
-                    const data = {
-                        pid: this.form.pid,
-                        did: this.form.did,
-                        payload: {
-                            action: this.method,
-                            data: this.propId
-                        }
-                    };
-                    // console.log("data: " + JSON.stringify(data));
-                    this.ws.send(JSON.stringify(data));
+                    this.sendData();
                 };
 
                 this.ws.onmessage = evt => {
-                    this.wsData = evt.data;
+                    console.log("evt.data: " + evt.data);
+                    this.wsData.push(evt.data);
                 };
 
-                this.ws.onclose = () => {};
+                this.ws.onclose = () => {
+                    console.log("关闭WebSocket");
+                };
             } else {
                 // 浏览器不支持 WebSocket
                 alert("您的浏览器不支持 WebSocket!");
