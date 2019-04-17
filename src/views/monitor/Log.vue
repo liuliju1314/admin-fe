@@ -74,14 +74,14 @@
                 border
                 size="small"
             >
-                <el-table-column label="时间" width="300px">
+                <el-table-column label="时间" min-width="20%">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.time) }}</template>
                 </el-table-column>
-                <el-table-column prop="did" label="DeviceName" width="300px"></el-table-column>
-                <el-table-column label="内容(全部)">
+                <el-table-column prop="did" label="DeviceName" min-width="20%"></el-table-column>
+                <el-table-column label="内容(全部)" min-width="40%">
                     <template slot-scope="scope">{{ scope.row.msg}}</template>
                 </el-table-column>
-                <el-table-column prop="level" label="状态以及原因分析" width="400px"></el-table-column>
+                <el-table-column prop="level" label="状态以及原因分析" min-width="20%"></el-table-column>
             </el-table>
 
             <!-- 分页逻辑 -->

@@ -257,8 +257,8 @@ export default {
                                 });
                                 this.beforeClose();
                             })
-                            .catch(() => {
-                                this.$message.error("添加失败!");
+                            .catch(error => {
+                                return error;
                             });
                     } else {
                         const data = {

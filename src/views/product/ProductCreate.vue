@@ -45,12 +45,6 @@
                 </el-form-item>
 
                 <el-form-item label="连网方式" prop="netMode">
-                    <!-- <el-select
-                        v-model="form.netMode"
-                        placeholder="请选择连网方式"
-                        size="small"
-                        :disabled="isEdit"
-                    >-->
                     <el-select v-model="form.netMode" placeholder="请选择连网方式" size="small">
                         <el-option label="WIFF" value="wiff"></el-option>
                         <el-option label="蜂窝 (2G / 3G / 4G) " value="cellularNet"></el-option>
