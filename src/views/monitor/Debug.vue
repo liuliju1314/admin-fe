@@ -185,7 +185,8 @@ export default {
                             data: this.propId
                         }
                     };
-                    this.ws.send(data);
+                    // console.log("data: " + JSON.stringify(data));
+                    this.ws.send(JSON.stringify(data));
                 };
 
                 this.ws.onmessage = evt => {
