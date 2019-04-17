@@ -5,7 +5,7 @@
         </div>
         <div class="text-wrapper">
             <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small">
-                <el-form-item class="form-item" filterable>
+                <el-form-item class="form-item" filterable prop="pid">
                     <el-select placeholder="请选择产品" v-model="form.pid">
                         <el-option
                             v-for="product in productList"
@@ -15,7 +15,7 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item class="form-item">
+                <el-form-item class="form-item" prop="did">
                     <el-select
                         placeholder="请选择设备"
                         v-model="form.did"
@@ -31,6 +31,8 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
+
+                <el-button size="small" type="primary" @click="openVirtualDevice">启动虚拟设备</el-button>
             </el-form>
             <el-row :gutter="12">
                 <el-col :span="8">
@@ -96,7 +98,6 @@
                         <div>
                             <h3>实时</h3>
                         </div>
-
                         <el-table :data="wsData" stripe style="width: 100%" size="small">
                             <el-table-column prop="date" label="类型/时间" width="180"></el-table-column>
                             <el-table-column prop="name" label="内容"></el-table-column>
@@ -112,8 +113,8 @@
 import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
-import { getDeviceList } from "@/api/device/device";
-import { getDeviceProps } from "@/api/device/device";
+import { getDeviceList, getDeviceProps } from "@/api/device/device";
+import { startVirtualDevice } from "@/api/debug/debug";
 export default {
     components: {},
     props: {},
@@ -161,6 +162,19 @@ export default {
         this.closeLink();
     },
     methods: {
+        // 启动虚拟设备
+        openVirtualDevice() {
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    const data = {
+                        ...this.form
+                    };
+                    startVirtualDevice(data).then(() => {});
+                } else {
+                    return false;
+                }
+            });
+        },
         // 发送数据
         sendData() {
             const data = {
@@ -175,7 +189,7 @@ export default {
                 };
                 data.payload = payload;
             } else if (this.method == "set") {
-                console.log("this.content: " + JSON.stringify(this.content));
+                // console.log("this.editor: " + JSON.stringify(this.editor));
                 const payload = {
                     action: this.method,
                     key: Object.keys(this.content).toString(),
