@@ -122,7 +122,7 @@ export const routes = [
                 path: "/log",
                 name: "Log", component: () => import("@/views/monitor/Log"), meta: { title: '日志服务' }
             },
-            { path: "/debug", name: "Debug", component: () => import("@/views/monitor/Debug"), meta: { title: '设备调试' } }
+            { path: "/debug", name: "Debug", component: () => import("@/views/monitor/Debug1"), meta: { title: '设备调试' } }
 
         ]
     },
