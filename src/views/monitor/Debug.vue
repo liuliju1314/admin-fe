@@ -33,7 +33,7 @@
                 </el-form-item>
 
                 <el-button size="small" type="primary" @click="openVirtualDevice">启动虚拟设备</el-button>
-                <el-button size="small" type="primary" @click="closeVirtualDevice">启动虚拟设备</el-button>
+                <el-button size="small" type="primary" @click="closeVirtualDevice">关闭虚拟设备</el-button>
             </el-form>
             <el-row :gutter="12">
                 <el-col :span="8">
@@ -192,7 +192,7 @@ export default {
 
         // 发送数据
         sendData() {
-            this.content = this.editor.get();
+            this.content = this.editor.get(); //把编辑框中的文本赋值过来
             console.dir(this.content);
             const data = {
                 pid: this.form.pid,
@@ -205,16 +205,23 @@ export default {
                     data: this.propId
                 };
                 data.payload = payload;
+                this.ws.send(JSON.stringify(data));
             } else if (this.method == "set") {
-                // console.log("this.editor: " + JSON.stringify(this.editor));
-                const payload = {
-                    action: this.method,
-                    key: Object.keys(this.content).toString(),
-                    value: Object.values(this.content).toString()
-                };
-                data.payload = payload;
+                if (Object.values(this.content)[0] === null) {
+                    this.$message({
+                        type: "warning",
+                        message: "属性值不能为空"
+                    });
+                } else {
+                    const payload = {
+                        action: this.method,
+                        key: Object.keys(this.content)[0],
+                        value: Object.values(this.content)[0]
+                    };
+                    data.payload = payload;
+                    this.ws.send(JSON.stringify(data));
+                }
             }
-            this.ws.send(JSON.stringify(data));
         },
         openLink() {
             this.WebSocketLink();
