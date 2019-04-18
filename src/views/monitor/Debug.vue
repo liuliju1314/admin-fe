@@ -33,6 +33,7 @@
                 </el-form-item>
 
                 <el-button size="small" type="primary" @click="openVirtualDevice">启动虚拟设备</el-button>
+                <el-button size="small" type="primary" @click="closeVirtualDevice">启动虚拟设备</el-button>
             </el-form>
             <el-row :gutter="12">
                 <el-col :span="8">
@@ -114,7 +115,7 @@ import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList, getDeviceProps } from "@/api/device/device";
-import { startVirtualDevice } from "@/api/debug/debug";
+import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 export default {
     components: {},
     props: {},
@@ -175,8 +176,24 @@ export default {
                 }
             });
         },
+        // 关闭虚拟设备
+        closeVirtualDevice() {
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    const data = {
+                        ...this.form
+                    };
+                    stopVirtualDevice(data).then(() => {});
+                } else {
+                    return false;
+                }
+            });
+        },
+
         // 发送数据
         sendData() {
+            this.content = this.editor.get();
+            console.dir(this.content);
             const data = {
                 pid: this.form.pid,
                 did: this.form.did,

@@ -9,3 +9,11 @@ export function startVirtualDevice(data) {
     })
 }
 
+// 关闭虚拟设备
+export function stopVirtualDevice(data) {
+    return service({
+        url: '/api/device/stop_virtual',
+        method: 'post',
+        data
+    })
+}
