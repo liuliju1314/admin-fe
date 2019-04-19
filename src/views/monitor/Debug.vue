@@ -5,7 +5,7 @@
         </div>
         <div class="text-wrapper">
             <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small">
-                <el-form-item class="form-item" filterable>
+                <el-form-item class="form-item" filterable prop="pid">
                     <el-select placeholder="请选择产品" v-model="form.pid">
                         <el-option
                             v-for="product in productList"
@@ -15,7 +15,7 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item class="form-item">
+                <el-form-item class="form-item" prop="did">
                     <el-select
                         placeholder="请选择设备"
                         v-model="form.did"
@@ -31,6 +31,9 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
+
+                <el-button size="small" type="primary" @click="openVirtualDevice">启动虚拟设备</el-button>
+                <el-button size="small" type="primary" @click="closeVirtualDevice">关闭虚拟设备</el-button>
             </el-form>
             <el-row :gutter="12">
                 <el-col :span="8">
@@ -64,18 +67,25 @@
                             </el-select>
 
                             <el-select v-model="method" placeholder="请选择方法" size="small">
-                                <el-option label="设置" value="1"></el-option>
-                                <el-option label="获取" value="2"></el-option>
+                                <el-option label="设置" value="set"></el-option>
+                                <el-option label="获取" value="get"></el-option>
                             </el-select>
                         </div>
 
                         <div ref="editor" id="editor" style="height: 43vh"></div>
+
                         <el-button
                             size="small"
                             type="primary"
                             style="margin-top: 20px"
                             @click="sendData"
                         >发送</el-button>
+                        <!-- <el-button
+                            size="small"
+                            type="primary"
+                            style="margin-top: 20px"
+                            @click="openLink"
+                        >开启长连接</el-button>-->
                         <el-button
                             size="small"
                             type="primary"
@@ -89,7 +99,6 @@
                         <div>
                             <h3>实时</h3>
                         </div>
-
                         <el-table :data="wsData" stripe style="width: 100%" size="small">
                             <el-table-column prop="date" label="类型/时间" width="180"></el-table-column>
                             <el-table-column prop="name" label="内容"></el-table-column>
@@ -105,8 +114,8 @@
 import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
-import { getDeviceList } from "@/api/device/device";
-import { getDeviceProps } from "@/api/device/device";
+import { getDeviceList, getDeviceProps } from "@/api/device/device";
+import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 export default {
     components: {},
     props: {},
@@ -154,14 +163,74 @@ export default {
         this.closeLink();
     },
     methods: {
+        // 启动虚拟设备
+        openVirtualDevice() {
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    const data = {
+                        ...this.form
+                    };
+                    startVirtualDevice(data).then(() => {});
+                } else {
+                    return false;
+                }
+            });
+        },
+        // 关闭虚拟设备
+        closeVirtualDevice() {
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    const data = {
+                        ...this.form
+                    };
+                    stopVirtualDevice(data).then(() => {});
+                } else {
+                    return false;
+                }
+            });
+        },
+
         // 发送数据
         sendData() {
+            this.content = this.editor.get(); //把编辑框中的文本赋值过来
+            console.dir(this.content);
+            const data = {
+                pid: this.form.pid,
+                did: this.form.did,
+                payload: {}
+            };
+            if (this.method == "get") {
+                const payload = {
+                    action: this.method,
+                    data: this.propId
+                };
+                data.payload = payload;
+                this.ws.send(JSON.stringify(data));
+            } else if (this.method == "set") {
+                if (Object.values(this.content)[0] === null) {
+                    this.$message({
+                        type: "warning",
+                        message: "属性值不能为空"
+                    });
+                } else {
+                    const payload = {
+                        action: this.method,
+                        key: Object.keys(this.content)[0],
+                        value: Object.values(this.content)[0]
+                    };
+                    data.payload = payload;
+                    this.ws.send(JSON.stringify(data));
+                }
+            }
+        },
+        openLink() {
             this.WebSocketLink();
         },
         doDeviceSearch() {
             getDeviceProps(this.form).then(res => {
                 this.propList = res.payload;
             });
+            this.openLink();
         },
         closeLink() {
             this.ws.close();
@@ -169,17 +238,26 @@ export default {
         WebSocketLink() {
             if ("WebSocket" in window) {
                 // 打开一个 web socket
-                this.ws = new WebSocket("ws://47.107.91.58:9090/ws_message");
+                this.ws = new WebSocket(
+                    "ws://47.107.91.58:11021/api/ws_message"
+                );
+
+                // this.ws = new WebSocket(
+                //     "ws://" + location.host + "/api/ws_message"
+                // );
 
                 this.ws.onopen = () => {
-                    this.ws.send("1611812280002337");
+                    this.sendData();
                 };
 
                 this.ws.onmessage = evt => {
-                    this.wsData = evt.data;
+                    console.log("evt.data: " + evt.data);
+                    this.wsData.push(evt.data);
                 };
 
-                this.ws.onclose = () => {};
+                this.ws.onclose = () => {
+                    console.log("关闭WebSocket");
+                };
             } else {
                 // 浏览器不支持 WebSocket
                 alert("您的浏览器不支持 WebSocket!");

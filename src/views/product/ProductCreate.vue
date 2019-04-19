@@ -29,6 +29,7 @@
                 <!-- <el-form-item label="产品分类" prop="category">
                     <el-cascader :options="options" v-model="form.category1" @change="handleChange"></el-cascader>
                 </el-form-item>-->
+
                 <el-form-item label="升级方式" prop="upMethod">
                     <el-radio-group v-model="form.upMethod">
                         <el-radio label="manual">手动升级</el-radio>
@@ -45,12 +46,6 @@
                 </el-form-item>
 
                 <el-form-item label="连网方式" prop="netMode">
-                    <!-- <el-select
-                        v-model="form.netMode"
-                        placeholder="请选择连网方式"
-                        size="small"
-                        :disabled="isEdit"
-                    >-->
                     <el-select v-model="form.netMode" placeholder="请选择连网方式" size="small">
                         <el-option label="WIFF" value="wiff"></el-option>
                         <el-option label="蜂窝 (2G / 3G / 4G) " value="cellularNet"></el-option>
@@ -229,15 +224,8 @@ export default {
         visible() {
             this.$nextTick(() => {
                 if (this.product && this.visible) {
-                    if (
-                        !this.product.fwGroup ||
-                        this.product.fwGroup.length === 0
-                    ) {
-                        this.product.fwGroup = [{ name: "", desc: "" }];
-                    }
                     this.form = Object.assign({}, this.form, this.product);
                     this.title = "产品编辑";
-                    // this.isEdit = true;
                 } else {
                     this.title = "添加产品";
                 }

@@ -247,10 +247,8 @@ export default {
                     });
                     this.handleProductList();
                 })
-                .catch(() => {
-                    this.$message({
-                        message: "撤销失败!"
-                    });
+                .catch(error => {
+                    return error;
                 });
         },
         // 更改时间格式
