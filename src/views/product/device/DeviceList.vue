@@ -15,6 +15,8 @@
                 <el-button type="primary" @click="handleeEquipment()">查询</el-button>
                 <el-button @click="batchVisible=true">批量添加设备</el-button>
                 <el-button @click="virtualVisible=true">添加虚拟设备</el-button>
+                <el-button @click="switchVirtualDevice(true)">批量启动虚拟设备</el-button>
+                <el-button @click="switchVirtualDevice(false)">批量关闭虚拟设备</el-button>
             </el-form-item>
         </el-form>
         <div
@@ -27,8 +29,17 @@
             border
             size="small"
             @row-click="expandDetail"
+             @selection-change="handleSelectionChange"
         >
+            <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="did" label="设备编号"></el-table-column>
+            <el-table-column
+            width="120"
+                prop="deviceType"
+                :filters="[{ text: '真实设备', value: 'true' }, { text: '虚拟设备', value: 'virtual' }]"
+                :filter-method="filterDeviceType"
+                label="设备类型"
+            ></el-table-column>
             <el-table-column prop="group" label="设备分组" width="120">
                 <template slot-scope="scope">
                     <el-select
@@ -54,7 +65,7 @@
                         size="small"
                         style="margin-left: 10px;"
                         @click.stop="getOtaDetail(scope.row)"
-                    >升级详情</el-button>
+                    >升级进度</el-button>
                 </template>
             </el-table-column>
             <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
@@ -67,7 +78,7 @@
             <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click.stop="handleUpgrade(scope.row)">升级</el-button>
-                    <el-button type="text" size="small" @click.stop="handleState(scope.row)">查看运行状态</el-button>
+                    <el-button type="text" size="small" @click.stop="handleState(scope.row)">运行状态</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -86,7 +97,7 @@
             @listenUpgrade="listenUpgrade"
             :visible="dialogVisible"
         ></device-upgrade>
-        <el-dialog title="升级详情" :visible.sync="upgradeVisible">
+        <el-dialog title="升级详情" :visible.sync="upgradeVisible" :before-close="handleProgressClose">
             <div class="upgrade-wrapper">
                 <div class="progress-box" v-for="(item, index) in progressList" :key="index">
                     <div>
@@ -113,7 +124,11 @@
                 <el-form-item label="设备数量：" prop="deviceNum" v-if="batchForm.addMothod === 'auto'">
                     <el-input-number v-model="batchForm.deviceNum" :min="1" :max="10" label="描述文字"></el-input-number>
                 </el-form-item>
-                <el-form-item label="批量上传文件：" prop="deviceNum" v-if="batchForm.addMothod === 'manual'">
+                <el-form-item
+                    label="批量上传文件："
+                    prop="deviceNum"
+                    v-if="batchForm.addMothod === 'manual'"
+                >
                     <div class="upload-demo">
                         <div tabindex="0" class="el-upload el-upload--text">
                             <button
@@ -152,13 +167,32 @@
                         <el-radio label="auto">自动生成</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="设备名称：" v-model="virtualForm.deviceName" prop="deviceNum" v-if="virtualForm.addMothod === 'manual'">
-                    <el-select>
-                        <el-option v-for="(device, index) in deviceList.items" :key="index" :label="device" :value="device"></el-option>
+                <el-form-item
+                    label="设备名称："
+                    v-model="virtualForm.deviceName"
+                    prop="deviceNum"
+                    v-if="virtualForm.addMothod === 'manual'"
+                >
+                    <el-select filterable>
+                        <el-option
+                            v-for="(device, index) in deviceList.items"
+                            :key="index"
+                            :label="device.did"
+                            :value="device.did"
+                        ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="设备数量：" prop="deviceNum" v-if="virtualForm.addMothod === 'auto'">
-                    <el-input-number v-model="virtualForm.deviceNum" :min="1" :max="10" label="描述文字"></el-input-number>
+                <el-form-item
+                    label="设备数量："
+                    prop="deviceNum"
+                    v-if="virtualForm.addMothod === 'auto'"
+                >
+                    <el-input-number
+                        v-model="virtualForm.deviceNum"
+                        :min="1"
+                        :max="10"
+                        label="描述文字"
+                    ></el-input-number>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary">确定</el-button>
@@ -172,7 +206,7 @@
 import VueProgress from "./info/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
 import deviceList from "./mixins/deviceList";
-
+import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 import { updateDeviceGroup, getOTAProgress } from "@/api/device/device";
 export default {
     mixins: [deviceList],
@@ -210,7 +244,8 @@ export default {
             upgradeVisible: false,
             virtualVisible: false,
             batchVisible: false,
-            progressList: []
+            progressList: [],
+            selectedDevice: ""
         };
     },
     components: { DeviceUpgrade, VueProgress },
@@ -248,7 +283,8 @@ export default {
                     this.upgradeVisible = true;
                 } else {
                     this.$message({
-                        message: "暂无正在升级的固件"
+                        message: "暂无正在升级的固件",
+                        type: "warning"
                     });
                 }
             });
@@ -275,11 +311,18 @@ export default {
             this.getDevice();
         },
         handleUpgrade(device) {
-            this.upgradeDevice = {
-                ...device,
-                status: 1
-            };
-            this.dialogVisible = true;
+            if (device.status !== 2) {
+                this.upgradeDevice = {
+                    ...device,
+                    status: 1
+                };
+                this.dialogVisible = true;
+            } else {
+                this.$message({
+                    message: "离线设备无法升级",
+                    type: "warning"
+                });
+            }
         },
         listenUpgrade(value) {
             this.upgradeDevice = "";
@@ -314,6 +357,53 @@ export default {
             this.$router.push({
                 path: `/product/${value.pid}/device/${value.did}/state`
             });
+        },
+        // 关闭进度框
+        handleProgressClose() {
+            this.progressList = [];
+            this.upgradeVisible = false;
+        },
+        // 设备类型过滤
+        filterDeviceType(value, row, column) {
+            const property = column["property"];
+            return row[property] === value;
+        },
+        // table选中状态
+        handleSelectionChange(val) {
+           this.selectedDevice = val;
+        },
+        // 关闭或开启虚拟设备
+        switchVirtualDevice(status) {
+            const hasTrueDevice = this.selectedDevice.some(item => item.deviceType === 'true');
+            if(hasTrueDevice) {
+                this.$message({
+                    message: '被选中设备中含有真实设备，不允许操作真实设备',
+                    type: 'warning'
+                })
+            } else {
+                const list = this.selectedDevice.map(item => { item.did } )
+                const data = {
+                    pid: this.$route.params.id,
+                    did: list
+                }
+                if(status) {
+                    // 开启
+                    startVirtualDevice(data).then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '启动成功'
+                        })
+                    })
+                } else {
+                    // 关闭
+                    stopVirtualDevice(data).then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '关闭成功'
+                        })
+                    })
+                }
+            }
         }
     }
 };
