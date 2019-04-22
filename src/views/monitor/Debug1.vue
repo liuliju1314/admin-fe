@@ -39,7 +39,7 @@
                         <div>
                             <h3>设备编辑</h3>
                         </div>
-                        <el-tabs v-model="activeName" v-if="form.did">
+                        <el-tabs v-model="activeName" v-if="form.did" @tab-click="triggerDevType">
                             <el-tab-pane label="调试真实设备" name="trueDevice">
                                 <div style="margin-bottom: 10px;display: flex;">
                                     <el-select
@@ -62,7 +62,7 @@
                                         <el-option label="获取" value="get"></el-option>
                                     </el-select>
                                 </div>
-                                <div ref="editor" id="editor" style="height: 43vh"></div>
+                                <div ref="trueDevice" id="trueDevice" style="height: 43vh"></div>
                                 <el-button
                                     size="small"
                                     type="primary"
@@ -78,8 +78,7 @@
                             </el-tab-pane>
                             <el-tab-pane label="虚拟真实设备" name="virtualDevice">
                                 <div
-                                    v-if="openDevice"
-                                    class="openDevice"
+                                    v-if="closeVirtualDevice"
                                     style="height: 50vh;line-height: 50vh;text-align: center"
                                 >
                                     <el-button
@@ -115,7 +114,11 @@
                                         </el-select>
                                     </div>
 
-                                    <div ref="editor1" id="editor1" style="height: 43vh"></div>
+                                    <div
+                                        ref="virtualDevice"
+                                        id="virtualDevice"
+                                        style="height: 43vh"
+                                    ></div>
 
                                     <el-button
                                         size="small"
@@ -133,7 +136,7 @@
                                         size="small"
                                         type="primary"
                                         style="margin-top: 20px"
-                                        @click="closeVirtualDevice"
+                                        @click="stopVirtualDev"
                                     >关闭虚拟设备</el-button>
                                 </div>
                             </el-tab-pane>
@@ -171,7 +174,7 @@ import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 export default {
     data() {
         return {
-            openDevice: true,
+            closeVirtualDevice: true,
             activeName: "virtualDevice",
             form: {
                 pid: "",
@@ -179,7 +182,6 @@ export default {
             },
             propId: "",
             method: "",
-            device: "",
             rules: {
                 pid: [
                     { required: true, message: "请选择产品", trigger: "blur" }
@@ -191,9 +193,10 @@ export default {
             ws: "",
             wsData: [],
             // 富文本
-            editor: "",
-            editor1: "",
-            content: {},
+            trueEditor: "",
+            virtualDevice: "",
+            trueContent: {},
+            virtualContent: {},
             editorOption: {
                 mode: "code",
                 modes: ["text", "code"]
@@ -206,16 +209,23 @@ export default {
     created() {
         this.getProduct();
     },
-    // mounted() {
-    //     this.$nextTick(() => {
-    //         this.editor = new JSONEditor(this.$refs.editor, this.editorOption);
-    //         this.editor.set(this.content);
-    //     });
-    // },
     beforeDestroy() {
         this.closeLink();
     },
     methods: {
+        // tabs切换
+        triggerDevType(active) {
+            const activeName = active.name;
+            if (activeName === "trueDevice" && !this.trueEditor) {
+                this.$nextTick(() => {
+                    this.trueEditor = new JSONEditor(
+                        this.$refs[activeName],
+                        this.editorOption
+                    );
+                    this.trueEditor.set(this.trueContent);
+                });
+            }
+        },
         // 获取产品信息
         getProduct() {
             if (this.productList.length === 0) {
@@ -243,13 +253,6 @@ export default {
         },
         // 获取产品下的设备的属性信息
         doDeviceSearch() {
-            // this.$nextTick(() => {
-            //     this.editor = new JSONEditor(
-            //         this.$refs.editor,
-            //         this.editorOption
-            //     );
-            //     this.editor.set(this.content);
-            // });
             getDeviceProps(this.form).then(res => {
                 this.propList = res.payload;
             });
@@ -257,36 +260,37 @@ export default {
         },
         // 启动虚拟设备
         openVirtualDevice() {
-            this.$refs.form.validate(valid => {
+            if (!this.virtualDevice) {
                 this.$nextTick(() => {
-                    this.editor1 = new JSONEditor(
-                        this.$refs.editor1,
+                    this.virtualEditor = new JSONEditor(
+                        this.$refs.virtualEditor,
                         this.editorOption
                     );
-                    this.editor1.set(this.content);
+                    this.virtualEditor.set(this.virtualContent);
                 });
-                if (valid) {
-                    this.openDevice = false;
-                    const data = {
-                        ...this.form
-                    };
-                    startVirtualDevice(data).then(() => {
+            }
+            this.closeVirtualDevice = false;
+            const data = {
+                ...this.form
+            };
+            if (this.closeVirtualDevice) {
+                startVirtualDevice(data)
+                    .then(() => {
                         this.$message({
                             type: "success",
                             message: "启动成功"
                         });
+                    })
+                    .catch(err => {
+                        return err;
                     });
-                } else {
-                    return false;
-                }
-            });
+            }
         },
         // 关闭虚拟设备
-        closeVirtualDevice() {
+        stopVirtualDev() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    this.openDevice = true;
-                    this.closeLink();
+                    this.closeVirtualDevice = true;
                     const data = {
                         ...this.form
                     };

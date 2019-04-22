@@ -31,9 +31,6 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-
-                <el-button size="small" type="primary" @click="openVirtualDevice">启动虚拟设备</el-button>
-                <el-button size="small" type="primary" @click="closeVirtualDevice">关闭虚拟设备</el-button>
             </el-form>
             <el-row :gutter="12">
                 <el-col :span="8">
@@ -41,57 +38,50 @@
                         <div>
                             <h3>设备编辑</h3>
                         </div>
-                        <div style="margin-bottom: 10px;display: flex;">
-                            <el-select
-                                v-model="device"
-                                placeholder="请选择调试设备类型"
-                                style="margin-right: 10px"
-                                size="small"
-                            >
-                                <el-option label="真实设备" value="1"></el-option>
-                                <el-option label="虚拟设备" value="2"></el-option>
-                            </el-select>
-                            <el-select
-                                v-model="propId"
-                                placeholder="请选择功能"
-                                size="small"
-                                style="margin-right: 10px"
-                                @change="setProp"
-                            >
-                                <el-option
-                                    v-for="prop in propList"
-                                    :label="prop.name"
-                                    :value="prop.label"
-                                    :key="prop.id"
-                                ></el-option>
-                            </el-select>
+                        <div v-if="form.did">
+                            <div style="margin-bottom: 10px;display: flex;">
+                                <el-select
+                                    v-model="propId"
+                                    placeholder="请选择功能"
+                                    size="small"
+                                    style="margin-right: 10px"
+                                    @change="setProp"
+                                >
+                                    <el-option
+                                        v-for="prop in propList"
+                                        :label="prop.name"
+                                        :value="prop.label"
+                                        :key="prop.id"
+                                    ></el-option>
+                                </el-select>
 
-                            <el-select v-model="method" placeholder="请选择方法" size="small">
-                                <el-option label="设置" value="set"></el-option>
-                                <el-option label="获取" value="get"></el-option>
-                            </el-select>
+                                <el-select v-model="method" placeholder="请选择方法" size="small">
+                                    <el-option label="设置" value="set"></el-option>
+                                    <el-option label="获取" value="get"></el-option>
+                                </el-select>
+                            </div>
+
+                            <div ref="editor" id="editor" style="height: 43vh"></div>
+
+                            <el-button
+                                size="small"
+                                type="primary"
+                                style="margin-top: 20px"
+                                @click="sendData"
+                            >发送</el-button>
+                            <el-button
+                                size="small"
+                                type="primary"
+                                style="margin-top: 20px"
+                                @click="closeLink"
+                            >关闭长连接</el-button>
                         </div>
-
-                        <div ref="editor" id="editor" style="height: 43vh"></div>
-
-                        <el-button
-                            size="small"
-                            type="primary"
-                            style="margin-top: 20px"
-                            @click="sendData"
-                        >发送</el-button>
-                        <!-- <el-button
-                            size="small"
-                            type="primary"
-                            style="margin-top: 20px"
-                            @click="openLink"
-                        >开启长连接</el-button>-->
-                        <el-button
-                            size="small"
-                            type="primary"
-                            style="margin-top: 20px"
-                            @click="closeLink"
-                        >关闭长连接</el-button>
+                        <div
+                            v-else
+                            style="height: 50vh;line-height: 50vh;text-align: center;font-size: 20px;color:#303133"
+                        >
+                            <svg-icon icon-class="virtualDevice" style="margin: 0 10px"></svg-icon>请先选择调试设备
+                        </div>
                     </div>
                 </el-col>
                 <el-col :span="16">
@@ -127,7 +117,6 @@ export default {
             },
             propId: "",
             method: "",
-            device: "",
             rules: {
                 pid: [
                     { required: true, message: "请选择产品", trigger: "blur" }
@@ -153,12 +142,7 @@ export default {
     created() {
         this.getProduct();
     },
-    mounted() {
-        this.$nextTick(() => {
-            this.editor = new JSONEditor(this.$refs.editor, this.editorOption);
-            this.editor.set(this.content);
-        });
-    },
+    mounted() {},
     beforeDestroy() {
         this.closeLink();
     },
@@ -193,7 +177,6 @@ export default {
         // 发送数据
         sendData() {
             this.content = this.editor.get(); //把编辑框中的文本赋值过来
-            console.dir(this.content);
             const data = {
                 pid: this.form.pid,
                 did: this.form.did,
@@ -227,6 +210,15 @@ export default {
             this.WebSocketLink();
         },
         doDeviceSearch() {
+            if (!this.editor) {
+                this.$nextTick(() => {
+                    this.editor = new JSONEditor(
+                        this.$refs.editor,
+                        this.editorOption
+                    );
+                    this.editor.set(this.content);
+                });
+            }
             getDeviceProps(this.form).then(res => {
                 this.propList = res.payload;
             });

@@ -53,6 +53,7 @@ export default {
         $route() {
             this.form.did = this.$route.params.did;
             if (this.$route.params.did) {
+                this.form.did = this.$route.params.did;
                 this.getDevice();
             }
         },

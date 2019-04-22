@@ -70,6 +70,76 @@
                 </div>
             </el-col>
         </el-row>
+        <el-row class="product-item" :gutter="10">
+            <!-- 产品信息 -->
+            <el-col :span="8">
+                <div class="base-box">
+                    <div class="product-content">
+                        <div class="product-name">
+                            <span style="font-size: 22px; line-height: 32px;">测试产品</span>
+                            <span>
+                                <span class="product-circle"></span>
+                                <span style="font-size: 13px; color: #606266">开发中</span>
+                            </span>
+
+                            <span style="float: right">
+                                <el-button type="primary" size="small">发布</el-button>
+                            </span>
+                        </div>
+                        <div class="product-info">
+                            <div>
+                                <span class="label">产品ID：</span>
+                                <span class="text">
+                                    ck8bufgjc3k
+                                    <el-button
+                                        class="copy-box"
+                                        size="mini"
+                                        @click="copyPid('ck8bufgjc3k')"
+                                        round
+                                    >复制</el-button>
+                                </span>
+                            </div>
+                            <div>
+                                <span class="label">创建时间：</span>
+                                <span class="text">2019-04-01</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-box">
+                        <div>
+                            <el-button
+                                type="primary"
+                                round
+                                class="button-details"
+                                size="small"
+                            >查看产品详情</el-button>
+                            <el-button type="text" style="float:right;" size="small">删除</el-button>
+                        </div>
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="16">
+                <div class="base-box">
+                    <div class="device-content">
+                        <div>
+                            <div class="label">当前设备总数：</div>
+                            <div class="device-num">20</div>
+                        </div>
+                        <div>
+                            <div class="label">当前在线设备：</div>
+                            <div class="device-num">20</div>
+                        </div>
+                        <div>
+                            <div class="label">当前离线设备：</div>
+                            <div class="device-num">0</div>
+                        </div>
+                    </div>
+                    <div>
+                        <el-button type="primary" round class="device-btn" size="small">查看设备详情</el-button>
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -111,6 +181,7 @@ export default {
 .product-item {
     height: 192px;
     box-sizing: border-box;
+    margin-bottom: 16px;
     .base-box {
         background: #fff;
         padding: 20px;

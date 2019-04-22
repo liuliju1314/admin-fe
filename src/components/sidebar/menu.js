@@ -8,5 +8,6 @@ export const menus = [
             { name: "日志服务", icon: "log", path: "/log" },
             { name: "在线调试", icon: "test", path: "/Debug" }
         ]
-    }
+    },
+    { name: "帮助文档", icon: "help", path: "/help"}
 ];
