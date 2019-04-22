@@ -14,6 +14,7 @@
             <el-form-item>
                 <el-button type="primary" @click="handleeEquipment()">查询</el-button>
                 <el-button @click="batchVisible=true">批量添加设备</el-button>
+                <el-button @click="virtualVisible=true">添加虚拟设备</el-button>
             </el-form-item>
         </el-form>
         <div
@@ -109,10 +110,10 @@
                         <el-radio label="manual">批量上传</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="设备数量：" prop="deviceNum" v-if="addMothodName === 'auto'">
+                <el-form-item label="设备数量：" prop="deviceNum" v-if="batchForm.addMothod === 'auto'">
                     <el-input-number v-model="batchForm.deviceNum" :min="1" :max="10" label="描述文字"></el-input-number>
                 </el-form-item>
-                <el-form-item label="批量上传文件：" prop="deviceNum" v-if="addMothodName === 'manual'">
+                <el-form-item label="批量上传文件：" prop="deviceNum" v-if="batchForm.addMothod === 'manual'">
                     <div class="upload-demo">
                         <div tabindex="0" class="el-upload el-upload--text">
                             <button
@@ -134,6 +135,33 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary">确定并导出证书</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <el-dialog title="添加虚拟设备" :visible.sync="virtualVisible" center>
+            <el-form
+                size="small"
+                style="margin: auto;"
+                ref="batchForm"
+                :rules="rules"
+                :model="batchForm"
+            >
+                <el-form-item label="添加方式：" prop="addMothod">
+                    <el-radio-group v-model="virtualForm.addMothod" @change="addName">
+                        <el-radio label="manual">选择已有设备</el-radio>
+                        <el-radio label="auto">自动生成</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="设备名称：" v-model="virtualForm.deviceName" prop="deviceNum" v-if="virtualForm.addMothod === 'manual'">
+                    <el-select>
+                        <el-option v-for="(device, index) in deviceList.items" :key="index" :label="device" :value="device"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="设备数量：" prop="deviceNum" v-if="virtualForm.addMothod === 'auto'">
+                    <el-input-number v-model="virtualForm.deviceNum" :min="1" :max="10" label="描述文字"></el-input-number>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -160,6 +188,11 @@ export default {
                 addMothod: "auto",
                 deviceNum: ""
             },
+            virtualForm: {
+                addMothod: "auto",
+                deviceNum: "",
+                deviceName: ""
+            },
             rules: {
                 addMothod: {
                     required: true,
@@ -172,10 +205,10 @@ export default {
                     trigger: "blur"
                 }
             },
-            addMothodName: "auto",
             upgradeDevice: "",
             dialogVisible: false,
             upgradeVisible: false,
+            virtualVisible: false,
             batchVisible: false,
             progressList: []
         };
