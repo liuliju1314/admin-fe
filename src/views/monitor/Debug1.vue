@@ -286,6 +286,7 @@ export default {
             this.$refs.form.validate(valid => {
                 if (valid) {
                     this.openDevice = true;
+                    this.closeLink();
                     const data = {
                         ...this.form
                     };
