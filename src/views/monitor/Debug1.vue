@@ -270,7 +270,12 @@ export default {
                     const data = {
                         ...this.form
                     };
-                    startVirtualDevice(data).then(() => {});
+                    startVirtualDevice(data).then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "启动成功"
+                        });
+                    });
                 } else {
                     return false;
                 }
@@ -284,7 +289,12 @@ export default {
                     const data = {
                         ...this.form
                     };
-                    stopVirtualDevice(data).then(() => {});
+                    stopVirtualDevice(data).then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "关闭成功"
+                        });
+                    });
                 } else {
                     return false;
                 }
@@ -341,9 +351,9 @@ export default {
                 // this.ws = new WebSocket(
                 //     "ws://" + location.host + "/api/ws_message"
                 // );
-                this.ws.onopen = () => {
-                    this.sendData();
-                };
+                // this.ws.onopen = () => {
+                //     this.sendData();
+                // };
 
                 this.ws.onmessage = evt => {
                     console.log("evt.data: " + evt.data);
