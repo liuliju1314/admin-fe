@@ -234,10 +234,6 @@ export default {
                     "ws://47.107.91.58:11021/api/ws_message"
                 );
 
-                // this.ws = new WebSocket(
-                //     "ws://" + location.host + "/api/ws_message"
-                // );
-
                 this.ws.onopen = () => {
                     this.sendData();
                 };

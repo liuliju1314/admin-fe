@@ -98,14 +98,19 @@
             :visible="dialogVisible"
         ></device-upgrade>
         <el-dialog title="升级详情" :visible.sync="upgradeVisible" :before-close="handleProgressClose">
-            <div class="upgrade-wrapper">
-                <div class="progress-box" v-for="(item, index) in progressList" :key="index">
+            <el-row class="upgrade-wrapper">
+                <el-col
+                    :span="8"
+                    class="progress-box"
+                    v-for="(item, index) in progressList"
+                    :key="index"
+                >
                     <div>
-                        <span class="title">{{item.fwName}} - {{item.version}}</span>
+                        <span class="title" style="height:80px">{{item.fwName}} - {{item.version}}</span>
                     </div>
                     <vue-progress :progress="item.progress"></vue-progress>
-                </div>
-            </div>
+                </el-col>
+            </el-row>
         </el-dialog>
         <el-dialog title="批量添加设备" :visible.sync="batchVisible" center>
             <el-form
@@ -387,7 +392,6 @@ export default {
                 this.selectedDevice.map(item => {
                     list.push(item.did);
                 });
-                console.log("list: " + list);
                 const data = {
                     pid: this.$route.params.id,
                     did: list
