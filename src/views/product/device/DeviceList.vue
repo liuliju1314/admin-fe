@@ -98,6 +98,14 @@
             :visible="dialogVisible"
         ></device-upgrade>
         <el-dialog title="升级详情" :visible.sync="upgradeVisible" :before-close="handleProgressClose">
+            <el-button
+                size="small"
+                type="text"
+                icon="el-icon-refresh"
+                @click="RefreshProgress"
+                style="margin: 10px 20px;font-size: 15px"
+            >刷新</el-button>
+
             <el-row class="upgrade-wrapper">
                 <el-col
                     :span="8"
