@@ -29,12 +29,12 @@
             border
             size="small"
             @row-click="expandDetail"
-             @selection-change="handleSelectionChange"
+            @selection-change="handleSelectionChange"
         >
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="did" label="设备编号"></el-table-column>
             <el-table-column
-            width="120"
+                width="120"
                 prop="deviceType"
                 :filters="[{ text: '真实设备', value: 'true' }, { text: '虚拟设备', value: 'virtual' }]"
                 :filter-method="filterDeviceType"
@@ -370,38 +370,44 @@ export default {
         },
         // table选中状态
         handleSelectionChange(val) {
-           this.selectedDevice = val;
+            this.selectedDevice = val;
         },
         // 关闭或开启虚拟设备
         switchVirtualDevice(status) {
-            const hasTrueDevice = this.selectedDevice.some(item => item.deviceType === 'true');
-            if(hasTrueDevice) {
+            const hasTrueDevice = this.selectedDevice.some(
+                item => item.deviceType === "true"
+            );
+            if (hasTrueDevice) {
                 this.$message({
-                    message: '被选中设备中含有真实设备，不允许操作真实设备',
-                    type: 'warning'
-                })
+                    message: "被选中设备中含有真实设备，不允许操作真实设备",
+                    type: "warning"
+                });
             } else {
-                const list = this.selectedDevice.map(item => { item.did } )
+                const list = [];
+                this.selectedDevice.map(item => {
+                    list.push(item.did);
+                });
+                console.log("list: " + list);
                 const data = {
                     pid: this.$route.params.id,
                     did: list
-                }
-                if(status) {
+                };
+                if (status) {
                     // 开启
                     startVirtualDevice(data).then(() => {
                         this.$message({
-                            type: 'success',
-                            message: '启动成功'
-                        })
-                    })
+                            type: "success",
+                            message: "启动成功"
+                        });
+                    });
                 } else {
                     // 关闭
                     stopVirtualDevice(data).then(() => {
                         this.$message({
-                            type: 'success',
-                            message: '关闭成功'
-                        })
-                    })
+                            type: "success",
+                            message: "关闭成功"
+                        });
+                    });
                 }
             }
         }
