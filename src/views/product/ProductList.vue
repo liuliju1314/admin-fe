@@ -34,9 +34,13 @@
             </el-form>
             <el-button type="primary" @click="productOp" size="small">+新建产品</el-button>
             <!-- 开发中的产品 -->
-            <el-table :data="productList" style="width: 100%; margin-top: 12px" border size="small">
+            <el-table :data="productList" style="width: 100%; margin-top: 12px" border size="small" v-loading="loading">
                 <el-table-column prop="pid" label="产品ID"></el-table-column>
+
                 <el-table-column prop="name" label="产品名称"></el-table-column>
+                <el-table-column label="产品状态">
+                    <template slot-scope="scope">{{ scope.row.productStatus === '1'? '已发布': '开发中'}}</template>
+                </el-table-column>
                 <el-table-column prop="model" label="产品型号"></el-table-column>
                 <el-table-column prop="category" label="产品分类"></el-table-column>
                 <el-table-column label="创建时间">
@@ -67,14 +71,7 @@
                                 v-if="scope.row.productStatus === '0'"
                             >删除</el-button>
                             <el-button
-                                type="text"
-                                size="small"
-                                icon="el-icon-bell"
-                                v-if="!(scope.row.productStatus === '0')"
-                                disabled
-                            >已发布</el-button>
-                            <el-button
-                                @click.stop="unreleaseProduct(scope.row)"
+                                @click.stop="cancelReleaseProduct(scope.row)"
                                 type="text"
                                 size="small"
                                 v-if="!(scope.row.productStatus === '0')"
@@ -124,6 +121,7 @@ export default {
             productModel: [], //存放所有产品名称以及产品Id
             count: "",
             productList: [],
+            loading: false,
             visible: false
         };
     },
@@ -160,13 +158,16 @@ export default {
         },
         // 获取产品列表
         handleProductList(value) {
+            this.loading = true;
             this.form.page = value ? value : 1;
             getProductList(this.form)
                 .then(res => {
                     this.productList = res.payload.result;
                     this.count = res.payload.count;
+                    this.loading = false;
                 })
                 .catch(error => {
+                    this.loading = false;
                     return error;
                 });
         },
@@ -238,7 +239,7 @@ export default {
             });
         },
         // 撤销发布产品
-        unreleaseProduct(product) {
+        cancelReleaseProduct(product) {
             unReleaseProduct({ pid: product.pid })
                 .then(() => {
                     this.$message({

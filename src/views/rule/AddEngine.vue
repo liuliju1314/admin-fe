@@ -57,8 +57,7 @@ export default {
                         trigger: "blur"
                     }
                 ]
-            },
-            dialogVisible: false
+            }
         };
     },
     created() {
@@ -66,7 +65,10 @@ export default {
     },
     watch: {
         rule() {
-            this.handleOp();
+            if(this.rule && this.visible) {
+                this.handleOp();
+            }
+
         }
     },
     methods: {
