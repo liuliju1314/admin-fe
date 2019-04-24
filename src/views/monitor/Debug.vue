@@ -56,8 +56,8 @@
                                 </el-select>
 
                                 <el-select v-model="method" placeholder="请选择方法" size="small">
-                                    <el-option v-if="propPermission === 'RW' || propPermission === 'OW'" label="设置" value="set"></el-option>
-                                    <el-option v-if="propPermission === 'RW' || propPermission === 'OR'" label="获取" value="get"></el-option>
+                                    <el-option v-if="propPermission === 'RW' || propPermission === 'WO'" label="设置" value="set"></el-option>
+                                    <el-option v-if="propPermission === 'RW' || propPermission === 'RO'" label="获取" value="get"></el-option>
                                 </el-select>
                             </div>
 

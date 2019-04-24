@@ -14,7 +14,6 @@
             >
                 {{ tag.title }}
                 <span
-                    v-if="!tag.meta.affix"
                     class="el-icon-close"
                     @click.prevent.stop="closeSelectedTag(tag)"
                 />
@@ -38,9 +37,6 @@ export default {
     computed: {
         visitedViews() {
             return this.$store.state.tagsView.visitedViews;
-        },
-        routes() {
-            return this.$store.state.permission.routes;
         }
     },
     watch: {

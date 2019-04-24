@@ -7,24 +7,40 @@ export function setToken(token) {
 }
 
 export function removeToken() {
-    return sessionStorage.removeItem('tokenKey');
+    return localStorage.removeItem('tokenKey');
 }
 
 export function getStorage(name) {
-    return sessionStorage.getItem(name);
+    return localStorage.getItem(name);
 }
 export function getJsonStorage(name) {
-    return JSON.parse(sessionStorage.getItem(name));
+    return JSON.parse(localStorage.getItem(name));
 }
 
 export function setStorage(name, value) {
     if (!name) return;
     if (typeof value !== 'string') {
-        value = JSON.stringify(value);
+        var cache = [];
+        var str = JSON.stringify(value, function (key, data) {
+            if (typeof data === 'object' && data !== null) {
+                if (cache.indexOf(data) !== -1) {
+                    // 移除
+                    return;
+                }
+                // 收集所有的值
+                cache.push(data);
+            }
+            return data;
+        });
+        cache = null;
+        return localStorage.setItem(name, str);
+
+    } else {
+        return localStorage.setItem(name, value);
     }
-    return sessionStorage.setItem(name, value);
+
 }
 
 export function removeStorage(name) {
-    return sessionStorage.removeItem(name);
+    return localStorage.removeItem(name);
 }

@@ -6,16 +6,10 @@ export const routes = [
     { path: "", component: () => import("@/views/redirect/Index") },
     { path: "/login", component: () => import("@/views/login/LogIn") },
     {
-        path: "/home",
-        redirect: "/home/index",
-        name: "home",
-        meta: { title: "home" }
-    },
-    {
         path: "/home/index",
         component: LayOut,
         children: [
-            { path: "", name: "AccountManage", component: () => import("@/views/home/Home"), meta: { title: '首页' } }
+            { path: "", name:"home", component: () => import("@/views/home/Home"), meta: { title: '首页' } }
         ]
     },
     {

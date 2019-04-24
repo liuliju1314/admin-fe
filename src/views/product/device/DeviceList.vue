@@ -422,6 +422,9 @@ export default {
                     });
                 }
             }
+        },
+        RefreshProgress() {
+            
         }
     }
 };
