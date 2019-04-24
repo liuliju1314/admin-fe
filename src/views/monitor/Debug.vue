@@ -56,8 +56,16 @@
                                 </el-select>
 
                                 <el-select v-model="method" placeholder="请选择方法" size="small">
-                                    <el-option v-if="propPermission === 'RW' || propPermission === 'WO'" label="设置" value="set"></el-option>
-                                    <el-option v-if="propPermission === 'RW' || propPermission === 'RO'" label="获取" value="get"></el-option>
+                                    <el-option
+                                        v-if="propPermission === 'RW' || propPermission === 'WO'"
+                                        label="设置"
+                                        value="set"
+                                    ></el-option>
+                                    <el-option
+                                        v-if="propPermission === 'RW' || propPermission === 'RO'"
+                                        label="获取"
+                                        value="get"
+                                    ></el-option>
                                 </el-select>
                             </div>
 
@@ -67,7 +75,7 @@
                                 size="small"
                                 type="primary"
                                 style="margin-top: 20px"
-                                @click="sendData"
+                                @click="doSend"
                             >发送</el-button>
                             <el-button
                                 size="small"
@@ -87,7 +95,10 @@
                 <el-col :span="16">
                     <div class="right">
                         <div>
-                            <h3>实时</h3>
+                            <h3>
+                                实时
+                                <span class="link-status">{{linkStatus}}</span>
+                            </h3>
                         </div>
                         <el-table :data="wsData" stripe style="width: 100%" size="small">
                             <el-table-column prop="date" label="类型/时间" width="180"></el-table-column>
@@ -105,7 +116,6 @@ import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList, getDeviceProps } from "@/api/device/device";
-import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 export default {
     components: {},
     props: {},
@@ -137,7 +147,8 @@ export default {
             productList: [],
             deviceList: [],
             propList: [],
-            propPermission: ''
+            propPermission: "",
+            linkStatus: ""
         };
     },
     created() {
@@ -148,68 +159,53 @@ export default {
         this.closeLink();
     },
     methods: {
-        // 启动虚拟设备
-        openVirtualDevice() {
-            this.$refs.form.validate(valid => {
-                if (valid) {
-                    const data = {
-                        ...this.form
-                    };
-                    startVirtualDevice(data).then(() => {});
-                } else {
-                    return false;
-                }
-            });
+        doSend() {
+            const wsStatus = this.ws.readyState;
+            if (wsStatus === 1) {
+                //已经链接并且可以通讯
+                this.sendData();
+            } else {
+                this.openLink();
+            }
         },
-        // 关闭虚拟设备
-        closeVirtualDevice() {
-            this.$refs.form.validate(valid => {
-                if (valid) {
-                    const data = {
-                        ...this.form
-                    };
-                    stopVirtualDevice(data).then(() => {});
-                } else {
-                    return false;
-                }
-            });
-        },
-
         // 发送数据
         sendData() {
             this.content = this.editor.get(); //把编辑框中的文本赋值过来
+            if (!this.content) {
+                this.$message({
+                    type: "warning",
+                    message: "指令不能为空"
+                });
+            }
             const data = {
                 pid: this.form.pid,
                 did: this.form.did,
                 payload: {}
             };
             if (this.method == "get") {
-                const payload = {
+                data.payload = {
                     action: this.method,
                     data: this.propId
                 };
-                data.payload = payload;
-                this.ws.send(JSON.stringify(data));
             } else if (this.method == "set") {
                 if (Object.values(this.content)[0] === null) {
                     this.$message({
                         type: "warning",
                         message: "属性值不能为空"
                     });
+                    return;
                 } else {
-                    const payload = {
+                    data.payload = {
                         action: this.method,
                         key: Object.keys(this.content)[0],
                         value: Object.values(this.content)[0]
                     };
-                    data.payload = payload;
-                    this.ws.send(JSON.stringify(data));
                 }
             }
+            this.ws.send(JSON.stringify(data));
+            this.linkStatus = "设备上线";
         },
-        openLink() {
-            this.WebSocketLink();
-        },
+
         doDeviceSearch() {
             if (!this.editor) {
                 this.$nextTick(() => {
@@ -223,12 +219,13 @@ export default {
             getDeviceProps(this.form).then(res => {
                 this.propList = res.payload;
             });
-            this.openLink();
         },
         closeLink() {
             this.ws.close();
         },
-        WebSocketLink() {
+        openLink() {
+            const _this = this;
+            this.linkStatus = "连接中";
             if ("WebSocket" in window) {
                 // 打开一个 web socket
                 this.ws = new WebSocket(
@@ -240,12 +237,15 @@ export default {
                 };
 
                 this.ws.onmessage = evt => {
-                    console.log("evt.data: " + evt.data);
-                    this.wsData.push(evt.data);
+                    _this.linkStatus = "通讯中";
+                    _this.wsData.push(evt.data);
                 };
 
                 this.ws.onclose = () => {
-                    console.log("关闭WebSocket");
+                    _this.linkStatus = "连接已关闭";
+                };
+                this.ws.onerror = function(event) {
+                    console.error("WebSocket error observed:", event);
                 };
             } else {
                 // 浏览器不支持 WebSocket
@@ -321,6 +321,11 @@ export default {
     td {
         padding: 4px;
         margin: 4px;
+    }
+    .link-status {
+        font-size: 13px;
+        font-weight: normal;
+        color: #1890ff;
     }
 }
 </style>

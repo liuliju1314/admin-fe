@@ -230,11 +230,8 @@ export default {
                         });
                         this.handleProductList();
                     })
-                    .catch(() => {
-                        this.$message({
-                            type: "success",
-                            message: "发布失败，请重试!"
-                        });
+                    .catch((err) => {
+                        return err;
                     });
             });
         },
