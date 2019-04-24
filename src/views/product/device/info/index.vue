@@ -15,7 +15,8 @@
                 设备详情
             </div>
             <div class="card-title">
-                <span> {{did}} </span>
+                <span> {{did}}</span><span class="product-circle" :class="devStatus !== 1 ? 'outline': ''"></span>
+                <span class="product-status" :class="devStatus !== 1 ? 'outline': ''">{{devStatus === 1? '在线': '离线'}}</span>
             </div>
             <router-link
                 class="link-item"
@@ -33,11 +34,13 @@
 </template>
 
 <script>
+import { getDeviceList } from "@/api/device/device";
 export default {
     data() {
         return {
             did: "",
-            pid: ""
+            pid: "",
+            devStatus: ""
         };
     },
     created() {
@@ -53,6 +56,9 @@ export default {
             if (this.$route.params.did) {
                 this.pid = this.$route.params.id;
                 this.did = this.$route.params.did;
+                getDeviceList({pid: this.pid, did: this.did}).then(res=> {
+                    this.devStatus = res.payload.items[0].status;
+                })
                 this.$store
                     .dispatch("DeviceInfoSet", { name: this.did })
                     .then(() => {
@@ -97,17 +103,21 @@ export default {
         color: @baseColor;
         border-bottom: 2px solid @baseColor;
     }
-    .device-status {
-        font-size: 12px;
-        color: #86dff9;
-        .spot {
+        .product-circle {
+            width: 6px;
+            height: 6px;
             display: inline-block;
-            margin-right: 4px;
-            width: 8px;
-            height: 8px;
+            vertical-align: middle;
+            margin: 0 4px 0 10px;
             border-radius: 50%;
-            background: #86dff9;
+            background-color: #1890ff;
         }
-    }
+        .product-status {
+            font-size: 13px;
+            color: #1890ff;
+        }
+        .outline {
+            color: #aaa;
+        }
 }
 </style>

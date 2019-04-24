@@ -1,8 +1,8 @@
 import {  getJsonStorage, setStorage } from '@/utils/auth';
 const tagsView = {
     state: {
-        visitedViews: getJsonStorage("visitedViews"),
-        cachedViews: getJsonStorage("cachedViews")
+        visitedViews: getJsonStorage("visitedViews") || [],
+        cachedViews: getJsonStorage("cachedViews") || []
     },
     mutations: {
         ADD_VISITED_VIEW: (state, { view, rootGetters }) => {
@@ -14,7 +14,6 @@ const tagsView = {
             } else {
                 name = rootGetters.deviceInfo.name
             }
-
             if (state.visitedViews.some(v => v.path === view.path || (v.id === view.params.id && !view.params.did) || v.id === view.params.did)) return
             state.visitedViews.push(
                  {
