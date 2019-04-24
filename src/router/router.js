@@ -6,7 +6,7 @@ export const routes = [
     { path: "", component: () => import("@/views/redirect/Index") },
     { path: "/login", component: () => import("@/views/login/LogIn") },
     {
-        path: "/home/index",
+        path: "/home",
         component: LayOut,
         children: [
             { path: "", name:"home", component: () => import("@/views/home/Home"), meta: { title: '首页' } }
