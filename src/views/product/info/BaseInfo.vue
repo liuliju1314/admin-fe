@@ -58,7 +58,6 @@
             </tr>
         </table>
         <el-button
-            v-if="productStatus == '0'"
             @click="editProduct"
             style="padding: 10px 22px; margin: 30px 0 0 100px;"
         >编辑</el-button>

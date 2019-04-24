@@ -56,8 +56,8 @@
                                 </el-select>
 
                                 <el-select v-model="method" placeholder="请选择方法" size="small">
-                                    <el-option label="设置" value="set"></el-option>
-                                    <el-option label="获取" value="get"></el-option>
+                                    <el-option v-if="propPermission === 'RW' || propPermission === 'WO'" label="设置" value="set"></el-option>
+                                    <el-option v-if="propPermission === 'RW' || propPermission === 'RO'" label="获取" value="get"></el-option>
                                 </el-select>
                             </div>
 
@@ -136,7 +136,8 @@ export default {
             },
             productList: [],
             deviceList: [],
-            propList: []
+            propList: [],
+            propPermission: ''
         };
     },
     created() {
@@ -277,6 +278,7 @@ export default {
         setProp(value) {
             this.content = {};
             const prop = this.propList.find(item => item.label === value);
+            this.propPermission = prop.permission;
             this.content = Object.assign({}, { [prop.label]: prop.value });
             this.editor.set(this.content);
         }

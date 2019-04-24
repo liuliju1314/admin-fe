@@ -440,6 +440,9 @@ export default {
                     });
                 }
             }
+        },
+        RefreshProgress() {
+            
         }
     }
 };

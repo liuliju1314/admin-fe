@@ -80,8 +80,8 @@
                     <el-option
                         v-for="(item,index) in fwNameList"
                         :key="index"
-                        :label="item.name"
-                        :value="item.name"
+                        :label="item.desc"
+                        :value="item.desc"
                     ></el-option>
                 </el-select>
             </el-form-item>

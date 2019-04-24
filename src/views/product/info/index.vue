@@ -9,7 +9,11 @@
                 <span style="padding: 0 8px;color: rgba(0,0,0,.45);">/</span>
                 产品详情
             </div>
-            <div class="card-title">{{baseInfo.name}}</div>
+            <div class="card-title">
+                {{baseInfo.name}}
+                <span class="product-circle"></span>
+                <span class="product-status">{{baseInfo.productStatus === '1'? '已发布': '开发中'}}</span>
+            </div>
             <router-link
                 class="link-item"
                 active-class="active"
@@ -53,7 +57,7 @@ export default {
     computed: {
         ...mapGetters(["baseInfo"])
     },
-        created() {
+    created() {
         this.init();
     },
     watch: {
@@ -64,15 +68,20 @@ export default {
     methods: {
         init() {
             this.pid = this.$route.params.id;
-            if (this.pid && this.$route.path.indexOf("product") >= 0 && !this.$route.params.did) {
+            if (
+                this.pid &&
+                this.$route.path.indexOf("product") >= 0 &&
+                !this.$route.params.did
+            ) {
                 this.$store
                     .dispatch("BaseInfoGet", { pid: this.pid })
                     .then(() => {
                         this.$store.dispatch("updateVisitedView", this.$route);
+                        console.log(this.baseInfo);
                     });
             }
         }
-    },
+    }
 };
 </script>
 <style lang="less">
@@ -96,6 +105,19 @@ export default {
         font-weight: 500;
         font-size: 22px;
         line-height: 28px;
+        .product-circle {
+            width: 6px;
+            height: 6px;
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 4px 0 10px;
+            border-radius: 50%;
+            background-color: #1890ff;
+        }
+        .product-status {
+            font-size: 13px;
+            color: #1890ff;
+        }
     }
     .link-item {
         display: inline-block;

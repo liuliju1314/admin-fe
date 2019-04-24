@@ -1,7 +1,8 @@
+import {  getJsonStorage, setStorage } from '@/utils/auth';
 const tagsView = {
     state: {
-        visitedViews: [],
-        cachedViews: []
+        visitedViews: getJsonStorage("visitedViews"),
+        cachedViews: getJsonStorage("cachedViews")
     },
     mutations: {
         ADD_VISITED_VIEW: (state, { view, rootGetters }) => {
@@ -16,11 +17,13 @@ const tagsView = {
 
             if (state.visitedViews.some(v => v.path === view.path || (v.id === view.params.id && !view.params.did) || v.id === view.params.did)) return
             state.visitedViews.push(
-                Object.assign({}, view, {
+                 {
+                    path: view.path,
                     title: view.meta.title || name || 'no-name',
                     id: view.params.did || view.params.id || ''
-                })
+                }
             )
+            setStorage("visitedViews", state.visitedViews);
         },
         ADD_CACHED_VIEW: (state, view) => {
             if (state.cachedViews.includes(view.name)) return
@@ -30,9 +33,11 @@ const tagsView = {
         },
 
         DEL_VISITED_VIEW: (state, view) => {
+            if (!state.visitedViews) {return}
             for (const [i, v] of state.visitedViews.entries()) {
                 if (v.path === view.path) {
                     state.visitedViews.splice(i, 1)
+                    setStorage("visitedViews", state.visitedViews);
                     break
                 }
             }
@@ -42,6 +47,7 @@ const tagsView = {
                 if (i === view.name) {
                     const index = state.cachedViews.indexOf(i)
                     state.cachedViews.splice(index, 1)
+                    setStorage("visitedViews", state.visitedViews);
                     break
                 }
             }
@@ -58,7 +64,8 @@ const tagsView = {
             }
             for (let v of state.visitedViews) {
                 if (v.path === view.path || (v.id === view.params.id && !view.params.did) || v.id === view.params.did) {
-                    Object.assign(v, view, {
+                    Object.assign(v, {
+                        path: view.path,
                         title: view.meta.title || name || 'no-name',
                         id: view.params.did || view.params.id || ''
                     })
@@ -71,7 +78,7 @@ const tagsView = {
     actions: {
         addView({ dispatch }, view) {
             dispatch('addVisitedView', view)
-            dispatch('addCachedView', view)
+            // dispatch('addCachedView', view)
         },
         addVisitedView({ commit, rootGetters }, view) {
             commit('ADD_VISITED_VIEW', { view, rootGetters })
@@ -83,10 +90,10 @@ const tagsView = {
         delView({ dispatch, state }, view) {
             return new Promise(resolve => {
                 dispatch('delVisitedView', view)
-                dispatch('delCachedView', view)
+                // dispatch('delCachedView', view)
                 resolve({
                     visitedViews: [...state.visitedViews],
-                    cachedViews: [...state.cachedViews]
+                    // cachedViews: [...state.cachedViews]
                 })
             })
         },
