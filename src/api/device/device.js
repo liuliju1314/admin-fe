@@ -53,3 +53,13 @@ export function getPropsChart(data) {
         params: data
     })
 }
+
+// 获取设备属性下的图表
+export function getDeviceCount(data) {
+    return service({
+        url: '/api/device/count',
+        method: 'GET',
+        params: data
+    })
+}
+

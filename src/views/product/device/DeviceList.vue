@@ -21,7 +21,7 @@
         </el-form>
         <div
             class="device-log"
-        >当前设备总数： {{deviceList.count}}，其中在线：{{deviceList.online}}，离线：{{deviceList.offline}}.</div>
+        >当前设备总数： {{deviceCount.total}}，其中在线：{{deviceCount.online}}，离线：{{deviceCount.offline}}.</div>
         <!-- 循环的设备列表 -->
         <el-table
             :data="deviceList.items"
@@ -220,7 +220,11 @@ import VueProgress from "./info/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
 import deviceList from "./mixins/deviceList";
 import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
-import { updateDeviceGroup, getOTAProgress } from "@/api/device/device";
+import {
+    updateDeviceGroup,
+    getOTAProgress,
+    getDeviceCount
+} from "@/api/device/device";
 export default {
     mixins: [deviceList],
     data() {
@@ -258,7 +262,8 @@ export default {
             virtualVisible: false,
             batchVisible: false,
             progressList: [],
-            selectedDevice: ""
+            selectedDevice: "",
+            deviceCount: ""
         };
     },
     components: { DeviceUpgrade, VueProgress },
@@ -272,6 +277,9 @@ export default {
             }
         }
     },
+    created() {
+        this.deviceCountMethod();
+    },
     methods: {
         addName(value) {
             this.addMothodName = value;
@@ -284,6 +292,16 @@ export default {
             });
         },
 
+        // 获取设备总数，在线，离线
+        deviceCountMethod() {
+            getDeviceCount({ pid: this.form.pid })
+                .then(res => {
+                    this.deviceCount = res.payload;
+                })
+                .catch(error => {
+                    return error;
+                });
+        },
         // 获取设备升级进度
         getOtaDetail(device) {
             const data = {
