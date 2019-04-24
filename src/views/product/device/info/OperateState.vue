@@ -2,7 +2,7 @@
     <div class="operate-state-wrapper">
         <el-row :gutter="20">
             <el-col
-                :span="6"
+                :xs="24" :sm="12" :md="8" :lg="6" :xl="6"
                 v-for="(prop, index) in propList"
                 :key="index"
                 style="margin-bottom: 20px;"
