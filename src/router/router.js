@@ -121,6 +121,18 @@ export const routes = [
         ]
     },
     {
+        path: "/help",
+        component: LayOut,
+        children: [
+            {
+                path: "",
+                name: "HelpFile", component: () => import("@/views/helpFile"), meta: { title: '帮助文档' }
+            },
+            { path: "/debug", name: "Debug", component: () => import("@/views/monitor/Debug"), meta: { title: '设备调试' } }
+
+        ]
+    },
+    {
         path: "/404",
         component: LayOut,
         children: [
