@@ -229,8 +229,11 @@ export default {
             if ("WebSocket" in window) {
                 // 打开一个 web socket
                 this.ws = new WebSocket(
-                    "ws://47.107.91.58:11021/api/ws_message"
+                    'ws://' + location.host + '/api/ws_message'
                 );
+                // this.ws = new WebSocket(
+                //     'ws://47.107.91.58:11021/api/ws_message'
+                // );
 
                 this.ws.onopen = () => {
                     this.sendData();

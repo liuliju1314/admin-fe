@@ -1,20 +1,21 @@
 import {  getJsonStorage, setStorage } from '@/utils/auth';
 const tagsView = {
     state: {
-        visitedViews: getJsonStorage("visitedViews"),
-        cachedViews: getJsonStorage("cachedViews")
+        visitedViews: getJsonStorage("visitedViews") || [],
+        cachedViews: getJsonStorage("cachedViews") || []
     },
     mutations: {
         ADD_VISITED_VIEW: (state, { view, rootGetters }) => {
             let name = '';
             if (view.path.indexOf('product/') >= 0 && !view.params.did) {
+                console.log(rootGetters.baseInfo.name)
                 name = rootGetters.baseInfo.name;
             } else if (view.path.indexOf('rule/') >= 0) {
                 name = rootGetters.ruleInfo.name
             } else {
                 name = rootGetters.deviceInfo.name
             }
-
+            console.log('name: '+name)
             if (state.visitedViews.some(v => v.path === view.path || (v.id === view.params.id && !view.params.did) || v.id === view.params.did)) return
             state.visitedViews.push(
                  {
@@ -36,9 +37,9 @@ const tagsView = {
             if (!state.visitedViews) {return}
             for (const [i, v] of state.visitedViews.entries()) {
                 if (v.path === view.path) {
-                    state.visitedViews.splice(i, 1)
+                    state.visitedViews.splice(i, 1);
                     setStorage("visitedViews", state.visitedViews);
-                    break
+                    break;
                 }
             }
         },
@@ -69,6 +70,7 @@ const tagsView = {
                         title: view.meta.title || name || 'no-name',
                         id: view.params.did || view.params.id || ''
                     })
+                    setStorage("visitedViews", state.visitedViews);
                     break
                 }
             }
