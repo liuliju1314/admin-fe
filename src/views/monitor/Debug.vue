@@ -193,6 +193,7 @@ export default {
                 action: this.method,
                 payload: { ...this.content }
             };
+            console.log(data);
             this.ws.send(JSON.stringify(data));
             this.linkStatus = "设备上线";
         },
