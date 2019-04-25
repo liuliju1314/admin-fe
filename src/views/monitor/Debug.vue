@@ -223,17 +223,23 @@ export default {
                 this.ws = new WebSocket(
                     "ws://" + location.host + "/api/ws_message"
                 );
-                // this.ws = new WebSocket(
-                //     'ws://47.107.91.58:11021/api/ws_message'
-                // );
 
                 this.ws.onopen = () => {
                     this.sendData();
                 };
 
                 this.ws.onmessage = evt => {
-                    _this.linkStatus = "通讯中";
-                    _this.wsData.push(evt.data);
+                    const data = JSON.parse(evt.data);
+                    if(data.code === 0) {
+                        this.$message({
+                            message: '指令发送成功',
+                            type: 'success'
+                        })
+                    } else {
+                        _this.linkStatus = "通讯中";
+                        _this.wsData.push(data);
+                    }
+
                 };
 
                 this.ws.onclose = () => {

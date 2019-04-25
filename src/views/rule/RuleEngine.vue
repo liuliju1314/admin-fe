@@ -19,7 +19,6 @@
                 style="width: 100%; margin-top: 12px"
                 border
                 size="small"
-                @row-click="expandDetail"
             >
                 <el-table-column prop="name" label="规则名称"></el-table-column>
                 <el-table-column prop="taskKey" label="规则标识符"></el-table-column>
@@ -29,6 +28,12 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
+                        <el-button
+                            @click.stop="expandDetail(scope.row)"
+                            type="text"
+                            size="small"
+                            icon="el-icon-edit"
+                        >查看</el-button>
                         <el-button
                             @click.stop="startUpRule(scope.row)"
                             type="text"
