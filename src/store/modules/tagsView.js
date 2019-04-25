@@ -15,7 +15,6 @@ const tagsView = {
             } else {
                 name = rootGetters.deviceInfo.name
             }
-            console.log('name: '+name)
             if (state.visitedViews.some(v => v.path === view.path || (v.id === view.params.id && !view.params.did) || v.id === view.params.did)) return
             state.visitedViews.push(
                  {
