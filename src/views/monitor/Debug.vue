@@ -177,31 +177,23 @@ export default {
                     message: "指令不能为空"
                 });
             }
-            const data = {
-                pid: this.form.pid,
-                did: this.form.did,
-                payload: {}
-            };
-            if (this.method == "get") {
-                data.payload = {
-                    action: this.method,
-                    data: this.propId
-                };
-            } else if (this.method == "set") {
-                if (Object.values(this.content)[0] === null) {
+
+            if (this.method == "set") {
+                if (Object.values(this.content).some(item => item === null)) {
                     this.$message({
                         type: "warning",
                         message: "属性值不能为空"
                     });
                     return;
-                } else {
-                    data.payload = {
-                        action: this.method,
-                        key: Object.keys(this.content)[0],
-                        value: Object.values(this.content)[0]
-                    };
                 }
             }
+            const data = {
+                pid: this.form.pid,
+                did: this.form.did,
+                action: this.method,
+                payload: { ...this.content }
+            };
+            console.log(data);
             this.ws.send(JSON.stringify(data));
             this.linkStatus = "设备上线";
         },
@@ -216,7 +208,7 @@ export default {
                     this.editor.set(this.content);
                 });
             }
-            getDeviceProps(this.form).then(res => {
+            getDeviceProps({ ...this.form, businessType: 3 }).then(res => {
                 this.propList = res.payload;
             });
         },
@@ -229,7 +221,7 @@ export default {
             if ("WebSocket" in window) {
                 // 打开一个 web socket
                 this.ws = new WebSocket(
-                    'ws://' + location.host + '/api/ws_message'
+                    "ws://" + location.host + "/api/ws_message"
                 );
                 // this.ws = new WebSocket(
                 //     'ws://47.107.91.58:11021/api/ws_message'

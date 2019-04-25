@@ -199,10 +199,8 @@ export default {
                         });
                         this.handleProductList();
                     })
-                    .catch(() => {
-                        this.$message({
-                            message: "删除失败!"
-                        });
+                    .catch((err) => {
+                        return err;
                     });
             });
         },
