@@ -17,7 +17,7 @@
                     <span>{{formatterGroup(deviceInfo.group)}}</span>
                 </td>
                 <th>固件版本号:</th>
-                <td>{{deviceInfo.fwVersion === null?" ":formatterFwVersion(deviceInfo.fwVersion)}}</td>
+                <td>{{deviceInfo.fwVersion === null? " " :formatterFwVersion(deviceInfo.fwVersion)}}</td>
                 <th>硬件版本号:</th>
                 <td>{{deviceInfo.hwVersion}}</td>
             </tr>
@@ -26,6 +26,17 @@
                 <td>
                     <span>{{isOnline(deviceInfo.status)}}</span>
                 </td>
+
+                <th>设备秘钥:</th>
+                <td colspan="3" style="text-align: center">
+                    <span>{{deviceInfo.deviceSecret}}</span>
+                    <el-button
+                        class="copy-box"
+                        size="mini"
+                        @click.stop="copyPid(deviceInfo.deviceSecret)"
+                        round
+                    >复制</el-button>
+                </td>
             </tr>
         </table>
     </div>
@@ -33,8 +44,10 @@
 
 <script>
 import deviceList from "../mixins/deviceList";
+import copy from "@/views/mixins/copy";
+
 export default {
-    mixins: [deviceList],
+    mixins: [deviceList, copy],
     components: {},
     props: {},
     data() {
@@ -127,6 +140,9 @@ export default {
         padding: 0 8px;
         border-right: 1px solid #ebecec;
         border-bottom: 1px solid #ebecec;
+    }
+    .copy-box {
+        margin-left: 4px;
     }
 }
 </style>

@@ -28,16 +28,20 @@
             style="width: 100%; margin-top: 12px"
             border
             size="small"
-            @row-click="expandDetail"
             @selection-change="handleSelectionChange"
         >
             <el-table-column type="selection" min-width="5%"></el-table-column>
             <el-table-column prop="did" label="设备编号" min-width="8%"></el-table-column>
             <el-table-column label="设备秘钥" min-width="14%">
-                    <template slot-scope="scope" >
-                        {{scope.row.deviceSecret}}
-                        <el-button class="copy-box" size="mini" @click.stop="copyPid(scope.row.deviceSecret)" round>复制</el-button>
-                    </template>
+                <template slot-scope="scope">
+                    {{scope.row.deviceSecret}}
+                    <el-button
+                        class="copy-box"
+                        size="mini"
+                        @click="copyPid(scope.row.deviceSecret)"
+                        round
+                    >复制</el-button>
+                </template>
             </el-table-column>
             <el-table-column
                 min-width="8%"
@@ -52,7 +56,7 @@
                         v-model="scope.row.group"
                         placeholder="请选择分组"
                         size="mini"
-                        @click.stop="updateGroup(scope.row)"
+                        @click="updateGroup(scope.row)"
                     >
                         <el-option label="正式组" value="release"></el-option>
                         <el-option label="开发组" value="develop"></el-option>
@@ -70,7 +74,7 @@
                         type="text"
                         size="small"
                         style="margin-left: 10px;"
-                        @click.stop="getOtaDetail(scope.row)"
+                        @click="getOtaDetail(scope.row)"
                     >升级进度</el-button>
                 </template>
             </el-table-column>
@@ -83,8 +87,9 @@
             </el-table-column>
             <el-table-column label="操作" min-width="8%">
                 <template slot-scope="scope">
-                    <el-button type="text" size="small" @click.stop="handleUpgrade(scope.row)">升级</el-button>
-                    <el-button type="text" size="small" @click.stop="handleState(scope.row)">运行状态</el-button>
+                    <el-button type="text" size="small" @click="expandDetail(scope.row)">查看</el-button>
+                    <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
+                    <el-button type="text" size="small" @click="handleState(scope.row)">运行状态</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -234,7 +239,7 @@ import {
     getDeviceCount
 } from "@/api/device/device";
 export default {
-    mixins: [deviceList,copy],
+    mixins: [deviceList, copy],
     data() {
         return {
             form: {
@@ -414,52 +419,49 @@ export default {
         },
         // 关闭或开启虚拟设备
         switchVirtualDevice(status) {
-            if(this.selectedDevice) {
+            if (this.selectedDevice) {
                 const hasTrueDevice = this.selectedDevice.some(
-                item => item.deviceType === "true"
-            );
-            if (hasTrueDevice) {
-                this.$message({
-                    message: "被选中设备中含有真实设备，不允许操作真实设备",
-                    type: "warning"
-                });
-            } else {
-                const list = [];
-                this.selectedDevice.map(item => {
-                    list.push(item.did);
-                });
-                const data = {
-                    pid: this.$route.params.id,
-                    did: list
-                };
-                if (status) {
-                    // 开启
-                    startVirtualDevice(data).then(() => {
-                        this.$message({
-                            type: "success",
-                            message: "启动成功"
-                        });
-                        this.deviceCountMethod();
-                        this.getDevice();
+                    item => item.deviceType === "true"
+                );
+                if (hasTrueDevice) {
+                    this.$message({
+                        message: "被选中设备中含有真实设备，不允许操作真实设备",
+                        type: "warning"
                     });
-
                 } else {
-                    // 关闭
-                    stopVirtualDevice(data).then(() => {
-                        this.$message({
-                            type: "success",
-                            message: "关闭成功"
-                        });
-                        this.deviceCountMethod();
-                        this.getDevice();
+                    const list = [];
+                    this.selectedDevice.map(item => {
+                        list.push(item.did);
                     });
+                    const data = {
+                        pid: this.$route.params.id,
+                        did: list
+                    };
+                    if (status) {
+                        // 开启
+                        startVirtualDevice(data).then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "启动成功"
+                            });
+                            this.deviceCountMethod();
+                            this.getDevice();
+                        });
+                    } else {
+                        // 关闭
+                        stopVirtualDevice(data).then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "关闭成功"
+                            });
+                            this.deviceCountMethod();
+                            this.getDevice();
+                        });
+                    }
                 }
             }
-            }
-            
         },
-        RefreshProgress() {
-        }
+        RefreshProgress() {}
     }
 };
 </script>
