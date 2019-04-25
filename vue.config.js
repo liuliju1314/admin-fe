@@ -56,7 +56,6 @@ module.exports = {
     // use thread-loader for babel & TS in production build
     // enabled by default if the machine has more than 1 cores
     parallel: require('os').cpus().length > 1,
-
     // webpack-dev-server 相关配置
     devServer: {
         open: process.platform === 'darwin',
@@ -68,19 +67,16 @@ module.exports = {
             "/api/rule": {
                 target: "http://47.107.91.58:28199/", // 设置你调用的接口域名和端口号
                 changeOrigin: true // 跨域
+            } ,
+            "/api/ws_message": {
+                target: "ws://47.107.91.58:11021/", // 设置你调用的接口域名和端口号
+                changeOrigin: true, // 跨域
+                ws: true
             },
             "/api": {
                 target: "http://47.107.91.58:11021/", // 设置你调用的接口域名和端口号
                 changeOrigin: true // 跨域
             }
-            // "/api": {
-            //     target: "http://10.27.29.84:11021/", // 设置你调用的接口域名和端口号
-            //     changeOrigin: true // 跨域
-            // },
-            // "/api": {
-            //     target: "http://10.27.29.167:11021/", // 设置你调用的接口域名和端口号
-            //     changeOrigin: true // 跨域
-            // },
 
         }
     },
