@@ -31,16 +31,22 @@
             @row-click="expandDetail"
             @selection-change="handleSelectionChange"
         >
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="did" label="设备编号"></el-table-column>
+            <el-table-column type="selection" min-width="5%"></el-table-column>
+            <el-table-column prop="did" label="设备编号" min-width="8%"></el-table-column>
+            <el-table-column label="设备秘钥" min-width="14%">
+                    <template slot-scope="scope" >
+                        {{scope.row.deviceSecret}}
+                        <el-button class="copy-box" size="mini" @click.stop="copyPid(scope.row.deviceSecret)" round>复制</el-button>
+                    </template>
+            </el-table-column>
             <el-table-column
-                width="120"
+                min-width="8%"
                 prop="deviceType"
                 :filters="[{ text: '真实设备', value: 'true' }, { text: '虚拟设备', value: 'virtual' }]"
                 :filter-method="filterDeviceType"
                 label="设备类型"
             ></el-table-column>
-            <el-table-column prop="group" label="设备分组" width="120">
+            <el-table-column prop="group" label="设备分组" min-width="10%">
                 <template slot-scope="scope">
                     <el-select
                         v-model="scope.row.group"
@@ -57,7 +63,7 @@
             <!-- <el-table-column label="固件版本号">
                     <template slot-scope="scope">{{scope.row.fwVersion.app}}</template>
             </el-table-column>-->
-            <el-table-column label="软件版本号" width="200">
+            <el-table-column label="软件版本号" min-width="8%">
                 <template slot-scope="scope">
                     <div>{{ handleFormatter(scope.row, 'fwVersion', scope.row.fwVersion) }}</div>
                     <el-button
@@ -68,14 +74,14 @@
                     >升级进度</el-button>
                 </template>
             </el-table-column>
-            <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
-            <el-table-column label="在线状态">
+            <el-table-column prop="hwVersion" label="硬件版本号" min-width="8%"></el-table-column>
+            <el-table-column label="在线状态" min-width="8%">
                 <template slot-scope="scope">
                     <span class="cell-item" :class="scope.row.status === 1? 'online': 'outline'"></span>
                     <span>{{ handleFormatter(scope.row, 'status', scope.row.status) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="150">
+            <el-table-column label="操作" min-width="8%">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click.stop="handleUpgrade(scope.row)">升级</el-button>
                     <el-button type="text" size="small" @click.stop="handleState(scope.row)">运行状态</el-button>
@@ -219,6 +225,8 @@
 import VueProgress from "./info/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
 import deviceList from "./mixins/deviceList";
+import copy from "@/views/mixins/copy";
+
 import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 import {
     updateDeviceGroup,
@@ -226,7 +234,7 @@ import {
     getDeviceCount
 } from "@/api/device/device";
 export default {
-    mixins: [deviceList],
+    mixins: [deviceList,copy],
     data() {
         return {
             form: {
@@ -274,6 +282,7 @@ export default {
                 !this.$route.params.did
             ) {
                 this.getDevice();
+                this.deviceCountMethod();
             }
         }
     },
@@ -405,7 +414,8 @@ export default {
         },
         // 关闭或开启虚拟设备
         switchVirtualDevice(status) {
-            const hasTrueDevice = this.selectedDevice.some(
+            if(this.selectedDevice) {
+                const hasTrueDevice = this.selectedDevice.some(
                 item => item.deviceType === "true"
             );
             if (hasTrueDevice) {
@@ -429,7 +439,10 @@ export default {
                             type: "success",
                             message: "启动成功"
                         });
+                        this.deviceCountMethod();
+                        this.getDevice();
                     });
+
                 } else {
                     // 关闭
                     stopVirtualDevice(data).then(() => {
@@ -437,17 +450,23 @@ export default {
                             type: "success",
                             message: "关闭成功"
                         });
+                        this.deviceCountMethod();
+                        this.getDevice();
                     });
                 }
             }
+            }
+            
         },
         RefreshProgress() {
-            
         }
     }
 };
 </script>
 <style lang='less' scoped>
+.copy-box {
+    margin-left: 4px;
+}
 .el-upload__input {
     display: block;
     position: absolute;

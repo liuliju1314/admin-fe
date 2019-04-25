@@ -371,6 +371,7 @@ li {
     height: 6px;
     display: inline-block;
     margin-right: 4px;
+    margin-left: 4px;
     border-radius: 50%;
     vertical-align: middle;
 }
