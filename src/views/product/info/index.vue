@@ -77,7 +77,7 @@ export default {
                     .dispatch("BaseInfoGet", { pid: this.pid })
                     .then(() => {
                         this.$store.dispatch("updateVisitedView", this.$route);
-                        console.log(this.baseInfo);
+                        // console.log(this.baseInfo);
                     });
             }
         }
