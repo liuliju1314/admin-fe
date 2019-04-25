@@ -15,8 +15,9 @@
                 设备详情
             </div>
             <div class="card-title">
-                <span> {{did}}</span><span class="product-circle" :class="devStatus !== 1 ? 'outline': ''"></span>
-                <span class="product-status" :class="devStatus !== 1 ? 'outline': ''">{{devStatus === 1? '在线': '离线'}}</span>
+                <span> {{did}}</span>
+                <span class="product-status" :class="devStatus === 1 ? 'online': 'outline'"></span>
+                <span class="product-status" :class="devStatus === 1 ? '' : 'outlineText'">{{devStatus === 1? '在线': '离线'}}</span>
             </div>
             <router-link
                 class="link-item"
@@ -116,8 +117,8 @@ export default {
             font-size: 13px;
             color: #1890ff;
         }
-        .outline {
-            color: #aaa;
+        .outlineText{
+            color: #74777A;
         }
 }
 </style>
