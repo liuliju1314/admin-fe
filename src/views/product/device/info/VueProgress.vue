@@ -34,6 +34,12 @@ export default {
             window.requestAnimationFrame(this.loading);
         });
     },
+    watch: {
+        progress() {
+            this.el = this.$el;
+            window.requestAnimationFrame(this.loading);
+        }
+    },
     methods: {
         loading() {
             let ctx = this.el.getContext("2d");

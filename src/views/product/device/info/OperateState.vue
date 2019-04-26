@@ -2,7 +2,11 @@
     <div class="operate-state-wrapper">
         <el-row :gutter="20">
             <el-col
-                :xs="24" :sm="12" :md="8" :lg="6" :xl="6"
+                :xs="24"
+                :sm="12"
+                :md="8"
+                :lg="6"
+                :xl="6"
                 v-for="(prop, index) in propList"
                 :key="index"
                 style="margin-bottom: 20px;"
@@ -87,7 +91,11 @@ export default {
     created() {
         this.did = this.$route.params.did;
         this.pid = this.$route.params.id;
-        getDeviceProps({ did: this.did, pid: this.pid,businessType: [2, 3] }).then(res => {
+        getDeviceProps({
+            did: this.did,
+            pid: this.pid,
+            businessType: [2, 3]
+        }).then(res => {
             this.propList = res.payload;
         });
     },
