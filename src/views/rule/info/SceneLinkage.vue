@@ -81,10 +81,10 @@
                                     @focus="getProperty(item)"
                                 >
                                     <el-option
-                                        v-for="property in propertyList"
-                                        :label="property.label"
-                                        :value="property.id"
-                                        :key="property.id"
+                                        v-for="(property,index) in propertyList"
+                                        :label="property.name"
+                                        :value="property.label"
+                                        :key="index"
                                     ></el-option>
                                 </el-select>
                             </el-form-item>
@@ -206,9 +206,9 @@
                                 >
                                     <el-option
                                         v-for="property in propertyList"
-                                        :label="property.label"
-                                        :value="property.id"
-                                        :key="property.id"
+                                        :label="property.name"
+                                        :value="property.label"
+                                        :key="property.label"
                                     ></el-option>
                                 </el-select>
                             </el-form-item>
@@ -331,9 +331,9 @@
                                 >
                                     <el-option
                                         v-for="property in propertyList"
-                                        :label="property.label"
-                                        :value="property.id"
-                                        :key="property.id"
+                                        :label="property.name"
+                                        :value="property.label"
+                                        :key="property.label"
                                     ></el-option>
                                 </el-select>
                             </el-form-item>
@@ -377,7 +377,7 @@
 import { mapGetters } from "vuex";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList } from "@/api/device/device";
-import { getPropertyList } from "@/api/property/property";
+import { getDeviceProps } from "@/api/device/device";
 export default {
     name: "SceneLinkage",
     data() {
@@ -593,7 +593,7 @@ export default {
             this.propertyList = [];
 
             if (data.did) {
-                getPropertyList({ isPage: false, pid: data.pid, did: data.did })
+                getDeviceProps({ isPage: false, pid: data.pid, did: data.did, businessType: 3 })
                     .then(res => {
                         this.propertyList = res.payload;
                     })
