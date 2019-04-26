@@ -74,7 +74,7 @@
                         type="text"
                         size="small"
                         style="margin-left: 10px;"
-                        @click="getOtaDetail(scope.row)"
+                        @click="getOtaDetail(scope.row.did)"
                     >升级进度</el-button>
                 </template>
             </el-table-column>
@@ -276,7 +276,8 @@ export default {
             batchVisible: false,
             progressList: [],
             selectedDevice: "",
-            deviceCount: ""
+            deviceCount: "",
+            refreshDid: ""
         };
     },
     components: { DeviceUpgrade, VueProgress },
@@ -318,8 +319,9 @@ export default {
         },
         // 获取设备升级进度
         getOtaDetail(device) {
+            this.refreshDid = device;
             const data = {
-                did: device.did,
+                did: device,
                 pid: this.$route.params.id
             };
             getOTAProgress(data).then(res => {
@@ -333,6 +335,10 @@ export default {
                     });
                 }
             });
+        },
+        // 刷新
+        RefreshProgress() {
+            this.getOtaDetail(this.refreshDid);
         },
         //更新设备分组
         updateGroup(device) {
@@ -460,8 +466,7 @@ export default {
                     }
                 }
             }
-        },
-        RefreshProgress() {}
+        }
     }
 };
 </script>
