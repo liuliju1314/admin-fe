@@ -7,7 +7,7 @@
             :key="index"
         >
             <!-- 产品信息 -->
-            <el-col :span="8">
+            <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8">
                 <div class="base-box">
                     <div class="product-content">
                         <div class="product-name">
@@ -80,7 +80,7 @@
                     </div>
                 </div>
             </el-col>
-            <el-col :span="16">
+            <el-col :xs="24" :sm="24" :md="14" :lg="16" :xl="16">
                 <div class="base-box">
                     <div class="device-content">
                         <div>
@@ -226,7 +226,6 @@ export default {
 
 <style lang='less' scoped>
 .product-item {
-    height: 192px;
     box-sizing: border-box;
     margin-bottom: 16px;
     .base-box {

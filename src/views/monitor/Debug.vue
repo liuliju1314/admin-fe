@@ -208,9 +208,11 @@ export default {
                     this.editor.set(this.content);
                 });
             }
-            getDeviceProps({ ...this.form, businessType: 3 }).then(res => {
-                this.propList = res.payload;
-            });
+            getDeviceProps({ ...this.form, businessType: [1, 2, 3] }).then(
+                res => {
+                    this.propList = res.payload;
+                }
+            );
         },
         closeLink() {
             this.ws.close();
@@ -230,16 +232,15 @@ export default {
 
                 this.ws.onmessage = evt => {
                     const data = JSON.parse(evt.data);
-                    if(data.code === 0) {
+                    if (data.code === 0) {
                         this.$message({
-                            message: '指令发送成功',
-                            type: 'success'
-                        })
+                            message: "指令发送成功",
+                            type: "success"
+                        });
                     } else {
                         _this.linkStatus = "通讯中";
                         _this.wsData.push(data);
                     }
-
                 };
 
                 this.ws.onclose = () => {

@@ -87,7 +87,7 @@ export default {
     created() {
         this.did = this.$route.params.did;
         this.pid = this.$route.params.id;
-        getDeviceProps({ did: this.did, pid: this.pid }).then(res => {
+        getDeviceProps({ did: this.did, pid: this.pid,businessType: [2, 3] }).then(res => {
             this.propList = res.payload;
         });
     },
