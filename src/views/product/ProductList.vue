@@ -34,7 +34,13 @@
             </el-form>
             <el-button type="primary" @click="productOp" size="small">+新建产品</el-button>
             <!-- 开发中的产品 -->
-            <el-table :data="productList" style="width: 100%; margin-top: 12px" border size="small" v-loading="loading">
+            <el-table
+                :data="productList"
+                style="width: 100%; margin-top: 12px"
+                border
+                size="small"
+                v-loading="loading"
+            >
                 <el-table-column prop="pid" label="产品ID"></el-table-column>
 
                 <el-table-column prop="name" label="产品名称"></el-table-column>
@@ -199,7 +205,7 @@ export default {
                         });
                         this.handleProductList();
                     })
-                    .catch((err) => {
+                    .catch(err => {
                         return err;
                     });
             });
@@ -228,7 +234,7 @@ export default {
                         });
                         this.handleProductList();
                     })
-                    .catch((err) => {
+                    .catch(err => {
                         return err;
                     });
             });
