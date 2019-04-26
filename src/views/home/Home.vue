@@ -1,37 +1,63 @@
 <template>
     <div class="box-card" shadow="never">
-        <el-row class="product-item" :gutter="10">
+        <el-row
+            class="product-item"
+            :gutter="10"
+            v-for="(products,index) in productsList"
+            :key="index"
+        >
             <!-- 产品信息 -->
             <el-col :span="8">
                 <div class="base-box">
                     <div class="product-content">
                         <div class="product-name">
-                            <span style="font-size: 22px; line-height: 32px;">测试产品</span>
+                            <span
+                                style="font-size: 22px; line-height: 32px;"
+                            >{{products.product.name}}</span>
                             <span>
                                 <span class="product-circle"></span>
-                                <span style="font-size: 13px; color: #606266">开发中</span>
+                                <span
+                                    style="font-size: 13px; color: #606266"
+                                >{{products.product.productStatus === "0" ? "开发中" : "已发布"}}</span>
                             </span>
 
-                            <span style="float: right">
-                                <el-button type="primary" size="small">发布</el-button>
+                            <span
+                                style="float: right"
+                                v-if="products.product.productStatus === '0'"
+                            >
+                                <el-button
+                                    type="primary"
+                                    size="small"
+                                    @click="releaseProduct(products.product)"
+                                >发布</el-button>
+                            </span>
+                            <span
+                                style="float: right"
+                                v-if="products.product.productStatus === '1'"
+                            >
+                                <el-button
+                                    type="primary"
+                                    size="small"
+                                    @click="cancelReleaseProduct(products.product)"
+                                >撤销发布</el-button>
                             </span>
                         </div>
                         <div class="product-info">
                             <div>
                                 <span class="label">产品ID：</span>
                                 <span class="text">
-                                    ck8bufgjc3k
+                                    {{products.product.pid}}
                                     <el-button
                                         class="copy-box"
                                         size="mini"
-                                        @click="copyPid('ck8bufgjc3k')"
+                                        @click="copyPid(products.product.pid)"
                                         round
                                     >复制</el-button>
                                 </span>
                             </div>
                             <div>
                                 <span class="label">创建时间：</span>
-                                <span class="text">2019-04-01</span>
+                                <span class="text">{{products.product.createdAt}}</span>
                             </div>
                         </div>
                     </div>
@@ -42,78 +68,14 @@
                                 round
                                 class="button-details"
                                 size="small"
+                                @click="expandDetail(products.product)"
                             >查看产品详情</el-button>
-                            <el-button type="text" style="float:right;" size="small">删除</el-button>
-                        </div>
-                    </div>
-                </div>
-            </el-col>
-            <el-col :span="16">
-                <div class="base-box">
-                    <div class="device-content">
-                        <div>
-                            <div class="label">当前设备总数：</div>
-                            <div class="device-num">20</div>
-                        </div>
-                        <div>
-                            <div class="label">当前在线设备：</div>
-                            <div class="device-num">20</div>
-                        </div>
-                        <div>
-                            <div class="label">当前离线设备：</div>
-                            <div class="device-num">0</div>
-                        </div>
-                    </div>
-                    <div>
-                        <el-button type="primary" round class="device-btn" size="small">查看设备详情</el-button>
-                    </div>
-                </div>
-            </el-col>
-        </el-row>
-        <el-row class="product-item" :gutter="10">
-            <!-- 产品信息 -->
-            <el-col :span="8">
-                <div class="base-box">
-                    <div class="product-content">
-                        <div class="product-name">
-                            <span style="font-size: 22px; line-height: 32px;">测试产品</span>
-                            <span>
-                                <span class="product-circle"></span>
-                                <span style="font-size: 13px; color: #606266">开发中</span>
-                            </span>
-
-                            <span style="float: right">
-                                <el-button type="primary" size="small">发布</el-button>
-                            </span>
-                        </div>
-                        <div class="product-info">
-                            <div>
-                                <span class="label">产品ID：</span>
-                                <span class="text">
-                                    ck8bufgjc3k
-                                    <el-button
-                                        class="copy-box"
-                                        size="mini"
-                                        @click="copyPid('ck8bufgjc3k')"
-                                        round
-                                    >复制</el-button>
-                                </span>
-                            </div>
-                            <div>
-                                <span class="label">创建时间：</span>
-                                <span class="text">2019-04-01</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="button-box">
-                        <div>
                             <el-button
-                                type="primary"
-                                round
-                                class="button-details"
+                                type="text"
+                                style="float:right;"
                                 size="small"
-                            >查看产品详情</el-button>
-                            <el-button type="text" style="float:right;" size="small">删除</el-button>
+                                @click.stop="handleDeleProduct(products.product)"
+                            >删除</el-button>
                         </div>
                     </div>
                 </div>
@@ -123,19 +85,25 @@
                     <div class="device-content">
                         <div>
                             <div class="label">当前设备总数：</div>
-                            <div class="device-num">20</div>
+                            <div class="device-num">{{products.numberStatistics.total}}</div>
                         </div>
                         <div>
                             <div class="label">当前在线设备：</div>
-                            <div class="device-num">20</div>
+                            <div class="device-num">{{products.numberStatistics.online}}</div>
                         </div>
                         <div>
                             <div class="label">当前离线设备：</div>
-                            <div class="device-num">0</div>
+                            <div class="device-num">{{products.numberStatistics.offline}}</div>
                         </div>
                     </div>
                     <div>
-                        <el-button type="primary" round class="device-btn" size="small">查看设备详情</el-button>
+                        <el-button
+                            type="primary"
+                            round
+                            class="device-btn"
+                            size="small"
+                            @click="expandDetailDevice(products.product)"
+                        >查看设备详情</el-button>
                     </div>
                 </div>
             </el-col>
@@ -145,14 +113,25 @@
 
 <script>
 import copy from "@/views/mixins/copy";
+import { getProducts } from "@/api/home/home";
+import {
+    editProduct,
+    deleteProduct,
+    unReleaseProduct
+} from "@/api/product/product";
+
 export default {
     mixins: [copy],
     name: "Home",
     data() {
-        return {};
+        return {
+            productsList: []
+        };
     },
 
-    created() {},
+    created() {
+        this.productsListInfo();
+    },
 
     watch: {},
 
@@ -160,7 +139,75 @@ export default {
 
     computed: {},
 
-    methods: {}
+    methods: {
+        releaseProduct(product) {
+            const data = {
+                ...product,
+                productStatus: "1"
+            };
+            editProduct(data)
+                .then(() => {
+                    this.$message({
+                        type: "success",
+                        message: "发布成功!"
+                    });
+                    this.productsListInfo();
+                })
+                .catch(err => {
+                    return err;
+                });
+        },
+        productsListInfo() {
+            getProducts()
+                .then(res => {
+                    this.productsList = res.payload.item;
+                })
+                .catch(error => {
+                    return error;
+                });
+        },
+        // 删除产品
+        handleDeleProduct(product) {
+            this.$confirm(`是否确认删除产品  ${product.name} ?`, "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消"
+            }).then(() => {
+                deleteProduct({ pid: product.pid })
+                    .then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "删除成功!"
+                        });
+                        this.productsListInfo();
+                    })
+                    .catch(err => {
+                        return err;
+                    });
+            });
+        },
+        // 进入产品详情
+        expandDetail(row) {
+            this.$router.push({ path: `/product/${row.pid}/detail` });
+        },
+        // 撤销发布产品
+        cancelReleaseProduct(product) {
+            unReleaseProduct({ pid: product.pid })
+                .then(() => {
+                    this.$message({
+                        type: "success",
+                        message: "撤销成功!"
+                    });
+                    this.handleProductList();
+                })
+                .catch(error => {
+                    return error;
+                });
+        },
+        // 进入设备详情
+        expandDetailDevice(row) {
+            this.$router.push({ path: `/product/${row.pid}/device` });
+        }
+    }
 };
 </script>
 <style lang="less">
@@ -219,6 +266,9 @@ export default {
             margin: 0 4px 0 10px;
             border-radius: 50%;
             background-color: #1890ff;
+        }
+        .productStatus {
+            color: #74777a;
         }
     }
 
