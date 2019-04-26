@@ -13,13 +13,13 @@
                     <span class="svg-container">
                         <svg-icon icon-class="user"/>
                     </span>
-                    <el-input
-                        v-model="loginForm.phone"
-                        placeholder="用户名"
-                        name="phone"
-                        type="text"
-                        auto-complete="on"
-                    />
+                                                            <el-input
+                                                                v-model="loginForm.phone"
+                                                                placeholder="用户名"
+                                                                name="phone"
+                                                                type="text"
+                                                                auto-complete="on"
+                                                            />
                 </el-form-item>
 
                 <el-form-item prop="password">
