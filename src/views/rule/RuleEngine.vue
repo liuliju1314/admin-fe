@@ -14,12 +14,7 @@
             </el-form>
             <el-button type="primary" @click="dialogVisible=true" size="small">+新建规则</el-button>
             <!-- 开发中的产品 -->
-            <el-table
-                :data="ruleList"
-                style="width: 100%; margin-top: 12px"
-                border
-                size="small"
-            >
+            <el-table :data="ruleList" style="width: 100%; margin-top: 12px" border size="small">
                 <el-table-column prop="name" label="规则名称"></el-table-column>
                 <el-table-column prop="taskKey" label="规则标识符"></el-table-column>
                 <el-table-column prop="desc" label="规则描述"></el-table-column>

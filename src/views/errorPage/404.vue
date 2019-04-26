@@ -1,17 +1,17 @@
 <template>
-   <div class="error-box">
-       <img src="@/assets/images/error404.svg" alt="404">  
-   </div>
+    <div class="error-box">
+        <img src="@/assets/images/error404.svg" alt="404">
+    </div>
 </template>
 
 <script>
 export default {
-    name: '',
+    name: "",
     data() {
-        return {}
-   },
-   components: {}
-}
+        return {};
+    },
+    components: {}
+};
 </script>
 
 <style scoped>

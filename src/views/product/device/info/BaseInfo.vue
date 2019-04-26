@@ -28,7 +28,7 @@
                 </td>
 
                 <th>设备秘钥:</th>
-                <td colspan="3" style="text-align: center">
+                <td colspan="3">
                     <span>{{deviceInfo.deviceSecret}}</span>
                     <el-button
                         class="copy-box"
