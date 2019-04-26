@@ -33,7 +33,7 @@
                 </el-form-item>
             </el-form>
             <el-row :gutter="12">
-                <el-col :span="8">
+                <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8">
                     <div class="left">
                         <div>
                             <h3>设备编辑</h3>
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                 </el-col>
-                <el-col :span="16">
+                <el-col :xs="24" :sm="24" :md="14" :lg="16" :xl="16">
                     <div class="right">
                         <div>
                             <h3>
@@ -231,6 +231,7 @@ export default {
                 };
 
                 this.ws.onmessage = evt => {
+                    console.log(evt.data);
                     const data = JSON.parse(evt.data);
                     if (data.code === 0) {
                         this.$message({
@@ -239,7 +240,7 @@ export default {
                         });
                     } else {
                         _this.linkStatus = "通讯中";
-                        _this.wsData.push(data);
+                        _this.wsData.push(data.payload);
                     }
                 };
 
