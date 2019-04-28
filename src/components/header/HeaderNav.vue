@@ -11,9 +11,7 @@
                     <i class="el-icon-arrow-down el-icon--right"></i>
                 </div>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="logout">
-                        退出系统
-                    </el-dropdown-item>
+                    <el-dropdown-item command="logout">退出系统</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </li>
@@ -26,7 +24,6 @@
 </template>
 
 <script>
-
 export default {
     name: "HeaderNav",
     data() {
@@ -34,15 +31,15 @@ export default {
             isCollapse: true
         };
     },
-    components: {
-    },
+    components: {},
     methods: {
         triggerCollapse() {
             this.isCollapse = !this.isCollapse;
             this.$emit("listenCollapse", this.isCollapse);
         },
         handleCommand(command) {
-            if(command == 'logout'){
+            if (command == "logout") {
+                localStorage.clear();
                 this.$store.dispatch("UserLogout").then(() => {
                     this.$router.push("/login");
                 });

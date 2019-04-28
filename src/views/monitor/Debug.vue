@@ -100,7 +100,13 @@
                                 <span class="link-status">{{linkStatus}}</span>
                             </h3>
                         </div>
-                        <el-table :data="wsData" stripe style="width: 100%" size="small">
+                        <el-table
+                            :data="wsData"
+                            height="57vh"
+                            stripe
+                            style="width: 100%;"
+                            size="small"
+                        >
                             <el-table-column prop="msgType" label="类型" width="120"></el-table-column>
                             <el-table-column prop="time" label="时间" width="150"></el-table-column>
                             <el-table-column label="内容">
@@ -239,9 +245,14 @@ export default {
                             message: "指令发送成功",
                             type: "success"
                         });
-                        _this.wsData.push(data.payload);
-                    } else {
-                        _this.linkStatus = "通讯中";
+                        if (data.payload) {
+                            _this.wsData.push(data.payload);
+                        }
+                    } else if (data.code === 110004) {
+                        this.$message({
+                            message: "指令发送失敗",
+                            type: "warning"
+                        });
                     }
                 };
 
