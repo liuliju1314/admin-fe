@@ -63,3 +63,11 @@ export function getDeviceCount(data) {
     })
 }
 
+// 批量自动添加设备
+export function addDeviceAuto(data) {
+    return service({
+        url: '/api/device/add_device_auto',
+        method: 'POST',
+        data
+    })
+}

@@ -241,12 +241,13 @@ export default {
                 this.ws.onmessage = evt => {
                     const data = JSON.parse(evt.data);
                     if (data.code === 0) {
-                        this.$message({
-                            message: "指令发送成功",
-                            type: "success"
-                        });
                         if (data.payload) {
                             _this.wsData.unshift(data.payload);
+                        } else {
+                            this.$message({
+                                message: "指令发送成功",
+                                type: "success"
+                            });
                         }
                     } else if (data.code === 110004) {
                         this.$message({

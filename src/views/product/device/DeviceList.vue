@@ -230,7 +230,7 @@ import VueProgress from "./info/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
 import deviceList from "./mixins/deviceList";
 import copy from "@/views/mixins/copy";
-
+import { addDeviceAuto } from "@/api/device/device";
 import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 import {
     updateDeviceGroup,
@@ -431,6 +431,19 @@ export default {
         addVirtualDev() {
             this.$refs.virtualForm.validate(valid => {
                 if (valid) {
+                    if (this.batchForm.addMothod === "auto") {
+                        const data = {
+                            pid: this.$route.params.id,
+                            num: this.batchForm.deviceNum
+                        };
+                        addDeviceAuto(data).then(res => {
+                            this.$message({
+                                message: "添加成功",
+                                type: "success"
+                            });
+                            window.location.href = res.payload.url;
+                        });
+                    }
                 }
             });
         },
