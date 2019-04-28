@@ -246,7 +246,7 @@ export default {
                             type: "success"
                         });
                         if (data.payload) {
-                            _this.wsData.push(data.payload);
+                            _this.wsData.unshift(data.payload);
                         }
                     } else if (data.code === 110004) {
                         this.$message({
