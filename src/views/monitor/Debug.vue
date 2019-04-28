@@ -101,8 +101,11 @@
                             </h3>
                         </div>
                         <el-table :data="wsData" stripe style="width: 100%" size="small">
-                            <el-table-column prop="date" label="类型/时间" width="180"></el-table-column>
-                            <el-table-column prop="name" label="内容"></el-table-column>
+                            <el-table-column prop="msgType" label="类型" width="120"></el-table-column>
+                            <el-table-column prop="time" label="时间" width="150"></el-table-column>
+                            <el-table-column label="内容">
+                                <template slot-scope="scope">{{JSON.stringify(scope.row.content)}}</template>
+                            </el-table-column>
                         </el-table>
                     </div>
                 </el-col>
@@ -193,7 +196,6 @@ export default {
                 action: this.method,
                 payload: { ...this.content }
             };
-            console.log(data);
             this.ws.send(JSON.stringify(data));
             this.linkStatus = "设备上线";
         },
@@ -231,16 +233,15 @@ export default {
                 };
 
                 this.ws.onmessage = evt => {
-                    console.log(evt.data);
                     const data = JSON.parse(evt.data);
                     if (data.code === 0) {
                         this.$message({
                             message: "指令发送成功",
                             type: "success"
                         });
+                        _this.wsData.push(data.payload);
                     } else {
                         _this.linkStatus = "通讯中";
-                        _this.wsData.push(data.payload);
                     }
                 };
 
