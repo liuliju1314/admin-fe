@@ -181,9 +181,9 @@
             <el-form
                 size="small"
                 style="margin: auto;"
-                ref="batchForm"
+                ref="virtualForm"
                 :rules="rules"
-                :model="batchForm"
+                :model="virtualForm"
             >
                 <el-form-item label="添加方式：" prop="addMothod">
                     <el-radio-group v-model="virtualForm.addMothod" @change="addName">
@@ -192,12 +192,11 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item
+                    prop="deviceName"
                     label="设备名称："
-                    v-model="virtualForm.deviceName"
-                    prop="deviceNum"
                     v-if="virtualForm.addMothod === 'manual'"
                 >
-                    <el-select filterable>
+                    <el-select v-model="virtualForm.deviceName" filterable>
                         <el-option
                             v-for="(device, index) in deviceList.items"
                             :key="index"
@@ -219,7 +218,7 @@
                     ></el-input-number>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary">确定</el-button>
+                    <el-button type="primary" @click="addVirtualDev">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -261,6 +260,11 @@ export default {
                 addMothod: {
                     required: true,
                     message: "请选择添加方式",
+                    trigger: "blur"
+                },
+                deviceName: {
+                    required: true,
+                    message: "请选择设备",
                     trigger: "blur"
                 },
                 deviceNum: {
@@ -422,6 +426,13 @@ export default {
         // table选中状态
         handleSelectionChange(val) {
             this.selectedDevice = val;
+        },
+        // 添加虛擬設備
+        addVirtualDev() {
+            this.$refs.virtualForm.validate(valid => {
+                if (valid) {
+                }
+            });
         },
         // 关闭或开启虚拟设备
         switchVirtualDevice(status) {
