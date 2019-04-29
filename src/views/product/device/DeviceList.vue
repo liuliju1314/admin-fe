@@ -12,7 +12,7 @@
                 <el-input v-model="form.did"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="handleeEquipment()">查询</el-button>
+                <el-button type="primary" @click="handleeEquipment">查询</el-button>
                 <el-button @click="batchVisible=true">批量添加设备</el-button>
                 <el-button @click="virtualVisible=true">添加虚拟设备</el-button>
                 <el-button @click="switchVirtualDevice(true)">批量启动虚拟设备</el-button>
@@ -305,8 +305,7 @@ export default {
                 this.$route.path.indexOf("device") >= 0 &&
                 !this.$route.params.did
             ) {
-                this.getDevice();
-                this.deviceCountMethod();
+                this.handleeEquipment();
             }
         }
     },
@@ -385,6 +384,7 @@ export default {
             this.getDevice();
         },
         handleeEquipment() {
+            this.deviceCountMethod();
             this.getDevice();
         },
         handleUpgrade(device) {
@@ -462,6 +462,7 @@ export default {
                             message: "添加成功",
                             type: "success"
                         });
+                        this.handleeEquipment();
                         this.handleClose();
                         window.location.href = res.payload.url;
                     });
@@ -501,6 +502,7 @@ export default {
                             message: "添加成功",
                             type: "success"
                         });
+                        this.handleeEquipment();
                         this.handleClose();
                     });
                 }
@@ -529,6 +531,7 @@ export default {
                             message: "添加成功",
                             type: "success"
                         });
+                        this.handleeEquipment();
                         this.handleClose();
                     });
                 }
