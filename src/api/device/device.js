@@ -71,3 +71,29 @@ export function addDeviceAuto(data) {
         data
     })
 }
+// 上传文件批量添加设备
+export function addDeviceUpload(data) {
+    return service({
+        url: '/api/device/add_device_upload',
+        method: 'POST',
+        data
+    })
+}
+
+// 添加虚拟设备
+export function addVirtual(data) {
+    return service({
+        url: '/api/device/add_virtual',
+        method: 'POST',
+        data
+    })
+}
+
+// 获取批量添加设备模板
+export function getDevTemplates(data) {
+    return service({
+        url: '/api/device/device_templates',
+        method: 'GET',
+        params: data
+    })
+}

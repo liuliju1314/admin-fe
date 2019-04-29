@@ -148,11 +148,7 @@
                 <el-form-item label="设备数量：" prop="deviceNum" v-if="batchForm.addMothod === 'auto'">
                     <el-input-number v-model="batchForm.deviceNum" :min="1" :max="10" label="描述文字"></el-input-number>
                 </el-form-item>
-                <el-form-item
-                    label="批量上传文件："
-                    prop="deviceNum"
-                    v-if="batchForm.addMothod === 'manual'"
-                >
+                <el-form-item label="上传设备文件：" prop="file" v-if="batchForm.addMothod === 'manual'">
                     <div class="upload-demo">
                         <div tabindex="0" class="el-upload el-upload--text">
                             <button
@@ -166,14 +162,19 @@
                                 type="file"
                                 name="file"
                                 class="el-upload__input"
-                                @change="addFile(index,$event)"
+                                @change="addFile($event)"
                             >
                         </div>
-                        <el-button type="text" style="margin: 0 10px">下载csv模板</el-button>
+                        <el-button type="text" style="margin: 0 10px" @click="downloadTems">下载csv模板</el-button>
                     </div>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="autoAddDevs">确定并导出证书</el-button>
+                    <el-button
+                        type="primary"
+                        v-if="batchForm.addMothod === 'auto'"
+                        @click="autoAddDevs"
+                    >确定并导出证书</el-button>
+                    <el-button type="primary" v-else @click="uploadDevsFile">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -218,7 +219,7 @@
                     ></el-input-number>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="addVirtualDev">确定</el-button>
+                    <el-button type="primary" @click="addVirtualDevs">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -230,7 +231,12 @@ import VueProgress from "./info/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
 import deviceList from "./mixins/deviceList";
 import copy from "@/views/mixins/copy";
-import { addDeviceAuto } from "@/api/device/device";
+import {
+    addDeviceAuto,
+    addDeviceUpload,
+    addVirtual,
+    getDevTemplates
+} from "@/api/device/device";
 import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 import {
     updateDeviceGroup,
@@ -249,7 +255,8 @@ export default {
             },
             batchForm: {
                 addMothod: "auto",
-                deviceNum: ""
+                deviceNum: "",
+                file: ""
             },
             virtualForm: {
                 addMothod: "auto",
@@ -260,6 +267,11 @@ export default {
                 addMothod: {
                     required: true,
                     message: "请选择添加方式",
+                    trigger: "blur"
+                },
+                file: {
+                    required: true,
+                    message: "请上传文件",
                     trigger: "blur"
                 },
                 deviceName: {
@@ -431,19 +443,82 @@ export default {
         autoAddDevs() {
             this.$refs.batchForm.validate(valid => {
                 if (valid) {
-                    if (this.batchForm.addMothod === "auto") {
-                        const data = {
-                            pid: this.$route.params.id,
-                            num: this.batchForm.deviceNum
-                        };
-                        addDeviceAuto(data).then(res => {
-                            this.$message({
-                                message: "添加成功",
-                                type: "success"
-                            });
-                            window.location.href = res.payload.url;
+                    const data = {
+                        pid: this.$route.params.id,
+                        num: this.batchForm.deviceNum
+                    };
+                    addDeviceAuto(data).then(res => {
+                        this.$message({
+                            message: "添加成功",
+                            type: "success"
                         });
+                        window.location.href = res.payload.url;
+                    });
+                }
+            });
+        },
+        // 批量上传设备
+        addFile(event) {
+            let files = event.target.files;
+            if (files.length === 0) {
+                return;
+            }
+            // 文件大小
+            if (files[0].size > 10 * 1024 * 1024) {
+                this.$message.error("文件太大了，请上传小于10M的文件");
+                return;
+            }
+            let reader = new FileReader();
+            reader.onerror = function() {
+                this.$message.error("读取文件失败");
+            };
+            reader.onload = () => {
+                this.batchForm.file = files[0];
+            };
+            reader.readAsArrayBuffer(files[0]);
+        },
+        // 批量上传设备
+        uploadDevsFile() {
+            this.$refs.batchForm.validate(valid => {
+                if (valid) {
+                    const data = {
+                        pid: this.$route.params.id,
+                        file: this.batchForm.file
+                    };
+                    addDeviceUpload(data).then(res => {
+                        this.$message({
+                            message: "添加成功",
+                            type: "success"
+                        });
+                        window.location.href = res.payload.url;
+                    });
+                }
+            });
+        },
+        // 下载csv设备模板
+        downloadTems() {
+            getDevTemplates().then(res => {
+                window.location.href = res.payload.url;
+            });
+        },
+        // 添加虚拟设备
+        addVirtualDevs() {
+            this.$refs.virtualForm.validate(valid => {
+                if (valid) {
+                    let data = {
+                        pid: this.$route.params.id
+                    };
+                    if (this.virtualForm.addMothod === "auto") {
+                        data.num = this.virtualForm.deviceNum;
+                    } else {
+                        data.did = this.virtualForm.deviceName;
                     }
+                    addVirtual(data).then(() => {
+                        this.$message({
+                            message: "添加成功",
+                            type: "success"
+                        });
+                    });
                 }
             });
         },
