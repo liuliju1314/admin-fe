@@ -305,8 +305,9 @@ export default {
                 this.$route.path.indexOf("device") >= 0 &&
                 !this.$route.params.did
             ) {
-                this.getDevice();
-                this.deviceCountMethod();
+                // this.getDevice();
+                // this.deviceCountMethod();
+                this.handleeEquipment();
             }
         }
     },
@@ -463,8 +464,9 @@ export default {
                             type: "success"
                         });
                         this.handleClose();
-                        this.deviceCountMethod();
-                        this.getDevice();
+                        // this.deviceCountMethod();
+                        // this.getDevice();
+                        this.handleeEquipment();
                         window.location.href = res.payload.url;
                     });
                 }
@@ -506,8 +508,9 @@ export default {
                         });
                     });
                     this.handleClose();
-                    this.deviceCountMethod();
-                    this.getDevice();
+                    // this.deviceCountMethod();
+                    // this.getDevice();
+                    this.handleeEquipment();
                 }
             });
         },
