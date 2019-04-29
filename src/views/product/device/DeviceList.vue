@@ -173,7 +173,7 @@
                     </div>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary">确定并导出证书</el-button>
+                    <el-button type="primary" @click="autoAddDevs">确定并导出证书</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -427,9 +427,9 @@ export default {
         handleSelectionChange(val) {
             this.selectedDevice = val;
         },
-        // 添加虛擬設備
-        addVirtualDev() {
-            this.$refs.virtualForm.validate(valid => {
+        // 批量自动添加设备
+        autoAddDevs() {
+            this.$refs.batchForm.validate(valid => {
                 if (valid) {
                     if (this.batchForm.addMothod === "auto") {
                         const data = {
