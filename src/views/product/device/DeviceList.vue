@@ -131,7 +131,7 @@
                 </el-col>
             </el-row>
         </el-dialog>
-        <el-dialog title="批量添加设备" :visible.sync="batchVisible" center>
+        <el-dialog title="批量添加设备" :visible.sync="batchVisible" :before-close="handleClose" center>
             <el-form
                 size="small"
                 style="margin: auto;"
@@ -140,7 +140,7 @@
                 :model="batchForm"
             >
                 <el-form-item label="添加方式：" prop="addMothod">
-                    <el-radio-group v-model="batchForm.addMothod" @change="addName">
+                    <el-radio-group v-model="batchForm.addMothod">
                         <el-radio label="auto">自动生成</el-radio>
                         <el-radio label="manual">批量上传</el-radio>
                     </el-radio-group>
@@ -165,6 +165,7 @@
                                 @change="addFile($event)"
                             >
                         </div>
+                        <span>{{this.fileName}}</span>
                         <el-button type="text" style="margin: 0 10px" @click="downloadTems">下载csv模板</el-button>
                     </div>
                 </el-form-item>
@@ -178,7 +179,7 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
-        <el-dialog title="添加虚拟设备" :visible.sync="virtualVisible" center>
+        <el-dialog title="添加虚拟设备" :visible.sync="virtualVisible" :before-close="handleClose" center>
             <el-form
                 size="small"
                 style="margin: auto;"
@@ -187,7 +188,7 @@
                 :model="virtualForm"
             >
                 <el-form-item label="添加方式：" prop="addMothod">
-                    <el-radio-group v-model="virtualForm.addMothod" @change="addName">
+                    <el-radio-group v-model="virtualForm.addMothod">
                         <el-radio label="manual">选择已有设备</el-radio>
                         <el-radio label="auto">自动生成</el-radio>
                     </el-radio-group>
@@ -258,6 +259,7 @@ export default {
                 deviceNum: "",
                 file: ""
             },
+            fileName: "",
             virtualForm: {
                 addMothod: "auto",
                 deviceNum: "",
@@ -312,8 +314,16 @@ export default {
         this.deviceCountMethod();
     },
     methods: {
-        addName(value) {
-            this.addMothodName = value;
+        // 关闭表单
+        handleClose() {
+            if (this.batchVisible) {
+                this.$refs.batchForm.resetFields();
+                this.batchVisible = false;
+            }
+            if (this.virtualVisible) {
+                this.$refs.virtualForm.resetFields();
+                this.virtualVisible = false;
+            }
         },
         // 点击跳路由
         expandDetail(row) {
@@ -473,6 +483,7 @@ export default {
                 this.$message.error("读取文件失败");
             };
             reader.onload = () => {
+                this.fileName = files[0].name;
                 this.batchForm.file = files[0];
             };
             reader.readAsArrayBuffer(files[0]);
@@ -485,12 +496,11 @@ export default {
                         pid: this.$route.params.id,
                         file: this.batchForm.file
                     };
-                    addDeviceUpload(data).then(res => {
+                    addDeviceUpload(data).then(() => {
                         this.$message({
                             message: "添加成功",
                             type: "success"
                         });
-                        window.location.href = res.payload.url;
                     });
                 }
             });
@@ -572,6 +582,9 @@ export default {
 <style lang='less' scoped>
 .copy-box {
     margin-left: 4px;
+}
+.el-upload {
+    position: relative;
 }
 .el-upload__input {
     display: block;
