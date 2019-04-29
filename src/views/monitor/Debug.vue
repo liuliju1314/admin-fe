@@ -31,6 +31,7 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
+                <span v-if="form.did">{{isdevOnline ? '在线': '离线'}}</span>
             </el-form>
             <el-row :gutter="12">
                 <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8">
@@ -157,7 +158,8 @@ export default {
             deviceList: [],
             propList: [],
             propPermission: "",
-            linkStatus: ""
+            linkStatus: "",
+            isdevOnline: false
         };
     },
     created() {
@@ -216,6 +218,12 @@ export default {
                     this.editor.set(this.content);
                 });
             }
+            // 选中设备在离线状态判断
+            const curDev = this.deviceList.find(
+                dev => dev.did === this.form.did
+            );
+            this.isdevOnline = curDev.status === 1 ? true : false;
+
             getDeviceProps({ ...this.form, businessType: [1, 2, 3] }).then(
                 res => {
                     this.propList = res.payload;
