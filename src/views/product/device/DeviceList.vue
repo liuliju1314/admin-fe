@@ -305,8 +305,6 @@ export default {
                 this.$route.path.indexOf("device") >= 0 &&
                 !this.$route.params.did
             ) {
-                // this.getDevice();
-                // this.deviceCountMethod();
                 this.handleeEquipment();
             }
         }
@@ -386,6 +384,7 @@ export default {
             this.getDevice();
         },
         handleeEquipment() {
+            this.deviceCountMethod();
             this.getDevice();
         },
         handleUpgrade(device) {
@@ -463,10 +462,8 @@ export default {
                             message: "添加成功",
                             type: "success"
                         });
-                        this.handleClose();
-                        // this.deviceCountMethod();
-                        // this.getDevice();
                         this.handleeEquipment();
+                        this.handleClose();
                         window.location.href = res.payload.url;
                     });
                 }
@@ -508,8 +505,6 @@ export default {
                         });
                     });
                     this.handleClose();
-                    // this.deviceCountMethod();
-                    // this.getDevice();
                     this.handleeEquipment();
                 }
             });
