@@ -3,6 +3,7 @@
         <h3 class="title">创建产品</h3>
         <ul>
             <li>
+                <h4>产品的定义：设备的集合，通常指一组具有相同功能的设备。每个产品下可以有成千上万的设备。</h4>
                 <p class="list-item">1. 进入产品管理，点击添加产品,填写基本信息</p>
                 <div>
                     <img src="/images/createPro-1.jpg" alt>

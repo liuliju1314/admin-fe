@@ -4,22 +4,35 @@
             <el-tab-pane label="创建产品">
                 <product-file></product-file>
             </el-tab-pane>
-            <el-tab-pane label="添加属性">添加属性</el-tab-pane>
-            <el-tab-pane label="固件升级">固件升级</el-tab-pane>
-            <el-tab-pane label="硬件调试">硬件调试</el-tab-pane>
+            <el-tab-pane label="添加属性">
+                <property-file></property-file>
+            </el-tab-pane>
+            <el-tab-pane label="固件升级">
+                <fir-update></fir-update>
+            </el-tab-pane>
+            <el-tab-pane label="硬件调试">
+                <debug-online></debug-online>
+            </el-tab-pane>
         </el-tabs>
     </el-card>
 </template>
 
 <script>
 import ProductFile from "./ProductFile";
+import PropertyFile from "./PropertyFile";
+import FirUpdate from "./FirUpdate";
+import DebugOnline from "./DebugOnline";
+
 export default {
     name: "HelpFile",
     data() {
         return {};
     },
     components: {
-        ProductFile
+        ProductFile,
+        PropertyFile,
+        FirUpdate,
+        DebugOnline
     }
 };
 </script>

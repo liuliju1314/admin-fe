@@ -66,17 +66,17 @@ module.exports = {
         proxy: {
 
             "/api/rule": {
-                target: "http://10.27.29.176:28199/", // 设置你调用的接口域名和端口号
+                target: "http://47.107.91.58:28199/", // 设置你调用的接口域名和端口号
                 changeOrigin: true // 跨域
             },
             "/api/ws_message": {
-                target: "ws://10.27.29.176:11021/", // 设置你调用的接口域名和端口号
+                target: "ws://47.107.91.58:11021/", // 设置你调用的接口域名和端口号
                 changeOrigin: true, // 跨域
                 ws: true
             },
             "/api": {
                 ws: false,
-                target: "http://10.27.29.176:11021/", // 设置你调用的接口域名和端口号
+                target: "http://47.107.91.58:11021/", // 设置你调用的接口域名和端口号
                 changeOrigin: true // 跨域
             }
 
