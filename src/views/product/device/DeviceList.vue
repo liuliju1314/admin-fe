@@ -462,6 +462,7 @@ export default {
                             message: "添加成功",
                             type: "success"
                         });
+                        this.handleClose();
                         window.location.href = res.payload.url;
                     });
                 }
@@ -492,15 +493,15 @@ export default {
         uploadDevsFile() {
             this.$refs.batchForm.validate(valid => {
                 if (valid) {
-                    const data = {
-                        pid: this.$route.params.id,
-                        file: this.batchForm.file
-                    };
-                    addDeviceUpload(data).then(() => {
+                    let formData = new FormData();
+                    formData.append("file", this.batchForm.file);
+                    formData.append("pid", this.$route.params.id);
+                    addDeviceUpload(formData).then(() => {
                         this.$message({
                             message: "添加成功",
                             type: "success"
                         });
+                        this.handleClose();
                     });
                 }
             });
@@ -528,6 +529,7 @@ export default {
                             message: "添加成功",
                             type: "success"
                         });
+                        this.handleClose();
                     });
                 }
             });
