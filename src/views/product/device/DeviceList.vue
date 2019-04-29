@@ -462,6 +462,9 @@ export default {
                             message: "添加成功",
                             type: "success"
                         });
+                        this.handleClose();
+                        this.deviceCountMethod();
+                        this.getDevice();
                         window.location.href = res.payload.url;
                     });
                 }
@@ -502,6 +505,9 @@ export default {
                             type: "success"
                         });
                     });
+                    this.handleClose();
+                    this.deviceCountMethod();
+                    this.getDevice();
                 }
             });
         },
@@ -528,6 +534,9 @@ export default {
                             message: "添加成功",
                             type: "success"
                         });
+                        this.handleClose();
+                        this.deviceCountMethod();
+                        this.getDevice();
                     });
                 }
             });
