@@ -535,7 +535,6 @@ export default {
                         });
                         this.handleeEquipment();
                         this.handleClose();
-
                     });
                 }
             });
