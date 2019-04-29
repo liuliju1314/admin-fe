@@ -505,13 +505,15 @@ export default {
                         this.handleeEquipment();
                         this.handleClose();
                     });
+                    this.handleClose();
+                    this.handleeEquipment();
                 }
             });
         },
         // 下载csv设备模板
         downloadTems() {
             getDevTemplates().then(res => {
-                window.location.href = res.payload.url;
+                window.open(res.payload.url);
             });
         },
         // 添加虚拟设备
@@ -533,6 +535,7 @@ export default {
                         });
                         this.handleeEquipment();
                         this.handleClose();
+
                     });
                 }
             });

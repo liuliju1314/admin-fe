@@ -3,36 +3,64 @@
         <div class="data-analyse">
             <div class="data-analyse-item">
                 <p>实时在线设备</p>
-                <span>1</span>
+                <span>{{statisticNumber.online}}</span>
             </div>
 
             <div class="data-analyse-item">
                 <p>离线设备</p>
-                <span>3</span>
+                <span>{{statisticNumber.offline}}</span>
             </div>
 
             <div class="data-analyse-item">
                 <p>今日新增上线</p>
-                <span>4</span>
+                <span>{{statisticNumber.todayAdd}}</span>
             </div>
             <div class="data-analyse-item">
                 <p>故障设备</p>
-                <span>6</span>
+                <span>{{statisticNumber.broken}}</span>
             </div>
         </div>
     </el-main>
 </template>
 
 <script>
+import { getStatistic } from "@/api/statistic/statistic";
 export default {
     name: "DataAnalyse",
     components: {},
     props: {},
     data() {
-        return {};
+        return {
+            pid: "",
+            statisticNumber: ""
+        };
     },
-    created() {},
-    methods: {}
+    created() {
+        this.init();
+        this.statisticNum();
+    },
+    watch: {
+        $route() {
+            this.init();
+        }
+    },
+    methods: {
+        init() {
+            this.pid = this.$route.params.id;
+            if (this.pid && this.$route.path.indexOf("analyse") >= 0) {
+                this.statisticNum();
+            }
+        },
+        statisticNum() {
+            getStatistic({ pid: this.pid })
+                .then(res => {
+                    this.statisticNumber = res.payload;
+                })
+                .catch(() => {
+                    this.$message.error("获取失败");
+                });
+        }
+    }
 };
 </script>
 

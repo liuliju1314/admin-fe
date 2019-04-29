@@ -133,8 +133,13 @@ export default {
         this.productsListInfo();
     },
 
-    watch: {},
-
+    watch: {
+        $route() {
+            if (this.$route.path.indexOf("home") >= 0) {
+                this.productsListInfo();
+            }
+        }
+    },
     components: {},
 
     computed: {},
