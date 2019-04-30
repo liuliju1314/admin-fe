@@ -127,8 +127,8 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button @click="handleClose">取消</el-button>
-                <el-button type="primary" @click="submitProperty">确定</el-button>
+                <el-button @click="handleClose" :disabled="isCreating">取消</el-button>
+                <el-button type="primary" @click="submitProperty" :disabled="isCreating">确定</el-button>
             </el-form-item>
         </el-form>
     </el-main>
@@ -141,6 +141,7 @@ export default {
     props: ["property", "isEdit"],
     data() {
         return {
+            isCreating: false,
             labelPosition: "right",
             enumList: [{ propertyValue: "", propertyDesc: "" }],
             propertForm: {
@@ -232,6 +233,7 @@ export default {
                 this.changeMetadata();
                 this.$refs.propertForm.validate(valid => {
                     if (valid) {
+                        this.isCreating = true;
                         addProperty(this.propertForm)
                             .then(() => {
                                 this.$message({
@@ -241,6 +243,7 @@ export default {
                                 this.handleClose();
                             })
                             .catch(error => {
+                                this.isCreating = false;
                                 return error;
                             });
                     }
@@ -248,14 +251,14 @@ export default {
             } else if (this.isEdit === true) {
                 this.$refs.propertForm.validate(valid => {
                     if (valid) {
+                        this.isCreating = true;
                         editProperty(this.propertForm)
                             .then(() => {
                                 this.$message({
                                     type: "success",
                                     message: "修改成功!"
                                 });
-                                this.dialogVisible = false;
-                                this.$emit("listenDialog", this.dialogVisible);
+                                this.handleClose();
                             })
                             .catch(() => {
                                 this.$message.error("修改失败!");
@@ -272,10 +275,13 @@ export default {
         },
         // 关闭表单，清空内容
         handleClose() {
+            this.isCreating = false;
             this.$refs.propertForm.resetFields();
             this.propertForm.dataType.specs = {};
             this.enumList = [{ propertyValue: "", propertyDesc: "" }];
-            this.$emit("listenDialog", this.dialogVisible);
+            setTimeout(() => {
+                this.$emit("listenDialog", this.dialogVisible);
+            }, 0);
         },
         // 添加枚举
         addEnumerate() {

@@ -89,8 +89,13 @@
                 <el-input type="textarea" v-model="form.desc"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button @click="beforeClose" size="small">取 消</el-button>
-                <el-button type="primary" @click="addfirmware" size="small">确 定</el-button>
+                <el-button @click="beforeClose" size="small" :disabled="isCreating">取 消</el-button>
+                <el-button
+                    type="primary"
+                    @click="addfirmware"
+                    size="small"
+                    :disabled="isCreating"
+                >确 定</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -118,6 +123,7 @@ export default {
             }
         };
         return {
+            isCreating: false,
             upload: [{ index: "" }],
             form: {
                 pid: "",
@@ -184,8 +190,10 @@ export default {
         },
         beforeClose() {
             this.$nextTick(() => {
+                this.isCreating = false;
                 this.files = [];
                 this.fileList = [];
+                this.upload = [{ index: "" }];
                 this.$refs.form.resetFields();
             });
             this.$emit("listenAdd", false);
@@ -239,6 +247,7 @@ export default {
         addfirmware() {
             this.$refs.form.validate(valid => {
                 if (valid) {
+                    this.isCreating = true;
                     if (!this.isEdit) {
                         let formData = new FormData();
                         this.fileList.forEach((item, index) => {
@@ -258,6 +267,7 @@ export default {
                                 this.beforeClose();
                             })
                             .catch(error => {
+                                this.isCreating = false;
                                 return error;
                             });
                     } else {
@@ -265,13 +275,18 @@ export default {
                             fwID: this.fwInfo.fwID,
                             ...this.form
                         };
-                        editFirmware(data).then(() => {
-                            this.$message({
-                                type: "success",
-                                message: "更新成功"
+                        editFirmware(data)
+                            .then(() => {
+                                this.$message({
+                                    type: "success",
+                                    message: "更新成功"
+                                });
+                                this.beforeClose();
+                            })
+                            .catch(err => {
+                                this.isCreating = false;
+                                return err;
                             });
-                            this.beforeClose();
-                        });
                     }
                 } else {
                     return false;
