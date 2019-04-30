@@ -11,6 +11,7 @@
                         v-model="form.pid"
                         placeholder="请选择产品名称"
                         clearable
+                        filterable
                         @click.native="getProductModel()"
                     >
                         <el-option

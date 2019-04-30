@@ -344,7 +344,12 @@
                                     required: true, message: '请输入或选择值', trigger: 'blur'
                                 }"
                             >
-                                <el-select v-model="item.value" placeholder="请输入或选择值" allow-create filterable>
+                                <el-select
+                                    v-model="item.value"
+                                    placeholder="请输入或选择值"
+                                    allow-create
+                                    filterable
+                                >
                                     <el-option
                                         v-for="item in metaData"
                                         :key="item.propertyValue"
@@ -366,7 +371,7 @@
                 </div>
             </div>
             <el-form-item>
-                <el-button type="primary" @click="submitRule">确定并保存</el-button>
+                <el-button type="primary" @click="submitRule" :disabled="disabled">确定并保存</el-button>
                 <el-button @click="cancelEdit">取消</el-button>
             </el-form-item>
         </el-form>
@@ -382,6 +387,7 @@ export default {
     name: "SceneLinkage",
     data() {
         return {
+            disabled: false,
             form: {
                 triggerList: [
                     {
@@ -429,20 +435,22 @@ export default {
             this.$store.dispatch("RuleInfoGet", { tid }).then(() => {
                 if (this.ruleInfo) {
                     const ruleEvent = this.ruleInfo.ruleEvent;
-                    if (ruleEvent.length > 0) {
-                        const curRule = ruleEvent[0];
-                        if (!curRule.filterList.length === 0) {
-                            this.form.filterList = curRule.filterList;
-                        }
-                        this.form.triggerList = curRule.triggerList;
-                        this.form.actionList = curRule.actionList;
-                        for (let key in this.form) {
-                            this.form[key].forEach(data => {
-                                this.getProduct(data);
-                                this.getDevice(data);
-                                this.getProperty(data);
-                                this.getMetaData(data);
-                            });
+                    if (ruleEvent) {
+                        if (ruleEvent.length > 0) {
+                            const curRule = ruleEvent[0];
+                            if (!curRule.filterList.length === 0) {
+                                this.form.filterList = curRule.filterList;
+                            }
+                            this.form.triggerList = curRule.triggerList;
+                            this.form.actionList = curRule.actionList;
+                            for (let key in this.form) {
+                                this.form[key].forEach(data => {
+                                    this.getProduct(data);
+                                    this.getDevice(data);
+                                    this.getProperty(data);
+                                    this.getMetaData(data);
+                                });
+                            }
                         }
                     }
                 }
@@ -494,6 +502,7 @@ export default {
                         });
                         return;
                     }
+                    this.disabled = true;
                     let count = 1;
                     const event = {
                             rules: [],
@@ -553,6 +562,7 @@ export default {
                                 type: "success",
                                 message: "更新成功"
                             });
+                            this.disabled = false;
                         })
                         .catch(() => {
                             this.$message({
@@ -591,9 +601,13 @@ export default {
         },
         getProperty(data) {
             this.propertyList = [];
-
             if (data.did) {
-                getDeviceProps({ isPage: false, pid: data.pid, did: data.did, businessType: 3 })
+                getDeviceProps({
+                    isPage: false,
+                    pid: data.pid,
+                    did: data.did,
+                    businessType: [1, 2, 3]
+                })
                     .then(res => {
                         this.propertyList = res.payload;
                     })

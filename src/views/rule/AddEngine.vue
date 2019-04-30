@@ -15,12 +15,17 @@
                 <el-form-item label="属性名称" prop="taskKey">
                     <el-input v-model="form.taskKey"></el-input>
                 </el-form-item>
-                <el-form-item label="描述">
+                <el-form-item label="描述" prop="desc">
                     <el-input type="textarea" v-model="form.desc"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="beforeClose" style="padding: 10px 22px">取消</el-button>
-                    <el-button type="primary" @click="createRule" style="padding: 10px 22px">确定</el-button>
+                    <el-button
+                        type="primary"
+                        @click="createRule"
+                        style="padding: 10px 22px"
+                        :disabled="disabled"
+                    >确定</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -42,6 +47,7 @@ export default {
             },
             isEdit: false,
             title: "",
+            disabled: false,
             formRules: {
                 name: [
                     {
@@ -65,10 +71,9 @@ export default {
     },
     watch: {
         rule() {
-            if(this.rule && this.visible) {
+            if (this.rule && this.visible) {
                 this.handleOp();
             }
-
         }
     },
     methods: {
@@ -96,6 +101,7 @@ export default {
         createRule() {
             this.$refs.form.validate(valid => {
                 if (valid) {
+                    this.disabled = true;
                     if (!this.isEdit) {
                         addRule(this.form)
                             .then(() => {
@@ -105,6 +111,7 @@ export default {
                                     duration: 500
                                 });
                                 this.beforeClose();
+                                this.disabled = false;
                             })
                             .catch(() => {});
                     } else {
@@ -132,6 +139,7 @@ export default {
                                     type: "success",
                                     message: "更新成功"
                                 });
+                                this.disabled = false;
                                 this.$store.dispatch(
                                     "updateVisitedView",
                                     this.$route

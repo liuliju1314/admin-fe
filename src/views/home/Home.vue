@@ -57,7 +57,9 @@
                             </div>
                             <div>
                                 <span class="label">创建时间：</span>
-                                <span class="text">{{products.product.createdAt}}</span>
+                                <span
+                                    class="text"
+                                >{{changeTimeFormater(products.product.createdAt)}}</span>
                             </div>
                         </div>
                     </div>
@@ -114,6 +116,8 @@
 <script>
 import copy from "@/views/mixins/copy";
 import { getProducts } from "@/api/home/home";
+import { formatDate } from "@/utils/timeFormat";
+
 import {
     editProduct,
     deleteProduct,
@@ -202,7 +206,7 @@ export default {
                         type: "success",
                         message: "撤销成功!"
                     });
-                    this.handleProductList();
+                    this.productsListInfo();
                 })
                 .catch(error => {
                     return error;
@@ -211,6 +215,10 @@ export default {
         // 进入设备详情
         expandDetailDevice(row) {
             this.$router.push({ path: `/product/${row.pid}/device` });
+        },
+        // 时间格式更改
+        changeTimeFormater(cellvalue) {
+            return formatDate(cellvalue, "y-m-d h:i:s");
         }
     }
 };

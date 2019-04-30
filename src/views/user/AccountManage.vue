@@ -64,7 +64,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button @click="beforeCloseAdd()">取 消</el-button>
                     <el-button type="primary" @click="handleAddManage()">确 定</el-button>
                 </el-form-item>
             </el-form>
@@ -79,9 +79,6 @@
                 class="form-box"
                 :rules="editManageFormValid"
             >
-                <el-form-item label="UID" prop="uid">
-                    <el-input v-model="editManageForm.uid" disabled="disabled"></el-input>
-                </el-form-item>
                 <el-form-item label="电话" prop="phone">
                     <el-input v-model="editManageForm.phone"></el-input>
                 </el-form-item>
@@ -139,7 +136,7 @@ export default {
             addManageForm: {
                 name: "",
                 phone: "",
-                role: "user"
+                role: ""
             },
             editManageForm: {
                 uid: "",
@@ -267,10 +264,12 @@ export default {
         },
         changeTimeFormater(cellvalue) {
             return formatDate(cellvalue, "y-m-d");
+        },
+        beforeCloseAdd() {
+            this.$refs.addManageForm.resetFields();
+            this.dialogVisible = false;
         }
-    },
-
-    watch: {}
+    }
 };
 </script>
 <style lang='less' scoped>
