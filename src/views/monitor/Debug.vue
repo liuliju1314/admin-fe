@@ -31,7 +31,10 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <span v-if="form.did">{{isdevOnline ? '在线': '离线'}}</span>
+                <span
+                    v-if="form.did"
+                    style="font-size: 13px; line-height: 32px;"
+                >{{isdevOnline ? '在线': '离线'}}</span>
             </el-form>
             <el-row :gutter="12">
                 <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8">
