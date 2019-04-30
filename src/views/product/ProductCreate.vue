@@ -135,7 +135,6 @@ export default {
                 name: "",
                 model: "",
                 category: "",
-                // category1: [],
                 desc: "",
                 upMethod: "",
                 nodeType: "",
@@ -218,9 +217,6 @@ export default {
         }
     },
     methods: {
-        handleChange(value) {
-            console.log(value);
-        },
         beforeClose() {
             this.$refs.form.resetFields();
             this.isCreating = false;

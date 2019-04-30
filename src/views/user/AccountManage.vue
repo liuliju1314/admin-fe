@@ -43,7 +43,12 @@
         </div>
 
         <!-- 添加管理员对话框 -->
-        <el-dialog title="添加管理员" :visible.sync="dialogVisible" width="60%">
+        <el-dialog
+            title="添加管理员"
+            :visible.sync="dialogVisible"
+            width="60%"
+            :before-close="beforeCloseAdd"
+        >
             <el-form
                 ref="addManageForm"
                 :rules="addManageFormValid"

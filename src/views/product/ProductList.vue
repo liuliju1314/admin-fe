@@ -188,7 +188,6 @@ export default {
         },
         // 对话框关闭
         closeDialog(value) {
-            console.log("value: " + value);
             this.visible = value;
             this.handleProductList(1);
         },
