@@ -115,6 +115,13 @@ export default {
             this.handleRuleList(value);
         },
         deleteRule(rule) {
+            if (rule.enable === 1) {
+                this.$message({
+                    message: "该规则已启动，与设备相关联，无法删除",
+                    type: "warning"
+                });
+                return;
+            }
             this.$confirm("此操作将删除该规则, 是否继续?", "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",

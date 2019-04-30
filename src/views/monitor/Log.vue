@@ -135,7 +135,6 @@ export default {
             timeRange: "",
             total: "",
             deviceLogList: [],
-            isPage: false, //获取所有产品名称以及产品Id,不分页
             productModel: [], //存放所有产品名称以及产品Id
             deviceModel: [] //存放所有产品名称以及产品Id
         };
@@ -145,7 +144,7 @@ export default {
         // 获取产品名称和产品id
         getProductModel() {
             this.productModel = [];
-            getProductList(this.isPage)
+            getProductList({ isPage: false })
                 .then(res => {
                     res.payload.result.map(item => {
                         const obj = {

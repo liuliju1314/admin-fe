@@ -344,7 +344,12 @@
                                     required: true, message: '请输入或选择值', trigger: 'blur'
                                 }"
                             >
-                                <el-select v-model="item.value" placeholder="请输入或选择值" allow-create filterable>
+                                <el-select
+                                    v-model="item.value"
+                                    placeholder="请输入或选择值"
+                                    allow-create
+                                    filterable
+                                >
                                     <el-option
                                         v-for="item in metaData"
                                         :key="item.propertyValue"
@@ -593,7 +598,12 @@ export default {
             this.propertyList = [];
 
             if (data.did) {
-                getDeviceProps({ isPage: false, pid: data.pid, did: data.did, businessType: 3 })
+                getDeviceProps({
+                    isPage: false,
+                    pid: data.pid,
+                    did: data.did,
+                    businessType: [1, 2, 3]
+                })
                     .then(res => {
                         this.propertyList = res.payload;
                     })
