@@ -26,10 +26,6 @@
                     </el-select>
                 </el-form-item>
 
-                <!-- <el-form-item label="产品分类" prop="category">
-                    <el-cascader :options="options" v-model="form.category1" @change="handleChange"></el-cascader>
-                </el-form-item>-->
-
                 <el-form-item label="升级方式" prop="upMethod">
                     <el-radio-group v-model="form.upMethod">
                         <el-radio label="manual">手动升级</el-radio>
@@ -47,7 +43,7 @@
 
                 <el-form-item label="连网方式" prop="netMode">
                     <el-select v-model="form.netMode" placeholder="请选择连网方式" size="small">
-                        <el-option label="WIFF" value="wiff"></el-option>
+                        <el-option label="WIFI" value="wifi"></el-option>
                         <el-option label="蜂窝 (2G / 3G / 4G) " value="cellularNet"></el-option>
                     </el-select>
                 </el-form-item>
@@ -111,8 +107,17 @@
                     <el-input type="textarea" v-model="form.desc"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="beforeClose" style="padding: 10px 22px">取消</el-button>
-                    <el-button type="primary" @click="isCreatOrEdit" style="padding: 10px 22px">确定</el-button>
+                    <el-button
+                        @click="beforeClose"
+                        style="padding: 10px 22px"
+                        :disabled="isCreating"
+                    >取消</el-button>
+                    <el-button
+                        type="primary"
+                        @click="isCreatOrEdit"
+                        style="padding: 10px 22px"
+                        :disabled="isCreating"
+                    >确定</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -138,27 +143,6 @@ export default {
                 protocolType: "",
                 fwGroup: []
             },
-            // options: [
-            //     {
-            //         value: "zhinan",
-            //         label: "智能水利",
-            //         children: [
-            //             {
-            //                 value: "shuiwei",
-            //                 label: "水位计"
-            //             },
-            //             {
-            //                 value: "yuliang",
-            //                 label: "雨量计"
-            //             },
-            //             {
-            //                 value: "tuxiang",
-            //                 label: "图像"
-            //             }
-            //         ]
-            //     }
-            // ],
-            // isEdit: false,
             title: "",
             formRules: {
                 name: [
@@ -217,7 +201,8 @@ export default {
                         trigger: "blur"
                     }
                 ]
-            }
+            },
+            isCreating: false
         };
     },
     watch: {
@@ -237,13 +222,17 @@ export default {
             console.log(value);
         },
         beforeClose() {
-            // this.$refs.form.resetFields();
-            this.$emit("listenOp", false);
+            this.$refs.form.resetFields();
+            this.isCreating = false;
+            setTimeout(() => {
+                this.$emit("listenOp", false);
+            }, 0);
         },
         // 点击确定时判断是添加还是更新
         isCreatOrEdit() {
             this.$refs.form.validate(valid => {
                 if (valid) {
+                    this.isCreating = true;
                     if (this.product) {
                         this.$store
                             .dispatch("BaseInfoSet", this.form)
@@ -264,6 +253,7 @@ export default {
                                     message: "更新失败",
                                     duration: 500
                                 });
+                                this.isCreating = false;
                             });
                     } else {
                         addProduct(this.form)
@@ -280,6 +270,7 @@ export default {
                                     message: "产品创建失败",
                                     duration: 500
                                 });
+                                this.isCreating = false;
                             });
                     }
                 }
