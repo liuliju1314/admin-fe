@@ -5,8 +5,8 @@
         </div>
         <div class="text-wrapper">
             <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small">
-                <el-form-item class="form-item" filterable prop="pid">
-                    <el-select placeholder="请选择产品" v-model="form.pid">
+                <el-form-item class="form-item" prop="pid">
+                    <el-select placeholder="请选择产品" filterable v-model="form.pid">
                         <el-option
                             v-for="product in productList"
                             :label="product.name"
