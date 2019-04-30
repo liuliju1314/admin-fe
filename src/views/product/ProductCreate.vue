@@ -61,48 +61,56 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="固件名称" prop="fwGroup">
+                <div class="el-form-item el-form-item--small">
                     <div
-                        class="rain-item"
-                        v-for="(item,index) in form.fwGroup"
-                        :key="index"
-                        style="margin: 0px 0px 10px 0px;"
-                    >
-                        <div v-if="index === 0">
-                            <span style="display: inline-block; width: 43%">标识符:</span>
-                            <span style="display: inline-block; width: 40%">描述:</span>
-                        </div>
-                        <el-form-item
-                            :prop="'fwGroup.' + index + '.name'"
-                            :rules="{
+                        style="width: 90px;float: left;font-size: 14px;color: #606266;line-height: 40px;text-align: right;padding: 0 12px 0 0;-webkit-box-sizing: border-box;box-sizing: border-box;vertical-align: middle;cursor: default;"
+                    >固件名称</div>
+                    <div class="el-form-item__content" style="margin:4px 0 0 90px;">
+                        <div
+                            class="rain-item"
+                            v-for="(item,index) in form.fwGroup"
+                            :key="index"
+                            style="margin: 0px 0px 10px 0px;"
+                        >
+                            <div v-if="index === 0">
+                                <span style="display: inline-block; width: 43%">标识符:</span>
+                                <span style="display: inline-block; width: 40%">描述:</span>
+                            </div>
+                            <el-form-item
+                                :prop="'fwGroup.' + index + '.name'"
+                                :rules="{
                             required: true, message: '请输入标识符', trigger: 'blur'
                             }"
-                            style="display: inline-block;width: 33%;"
-                        >
-                            <el-input v-model="item.name"></el-input>
-                        </el-form-item>
-                        <span
-                            class="span"
-                            style="display: inline-block;width: 3%;margin:0 3%;text-align: center"
-                        >~</span>
-                        <el-form-item
-                            :prop="'fwGroup.' + index + '.desc'"
-                            style="    display: inline-block;width: 33%;"
-                            :rules="{
+                                style="display: inline-block;width: 33%;"
+                            >
+                                <el-input v-model="item.name"></el-input>
+                            </el-form-item>
+                            <span
+                                class="span"
+                                style="display: inline-block;width: 3%;margin:0 3%;text-align: center"
+                            >~</span>
+                            <el-form-item
+                                :prop="'fwGroup.' + index + '.desc'"
+                                style="    display: inline-block;width: 33%;"
+                                :rules="{
                             required: true, message: '请输入描述', trigger: 'blur'
                         }"
-                        >
-                            <el-input v-model="item.desc"></el-input>
-                        </el-form-item>
+                            >
+                                <el-input v-model="item.desc"></el-input>
+                            </el-form-item>
 
+                            <el-button
+                                type="text"
+                                @click="deleteFw(index)"
+                                style="display: inline-block;margin-left: 10px"
+                            >删除</el-button>
+                        </div>
                         <el-button
                             type="text"
-                            @click="deleteFw(index)"
-                            style="display: inline-block;margin-left: 10px"
-                        >删除</el-button>
+                            @click="form.fwGroup.push({name: '', desc: ''})"
+                        >+ 添加固件名称</el-button>
                     </div>
-                    <el-button type="text" @click="form.fwGroup.push({name: '', desc: ''})">+ 添加固件名称</el-button>
-                </el-form-item>
+                </div>
                 <el-form-item label="产品描述" prop="desc">
                     <el-input type="textarea" v-model="form.desc"></el-input>
                 </el-form-item>
@@ -278,6 +286,11 @@ export default {
     }
 };
 </script>
+<style>
+.create-product-wrapper .rain-item .el-form-item__content {
+    margin-left: 0px !important;
+}
+</style>
 
 <style lang='less' scoped>
 .create-product-wrapper {
@@ -293,6 +306,11 @@ export default {
     .link-item {
         text-decoration: none;
         padding-right: 22px;
+    }
+    .rain-item {
+        .el-form-item__content {
+            margin-left: 0px !important;
+        }
     }
 }
 </style>
