@@ -12,7 +12,6 @@
                         placeholder="请选择产品名称"
                         filterable
                         clearable
-                        filterable
                         @click.native="getProductModel()"
                     >
                         <el-option
