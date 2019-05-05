@@ -166,7 +166,7 @@ export default {
             this.deviceModel = [];
             const data = {
                 pid: this.form.pid,
-                ...this.isPage
+                isPage: false
             };
             getDeviceList(data)
                 .then(res => {

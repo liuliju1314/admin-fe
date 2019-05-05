@@ -242,7 +242,7 @@ export default {
             if ("WebSocket" in window) {
                 // 打开一个 web socket
                 this.ws = new WebSocket(
-                    "ws://" + location.host + "/api/ws_message"
+                    "wss://" + location.host + "/api/ws_message"
                 );
 
                 this.ws.onopen = () => {

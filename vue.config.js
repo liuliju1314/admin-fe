@@ -70,7 +70,7 @@ module.exports = {
                 changeOrigin: true // 跨域
             },
             "/api/ws_message": {
-                target: "ws://47.107.91.58:11021/", // 设置你调用的接口域名和端口号
+                target: "wss://47.107.91.58:11021/", // 设置你调用的接口域名和端口号
                 changeOrigin: true, // 跨域
                 ws: true
             },
