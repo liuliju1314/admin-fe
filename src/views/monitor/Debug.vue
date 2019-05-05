@@ -4,35 +4,72 @@
             <span class="card-title">在线调试</span>
         </div>
         <div class="text-wrapper">
-            <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small">
-                <el-form-item class="form-item" prop="pid">
-                    <el-select placeholder="请选择产品" filterable v-model="form.pid">
-                        <el-option
-                            v-for="product in productList"
-                            :label="product.name"
-                            :value="product.pid"
-                            :key="product.pid"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item class="form-item" prop="did">
-                    <el-select
-                        placeholder="请选择设备"
-                        v-model="form.did"
-                        @focus="getDevice(form)"
-                        @change="doDeviceSearch(form)"
-                        filterable
-                    >
-                        <el-option
-                            v-for="device in deviceList"
-                            :label="device.did"
-                            :value="device.did"
-                            :key="device.did"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <span v-if="form.did">{{isdevOnline ? '在线': '离线'}}</span>
-            </el-form>
+            <el-button
+                type="primary"
+                icon="el-icon-plus"
+                style="margin-bottom:20px"
+                @click="dialogVisible = true"
+            >选择设备</el-button>
+
+            <div style="margin-bottom:20px">当前选中产品：{{chooseData.name}}，当前选择设备：{{chooseData.did}}</div>
+
+            <el-dialog title="选择设备" :visible.sync="dialogVisible" center>
+                <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small">
+                    <el-form-item class="form-item" prop="pid">
+                        <el-select
+                            placeholder="请选择产品"
+                            filterable
+                            v-model="form.pid"
+                            @change="getDeviceListMethod(form.pid)"
+                        >
+                            <el-option
+                                v-for="product in productList"
+                                :label="product.name"
+                                :value="product.pid"
+                                :key="product.pid"
+                            ></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-table :data="getDeviceListData">
+                        <el-table-column width="100" label="选择">
+                            <template slot-scope="scope">
+                                <el-radio
+                                    v-model="radio"
+                                    :label="scope.row.did"
+                                    @change="handleDeviceChoice(scope.row)"
+                                >选择</el-radio>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="did" label="设备编号"></el-table-column>
+
+                        <el-table-column label="设备类型">
+                            <template slot-scope="scope">
+                                <span>{{ handleFormatter(scope.row, 'deviceType', scope.row.deviceType) }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="在线状态">
+                            <template slot-scope="scope">
+                                <span
+                                    class="cell-item"
+                                    :class="scope.row.status === 1? 'online': 'outline'"
+                                ></span>
+                                <span>{{ handleFormatter(scope.row, 'status', scope.row.status) }}</span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-form>
+                <!-- 分页逻辑 -->
+                <div class="pagination-box" v-if="form.pageSize < total">
+                    <el-pagination
+                        :page-size="form.pageSize"
+                        :page="form.page"
+                        layout="prev, pager, next"
+                        :total="total"
+                        @current-change="handlePage"
+                    ></el-pagination>
+                </div>
+            </el-dialog>
+
             <el-row :gutter="12">
                 <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8">
                     <div class="left">
@@ -126,6 +163,7 @@ import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList, getDeviceProps } from "@/api/device/device";
+
 export default {
     components: {},
     props: {},
@@ -133,7 +171,9 @@ export default {
         return {
             form: {
                 pid: "",
-                did: ""
+                did: "",
+                page: 1,
+                pageSize: 10
             },
             propId: "",
             method: "",
@@ -159,7 +199,12 @@ export default {
             propList: [],
             propPermission: "",
             linkStatus: "",
-            isdevOnline: false
+            isdevOnline: false,
+            dialogVisible: false,
+            getDeviceListData: [],
+            radio: "",
+            total: "",
+            chooseData: ""
         };
     },
     created() {
@@ -219,11 +264,12 @@ export default {
                 });
             }
             // 选中设备在离线状态判断
-            const curDev = this.deviceList.find(
+            const curDev = this.getDeviceListData.find(
                 dev => dev.did === this.form.did
             );
-            this.isdevOnline = curDev.status === 1 ? true : false;
+            console.log("curDev: " + curDev);
 
+            this.isdevOnline = curDev.status === 1 ? true : false;
             getDeviceProps({ ...this.form, businessType: [1, 2, 3] }).then(
                 res => {
                     this.propList = res.payload;
@@ -287,24 +333,72 @@ export default {
                     });
             }
         },
-        getDevice(data) {
-            this.deviceList = [];
-            if (data.pid) {
-                getDeviceList({ isPage: false, pid: data.pid })
-                    .then(res => {
-                        this.deviceList = res.payload.items;
-                    })
-                    .catch(error => {
-                        return error;
-                    });
-            }
+        getDevice() {
+            const data = {
+                pid: this.form.pid,
+                page: this.form.page,
+                pageSize: 10
+            };
+            getDeviceList(data)
+                .then(res => {
+                    this.getDeviceListData = res.payload.items;
+                    this.total = res.payload.total;
+                })
+                .catch(error => {
+                    return error;
+                });
         },
         setProp(value) {
+            console.log("value: " + value);
             this.content = {};
             const prop = this.propList.find(item => item.label === value);
             this.propPermission = prop.permission;
             this.content = Object.assign({}, { [prop.label]: prop.value });
             this.editor.set(this.content);
+        },
+        getDeviceListMethod(value) {
+            this.getDeviceListData = [];
+            this.form.page = 1;
+            this.form.pid = value;
+            if (value) {
+                this.getDevice();
+            }
+        },
+        //分页
+        handlePage(value) {
+            this.form.page = value;
+            this.getDevice();
+        },
+        handleDeviceChoice(value) {
+            this.form.pid = value.pid;
+            this.form.did = value.did;
+            this.doDeviceSearch();
+            this.dialogVisible = false;
+            this.chooseData = value;
+        },
+        // 格式化表单显示
+        handleFormatter(row, column, cellValue) {
+            const prop = column.property || column;
+            let result;
+            switch (prop) {
+                case "status":
+                    if (cellValue === 0) {
+                        result = "未知状态";
+                    } else if (cellValue === 1) {
+                        result = "在线";
+                    } else if (cellValue === 2) {
+                        result = "离线";
+                    }
+                    break;
+                case "deviceType":
+                    if (cellValue === "true") {
+                        result = "真实设备";
+                    } else if (cellValue === "virtual") {
+                        result = "虚拟设备";
+                    }
+                    break;
+            }
+            return result;
         }
     }
 };
