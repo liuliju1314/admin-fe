@@ -5,8 +5,8 @@
         </div>
         <div class="text-wrapper">
             <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small">
-                <el-form-item label="请选择设备" class="form-item" filterable prop="pid">
-                    <el-select placeholder="请选择产品" v-model="form.pid">
+                <el-form-item class="form-item" prop="pid">
+                    <el-select placeholder="请选择产品" filterable v-model="form.pid">
                         <el-option
                             v-for="product in productList"
                             :label="product.name"
@@ -31,116 +31,60 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
+                <span v-if="form.did">{{isdevOnline ? '在线': '离线'}}</span>
             </el-form>
-
             <el-row :gutter="12">
-                <el-col :span="8">
+                <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8">
                     <div class="left">
                         <div>
                             <h3>设备编辑</h3>
                         </div>
-                        <el-tabs v-model="activeName" v-if="form.did" @tab-click="triggerDevType">
-                            <el-tab-pane label="调试真实设备" name="trueDevice">
-                                <div style="margin-bottom: 10px;display: flex;">
-                                    <el-select
-                                        v-model="propId"
-                                        placeholder="请选择功能"
-                                        size="small"
-                                        style="margin-right: 10px"
-                                        @change="setProp"
-                                    >
-                                        <el-option
-                                            v-for="prop in propList"
-                                            :label="prop.name"
-                                            :value="prop.label"
-                                            :key="prop.id"
-                                        ></el-option>
-                                    </el-select>
-
-                                    <el-select v-model="method" placeholder="请选择方法" size="small">
-                                        <el-option label="设置" value="set"></el-option>
-                                        <el-option label="获取" value="get"></el-option>
-                                    </el-select>
-                                </div>
-                                <div ref="trueDevice" id="trueDevice" style="height: 43vh"></div>
-                                <el-button
+                        <div v-if="form.did">
+                            <div style="margin-bottom: 10px;display: flex;">
+                                <el-select
+                                    v-model="propId"
+                                    placeholder="请选择功能"
                                     size="small"
-                                    type="primary"
-                                    style="margin-top: 20px"
-                                    @click="sendData"
-                                >发送</el-button>
-                                <el-button
-                                    size="small"
-                                    type="primary"
-                                    style="margin-top: 20px"
-                                    @click="closeLink"
-                                >关闭长连接</el-button>
-                            </el-tab-pane>
-                            <el-tab-pane label="虚拟真实设备" name="virtualDevice">
-                                <div
-                                    v-if="closeVirtualDevice"
-                                    style="height: 50vh;line-height: 50vh;text-align: center"
+                                    style="margin-right: 10px"
+                                    @change="setProp"
                                 >
-                                    <el-button
-                                        size="small"
-                                        type="primary"
-                                        @click="openVirtualDevice"
-                                    >启动虚拟设备</el-button>
-                                </div>
-                                <div v-else>
-                                    <div style="margin-bottom: 10px;display: flex;">
-                                        <el-select
-                                            v-model="propId"
-                                            placeholder="请选择功能"
-                                            size="small"
-                                            style="margin-right: 10px"
-                                            @change="setProp"
-                                        >
-                                            <el-option
-                                                v-for="prop in propList"
-                                                :label="prop.name"
-                                                :value="prop.label"
-                                                :key="prop.id"
-                                            ></el-option>
-                                        </el-select>
+                                    <el-option
+                                        v-for="prop in propList"
+                                        :label="prop.name"
+                                        :value="prop.label"
+                                        :key="prop.id"
+                                    ></el-option>
+                                </el-select>
 
-                                        <el-select
-                                            v-model="method"
-                                            placeholder="请选择方法"
-                                            size="small"
-                                        >
-                                            <el-option label="设置" value="set"></el-option>
-                                            <el-option label="获取" value="get"></el-option>
-                                        </el-select>
-                                    </div>
+                                <el-select v-model="method" placeholder="请选择方法" size="small">
+                                    <el-option
+                                        v-if="propPermission === 'RW' || propPermission === 'WO'"
+                                        label="设置"
+                                        value="set"
+                                    ></el-option>
+                                    <el-option
+                                        v-if="propPermission === 'RW' || propPermission === 'RO'"
+                                        label="获取"
+                                        value="get"
+                                    ></el-option>
+                                </el-select>
+                            </div>
 
-                                    <div
-                                        ref="virtualDevice"
-                                        id="virtualDevice"
-                                        style="height: 43vh"
-                                    ></div>
+                            <div ref="editor" id="editor" style="height: 43vh"></div>
 
-                                    <el-button
-                                        size="small"
-                                        type="primary"
-                                        style="margin-top: 20px"
-                                        @click="sendData"
-                                    >发送</el-button>
-                                    <el-button
-                                        size="small"
-                                        type="primary"
-                                        style="margin-top: 20px"
-                                        @click="closeLink"
-                                    >关闭长连接</el-button>
-                                    <el-button
-                                        size="small"
-                                        type="primary"
-                                        style="margin-top: 20px"
-                                        @click="stopVirtualDev"
-                                    >关闭虚拟设备</el-button>
-                                </div>
-                            </el-tab-pane>
-                        </el-tabs>
+                            <el-button
+                                size="small"
+                                type="primary"
+                                style="margin-top: 20px"
+                                @click="doSend"
+                            >发送</el-button>
+                            <el-button
+                                size="small"
+                                type="primary"
+                                style="margin-top: 20px"
+                                @click="closeLink"
+                            >关闭长连接</el-button>
+                        </div>
                         <div
                             v-else
                             style="height: 50vh;line-height: 50vh;text-align: center;font-size: 20px;color:#303133"
@@ -149,14 +93,26 @@
                         </div>
                     </div>
                 </el-col>
-                <el-col :span="16">
+                <el-col :xs="24" :sm="24" :md="14" :lg="16" :xl="16">
                     <div class="right">
                         <div>
-                            <h3>实时</h3>
+                            <h3>
+                                实时
+                                <span class="link-status">{{linkStatus}}</span>
+                            </h3>
                         </div>
-                        <el-table :data="wsData" stripe style="width: 100%" size="small">
-                            <el-table-column prop="date" label="类型/时间" width="180"></el-table-column>
-                            <el-table-column prop="name" label="内容"></el-table-column>
+                        <el-table
+                            :data="wsData"
+                            height="57vh"
+                            stripe
+                            style="width: 100%;"
+                            size="small"
+                        >
+                            <el-table-column prop="msgType" label="类型" width="120"></el-table-column>
+                            <el-table-column prop="time" label="时间" width="150"></el-table-column>
+                            <el-table-column label="内容">
+                                <template slot-scope="scope">{{JSON.stringify(scope.row.content)}}</template>
+                            </el-table-column>
                         </el-table>
                     </div>
                 </el-col>
@@ -170,12 +126,11 @@ import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList, getDeviceProps } from "@/api/device/device";
-import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 export default {
+    components: {},
+    props: {},
     data() {
         return {
-            closeVirtualDevice: true,
-            activeName: "virtualDevice",
             form: {
                 pid: "",
                 did: ""
@@ -193,40 +148,134 @@ export default {
             ws: "",
             wsData: [],
             // 富文本
-            trueEditor: "",
-            virtualDevice: "",
-            trueContent: {},
-            virtualContent: {},
+            editor: "",
+            content: {},
             editorOption: {
                 mode: "code",
                 modes: ["text", "code"]
             },
             productList: [],
             deviceList: [],
-            propList: []
+            propList: [],
+            propPermission: "",
+            linkStatus: "",
+            isdevOnline: false
         };
     },
     created() {
         this.getProduct();
     },
+    mounted() {},
     beforeDestroy() {
         this.closeLink();
     },
     methods: {
-        // tabs切换
-        triggerDevType(active) {
-            const activeName = active.name;
-            if (activeName === "trueDevice" && !this.trueEditor) {
-                this.$nextTick(() => {
-                    this.trueEditor = new JSONEditor(
-                        this.$refs[activeName],
-                        this.editorOption
-                    );
-                    this.trueEditor.set(this.trueContent);
-                });
+        doSend() {
+            const wsStatus = this.ws.readyState;
+            if (wsStatus === 1) {
+                //已经链接并且可以通讯
+                this.sendData();
+            } else {
+                this.openLink();
             }
         },
-        // 获取产品信息
+        // 发送数据
+        sendData() {
+            this.content = this.editor.get(); //把编辑框中的文本赋值过来
+            if (!this.content) {
+                this.$message({
+                    type: "warning",
+                    message: "指令不能为空"
+                });
+            }
+
+            if (this.method == "set") {
+                if (Object.values(this.content).some(item => item === null)) {
+                    this.$message({
+                        type: "warning",
+                        message: "属性值不能为空"
+                    });
+                    return;
+                }
+            }
+            const data = {
+                pid: this.form.pid,
+                did: this.form.did,
+                action: this.method,
+                payload: { ...this.content }
+            };
+            this.ws.send(JSON.stringify(data));
+            this.linkStatus = "设备上线";
+        },
+
+        doDeviceSearch() {
+            if (!this.editor) {
+                this.$nextTick(() => {
+                    this.editor = new JSONEditor(
+                        this.$refs.editor,
+                        this.editorOption
+                    );
+                    this.editor.set(this.content);
+                });
+            }
+            // 选中设备在离线状态判断
+            const curDev = this.deviceList.find(
+                dev => dev.did === this.form.did
+            );
+            this.isdevOnline = curDev.status === 1 ? true : false;
+
+            getDeviceProps({ ...this.form, businessType: [1, 2, 3] }).then(
+                res => {
+                    this.propList = res.payload;
+                }
+            );
+        },
+        closeLink() {
+            this.ws.close();
+        },
+        openLink() {
+            const _this = this;
+            this.linkStatus = "连接中";
+            if ("WebSocket" in window) {
+                // 打开一个 web socket
+                this.ws = new WebSocket(
+                    "ws://" + location.host + "/api/ws_message"
+                );
+
+                this.ws.onopen = () => {
+                    this.sendData();
+                };
+
+                this.ws.onmessage = evt => {
+                    const data = JSON.parse(evt.data);
+                    if (data.code === 0) {
+                        if (data.payload) {
+                            _this.wsData.unshift(data.payload);
+                        } else {
+                            this.$message({
+                                message: "指令发送成功",
+                                type: "success"
+                            });
+                        }
+                    } else if (data.code === 110004) {
+                        this.$message({
+                            message: "指令发送失敗",
+                            type: "warning"
+                        });
+                    }
+                };
+
+                this.ws.onclose = () => {
+                    _this.linkStatus = "连接已关闭";
+                };
+                this.ws.onerror = function(event) {
+                    console.error("WebSocket error observed:", event);
+                };
+            } else {
+                // 浏览器不支持 WebSocket
+                alert("您的浏览器不支持 WebSocket!");
+            }
+        },
         getProduct() {
             if (this.productList.length === 0) {
                 getProductList({ isPage: false })
@@ -238,7 +287,6 @@ export default {
                     });
             }
         },
-        // 获取产品下的设备的信息
         getDevice(data) {
             this.deviceList = [];
             if (data.pid) {
@@ -251,134 +299,12 @@ export default {
                     });
             }
         },
-        // 获取产品下的设备的属性信息
-        doDeviceSearch() {
-            getDeviceProps(this.form).then(res => {
-                this.propList = res.payload;
-            });
-            this.openLink();
-        },
-        // 启动虚拟设备
-        openVirtualDevice() {
-            if (!this.virtualDevice) {
-                this.$nextTick(() => {
-                    this.virtualEditor = new JSONEditor(
-                        this.$refs.virtualEditor,
-                        this.editorOption
-                    );
-                    this.virtualEditor.set(this.virtualContent);
-                });
-            }
-            this.closeVirtualDevice = false;
-            const data = {
-                ...this.form
-            };
-            if (this.closeVirtualDevice) {
-                startVirtualDevice(data)
-                    .then(() => {
-                        this.$message({
-                            type: "success",
-                            message: "启动成功"
-                        });
-                    })
-                    .catch(err => {
-                        return err;
-                    });
-            }
-        },
-        // 关闭虚拟设备
-        stopVirtualDev() {
-            this.$refs.form.validate(valid => {
-                if (valid) {
-                    this.closeVirtualDevice = true;
-                    const data = {
-                        ...this.form
-                    };
-                    stopVirtualDevice(data).then(() => {
-                        this.$message({
-                            type: "success",
-                            message: "关闭成功"
-                        });
-                    });
-                } else {
-                    return false;
-                }
-            });
-        },
-        // 发送数据
-        sendData() {
-            this.content = this.editor1.get(); //把编辑框中的文本赋值过来
-            console.dir(this.content);
-            const data = {
-                pid: this.form.pid,
-                did: this.form.did,
-                payload: {}
-            };
-            if (this.method == "get") {
-                const payload = {
-                    action: this.method,
-                    data: this.propId
-                };
-                data.payload = payload;
-                this.ws.send(JSON.stringify(data));
-            } else if (this.method == "set") {
-                if (Object.values(this.content)[0] === null) {
-                    this.$message({
-                        type: "warning",
-                        message: "属性值不能为空"
-                    });
-                } else {
-                    const payload = {
-                        action: this.method,
-                        key: Object.keys(this.content)[0],
-                        value: Object.values(this.content)[0]
-                    };
-                    data.payload = payload;
-                    this.ws.send(JSON.stringify(data));
-                }
-            }
-        },
-        // 打开webSocketLink连接
-        openLink() {
-            this.WebSocketLink();
-        },
-        // 关闭webSocketLink连接
-        closeLink() {
-            this.ws.close();
-        },
-        // 新建一个webSocket
-        WebSocketLink() {
-            if ("WebSocket" in window) {
-                // 打开一个 web socket
-                this.ws = new WebSocket(
-                    "ws://47.107.91.58:11021/api/ws_message"
-                );
-                // this.ws = new WebSocket(
-                //     "ws://" + location.host + "/api/ws_message"
-                // );
-                // this.ws.onopen = () => {
-                //     this.sendData();
-                // };
-
-                this.ws.onmessage = evt => {
-                    console.log("evt.data: " + evt.data);
-                    this.wsData.push(evt.data);
-                };
-
-                this.ws.onclose = () => {
-                    console.log("关闭WebSocket");
-                };
-            } else {
-                // 浏览器不支持 WebSocket
-                alert("您的浏览器不支持 WebSocket!");
-            }
-        },
-
         setProp(value) {
             this.content = {};
             const prop = this.propList.find(item => item.label === value);
+            this.propPermission = prop.permission;
             this.content = Object.assign({}, { [prop.label]: prop.value });
-            this.editor1.set(this.content);
+            this.editor.set(this.content);
         }
     }
 };
@@ -415,10 +341,15 @@ export default {
     border: 1px solid #ddd;
     padding: 10px 18px;
     font-size: 14px;
-    height: 65vh;
+    height: 63vh;
     td {
         padding: 4px;
         margin: 4px;
+    }
+    .link-status {
+        font-size: 13px;
+        font-weight: normal;
+        color: #1890ff;
     }
 }
 </style>
