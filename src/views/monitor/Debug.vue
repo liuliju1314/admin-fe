@@ -130,6 +130,18 @@
                                 实时
                                 <span class="link-status">{{linkStatus}}</span>
                             </h3>
+                            <el-select
+                                v-model="level"
+                                placeholder="请选择日志等级"
+                                @change="chooseLogLevel"
+                                style="margin:10px 20px ;float: left"
+                                size="small"
+                            >
+                                <el-option label="调试" value="debug"></el-option>
+                                <el-option label="消息" value="info"></el-option>
+                                <el-option label="预警" value="warning"></el-option>
+                                <el-option label="错误" value="error"></el-option>
+                            </el-select>
                             <el-button
                                 size="small"
                                 type="text"
@@ -163,7 +175,7 @@ import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList, getDeviceProps } from "@/api/device/device";
-import { sendMessage } from "@/api/debug/debug";
+import { sendMessage, sendDebugLevel } from "@/api/debug/debug";
 export default {
     components: {},
     props: {},
@@ -175,6 +187,7 @@ export default {
                 page: 1,
                 pageSize: 10
             },
+            level: "debug",
             propId: "",
             method: "",
             rules: {
@@ -375,6 +388,18 @@ export default {
         handlePage(value) {
             this.form.page = value;
             this.getDevice();
+        },
+        // 日志等级
+        chooseLogLevel(value) {
+            if (!this.form.did) {
+                return;
+            }
+            const data = {
+                pid: this.form.pid,
+                did: this.form.did,
+                level: value
+            };
+            sendDebugLevel(data).then(() => {});
         },
         handleDeviceChoice(value) {
             this.form.pid = value.pid;

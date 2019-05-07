@@ -25,3 +25,10 @@ export function sendMessage(data) {
         data
     })
 }
+export function sendDebugLevel(data) {
+    return service({
+        url: '/api/debug/set_debug_level',
+        method: 'post',
+        data
+    })
+}
