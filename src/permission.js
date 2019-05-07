@@ -1,6 +1,6 @@
 import router from './router/router'
 // import store from './store'
-import { getStorage } from '@/utils/auth' 
+import { getStorage } from '@/utils/auth'
 const whiteList = ['/login', '/register']// no redirect whitelist
 
 router.beforeEach((to, from, next) => {
@@ -9,7 +9,7 @@ router.beforeEach((to, from, next) => {
         if (to.path === "/login") {
             localStorage.clear();
             next();
-        }else {
+        } else {
             next();
         }
     } else {

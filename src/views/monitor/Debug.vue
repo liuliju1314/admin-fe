@@ -69,7 +69,6 @@
                     ></el-pagination>
                 </div>
             </el-dialog>
-
             <el-row :gutter="12">
                 <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8">
                     <div class="left">
@@ -113,14 +112,8 @@
                                 size="small"
                                 type="primary"
                                 style="margin-top: 20px"
-                                @click="doSend"
+                                @click="sendData"
                             >发送</el-button>
-                            <el-button
-                                size="small"
-                                type="primary"
-                                style="margin-top: 20px"
-                                @click="closeLink"
-                            >关闭长连接</el-button>
                         </div>
                         <div
                             v-else
@@ -133,10 +126,29 @@
                 <el-col :xs="24" :sm="24" :md="14" :lg="16" :xl="16">
                     <div class="right">
                         <div>
-                            <h3>
+                            <h3 style="float: left">
                                 实时
                                 <span class="link-status">{{linkStatus}}</span>
                             </h3>
+                            <el-select
+                                v-model="level"
+                                placeholder="请选择日志等级"
+                                @change="chooseLogLevel"
+                                style="margin:10px 20px ;float: left"
+                                size="small"
+                            >
+                                <el-option label="调试" value="debug"></el-option>
+                                <el-option label="消息" value="info"></el-option>
+                                <el-option label="预警" value="warning"></el-option>
+                                <el-option label="错误" value="error"></el-option>
+                            </el-select>
+                            <el-button
+                                size="small"
+                                type="text"
+                                style="margin-top: 20px;float:right;"
+                                icon="el-icon-setting"
+                                @click="closeLink"
+                            >{{ws ? '关闭设备连接': '开启设备连接'}}</el-button>
                         </div>
                         <el-table
                             :data="wsData"
@@ -163,7 +175,7 @@ import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList, getDeviceProps } from "@/api/device/device";
-
+import { sendMessage, sendDebugLevel } from "@/api/debug/debug";
 export default {
     components: {},
     props: {},
@@ -175,6 +187,7 @@ export default {
                 page: 1,
                 pageSize: 10
             },
+            level: "debug",
             propId: "",
             method: "",
             rules: {
@@ -215,15 +228,6 @@ export default {
         this.closeLink();
     },
     methods: {
-        doSend() {
-            const wsStatus = this.ws.readyState;
-            if (wsStatus === 1) {
-                //已经链接并且可以通讯
-                this.sendData();
-            } else {
-                this.openLink();
-            }
-        },
         // 发送数据
         sendData() {
             this.content = this.editor.get(); //把编辑框中的文本赋值过来
@@ -249,6 +253,16 @@ export default {
                 action: this.method,
                 payload: { ...this.content }
             };
+            sendMessage(data)
+                .then(() => {
+                    this.$message({
+                        message: "指令发送成功",
+                        type: "success"
+                    });
+                })
+                .catch(err => {
+                    return err;
+                });
             this.ws.send(JSON.stringify(data));
             this.linkStatus = "设备上线";
         },
@@ -267,7 +281,6 @@ export default {
             const curDev = this.getDeviceListData.find(
                 dev => dev.did === this.form.did
             );
-            console.log("curDev: " + curDev);
 
             this.isdevOnline = curDev.status === 1 ? true : false;
             getDeviceProps({ ...this.form, businessType: [1, 2, 3] }).then(
@@ -277,11 +290,22 @@ export default {
             );
         },
         closeLink() {
-            this.ws.close();
+            if (this.ws) {
+                this.ws.close();
+                this.ws = "";
+            } else {
+                this.openLink();
+            }
         },
         openLink() {
             const _this = this;
-            this.linkStatus = "连接中";
+            if (!this.form.did) {
+                this.$message({
+                    type: "warning",
+                    message: "请选择需要连接的设备"
+                });
+                return;
+            }
             if ("WebSocket" in window) {
                 // 打开一个 web socket
                 this.ws = new WebSocket(
@@ -289,25 +313,21 @@ export default {
                 );
 
                 this.ws.onopen = () => {
-                    this.sendData();
+                    const data = {
+                        pid: this.form.pid,
+                        did: this.form.did
+                    };
+                    this.ws.send(JSON.stringify(data));
+                    _this.linkStatus = "连接中";
                 };
 
                 this.ws.onmessage = evt => {
                     const data = JSON.parse(evt.data);
                     if (data.code === 0) {
                         if (data.payload) {
+                            _this.linkStatus = "通讯中";
                             _this.wsData.unshift(data.payload);
-                        } else {
-                            this.$message({
-                                message: "指令发送成功",
-                                type: "success"
-                            });
                         }
-                    } else if (data.code === 110004) {
-                        this.$message({
-                            message: "指令发送失敗",
-                            type: "warning"
-                        });
                     }
                 };
 
@@ -369,12 +389,29 @@ export default {
             this.form.page = value;
             this.getDevice();
         },
+        // 日志等级
+        chooseLogLevel(value) {
+            if (!this.form.did) {
+                return;
+            }
+            const data = {
+                pid: this.form.pid,
+                did: this.form.did,
+                level: value
+            };
+            sendDebugLevel(data).then(() => {});
+        },
         handleDeviceChoice(value) {
             this.form.pid = value.pid;
             this.form.did = value.did;
             this.doDeviceSearch();
             this.dialogVisible = false;
             this.chooseData = value;
+            if (this.ws) {
+                this.closeLink();
+            }
+
+            this.openLink();
         },
         // 格式化表单显示
         handleFormatter(row, column, cellValue) {

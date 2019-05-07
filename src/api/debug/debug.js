@@ -17,3 +17,18 @@ export function stopVirtualDevice(data) {
         data
     })
 }
+
+export function sendMessage(data) {
+    return service({
+        url: '/api/debug/send_message',
+        method: 'post',
+        data
+    })
+}
+export function sendDebugLevel(data) {
+    return service({
+        url: '/api/debug/set_debug_level',
+        method: 'post',
+        data
+    })
+}

@@ -574,7 +574,12 @@ export default {
             });
         },
         cancelEdit() {
-            this.form = this.ruleInfo.ruleEvent[0];
+            this.form = Object.assign(
+                {},
+                this.form,
+                this.ruleInfo.ruleEvent[0]
+            );
+            this.init();
         },
         getProduct() {
             if (this.productList.length === 0) {
