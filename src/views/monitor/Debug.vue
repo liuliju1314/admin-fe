@@ -68,6 +68,9 @@
                         @current-change="handlePage"
                     ></el-pagination>
                 </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                </span>
             </el-dialog>
             <el-row :gutter="12">
                 <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8">
@@ -411,7 +414,6 @@ export default {
             this.form.pid = value.pid;
             this.form.did = value.did;
             this.doDeviceSearch();
-            this.dialogVisible = false;
             this.chooseData = value;
             if (this.ws) {
                 this.closeLink();
@@ -469,6 +471,9 @@ export default {
         margin-bottom: 0;
         padding-bottom: 0;
     }
+}
+.el-dialog--center .el-dialog__footer {
+    text-align: right;
 }
 </style>
 

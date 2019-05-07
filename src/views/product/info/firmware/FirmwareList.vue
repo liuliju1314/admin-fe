@@ -43,7 +43,7 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="200">
+            <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
                     <el-button
                         type="text"
@@ -67,13 +67,14 @@
                         @click="FwDisable({fwID: scope.row.fwID, status: 3})"
                         icon="el-icon-setting"
                     >取消禁用</el-button>
-                    <el-button
+
+                    <!-- <el-button
                         type="text"
                         size="small"
                         @click="upgradeFw = scope.row"
                         v-if="scope.row.status !== 2"
                         icon="el-icon-menu"
-                    >升级详情</el-button>
+                    >升级详情</el-button>-->
                 </template>
             </el-table-column>
         </el-table>
