@@ -69,7 +69,7 @@
                     ></el-pagination>
                 </div>
                 <span slot="footer" class="dialog-footer">
-                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                    <el-button type="primary" @click="closeDialog()">确 定</el-button>
                 </span>
             </el-dialog>
             <el-row :gutter="12">
@@ -409,11 +409,13 @@ export default {
             this.form.did = value.did;
             this.doDeviceSearch();
             this.chooseData = value;
+        },
+        closeDialog() {
             if (this.ws) {
                 this.closeLink();
             }
-
             this.openLink();
+            this.dialogVisible = false;
         },
         // 格式化表单显示
         handleFormatter(row, column, cellValue) {
