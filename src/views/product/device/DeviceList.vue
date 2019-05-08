@@ -56,7 +56,7 @@
                         v-model="scope.row.group"
                         placeholder="请选择分组"
                         size="mini"
-                        @click="updateGroup(scope.row)"
+                        @change="updateGroup(scope.row)"
                     >
                         <el-option label="正式组" value="release"></el-option>
                         <el-option label="开发组" value="develop"></el-option>
@@ -367,6 +367,7 @@ export default {
         },
         //更新设备分组
         updateGroup(device) {
+            console.log(1);
             const data = {
                 group: device.group,
                 did: device.did
