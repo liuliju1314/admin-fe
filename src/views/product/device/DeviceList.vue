@@ -78,6 +78,7 @@
                     >升级进度</el-button>
                 </template>
             </el-table-column>
+            <el-table-column prop="firmwareStatus" label="固件升级状态" min-width="10%"></el-table-column>
             <el-table-column prop="hwVersion" label="硬件版本号" min-width="8%"></el-table-column>
             <el-table-column label="在线状态" min-width="8%">
                 <template slot-scope="scope">
