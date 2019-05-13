@@ -311,9 +311,15 @@ export default {
             }
             if ("WebSocket" in window) {
                 // 打开一个 web socket
-                this.ws = new WebSocket(
-                    "ws://" + location.host + "/api/ws_message"
-                );
+                if (process.env.NODE_ENV === "development") {
+                    this.ws = new WebSocket(
+                        "ws://" + location.host + "/api/ws_message"
+                    );
+                } else {
+                    this.ws = new WebSocket(
+                        "wss://" + location.host + "/api/ws_message"
+                    );
+                }
 
                 this.ws.onopen = () => {
                     const data = {
