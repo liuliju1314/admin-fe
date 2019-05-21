@@ -8,7 +8,7 @@
                 :disabled="proStatus == '1'"
             >+ 添加属性</el-button>
         </div>
-        <el-table :data="propertList" style="width: 100%; margin-top: 12px" border size="small">
+        <el-table :data="propertList" style="width: 100%; margin-top: 13px" border size="small">
             <el-table-column prop="name" label="属性名称"></el-table-column>
             <el-table-column prop="label" label="标识符"></el-table-column>
             <el-table-column prop="dataType.type" label="属性类型"></el-table-column>

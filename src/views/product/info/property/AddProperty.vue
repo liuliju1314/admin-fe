@@ -98,7 +98,7 @@
                     <el-radio label="WO">只写</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="历史数据" prop="history">
+            <!-- <el-form-item label="历史数据" prop="history">
                 <el-radio-group v-model="propertForm.history">
                     <el-radio :label="true">保存</el-radio>
                     <el-radio :label="false">丢弃</el-radio>
@@ -110,7 +110,7 @@
                     <el-radio :label="2">非业务</el-radio>
                     <el-radio :label="3">不区分类别</el-radio>
                 </el-radio-group>
-            </el-form-item>
+            </el-form-item>-->
             <!-- 目前系统暂时不需要 -->
             <!-- <el-form-item label="采样值" prop="instant">
                 <el-radio-group v-model="propertForm.instant">
@@ -150,8 +150,8 @@ export default {
                 name: "",
                 permission: "",
                 dialogVisible: "",
-                history: "",
-                businessType: "",
+                // history: "",
+                // businessType: "",
                 // instant: "",
                 desc: "",
                 default: "",
@@ -191,21 +191,21 @@ export default {
                         message: "请选择读写权限",
                         trigger: "blur"
                     }
-                ],
-                history: [
-                    {
-                        required: true,
-                        message: "请选择历史数据",
-                        trigger: "blur"
-                    }
-                ],
-                businessType: [
-                    {
-                        required: true,
-                        message: "请选择属性类别",
-                        trigger: "blur"
-                    }
                 ]
+                // history: [
+                //     {
+                //         required: true,
+                //         message: "请选择历史数据",
+                //         trigger: "blur"
+                //     }
+                // ],
+                // businessType: [
+                //     {
+                //         required: true,
+                //         message: "请选择属性类别",
+                //         trigger: "blur"
+                //     }
+                // ]
             }
         };
     },

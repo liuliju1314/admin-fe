@@ -81,6 +81,15 @@
                         <div v-if="form.did">
                             <div style="margin-bottom: 10px;display: flex;">
                                 <el-select
+                                    v-model="operationItem"
+                                    placeholder="请选择操作项"
+                                    size="small"
+                                    style="margin-right: 10px"
+                                >
+                                    <el-option label="属性" value="attribute"></el-option>
+                                    <el-option label="配置" value="configuration"></el-option>
+                                </el-select>
+                                <el-select
                                     v-model="propId"
                                     placeholder="请选择功能"
                                     size="small"
@@ -94,7 +103,6 @@
                                         :key="prop.id"
                                     ></el-option>
                                 </el-select>
-
                                 <el-select v-model="method" placeholder="请选择方法" size="small">
                                     <el-option
                                         v-if="propPermission === 'RW' || propPermission === 'WO'"
@@ -191,6 +199,7 @@ export default {
                 pageSize: 10
             },
             level: "debug",
+            operationItem: "",
             propId: "",
             method: "",
             rules: {

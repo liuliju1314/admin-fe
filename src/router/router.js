@@ -9,7 +9,7 @@ export const routes = [
         path: "/home",
         component: LayOut,
         children: [
-            { path: "", name:"home", component: () => import("@/views/home/Home"), meta: { title: '首页' } }
+            { path: "", name: "home", component: () => import("@/views/home/Home"), meta: { title: '首页' } }
         ]
     },
     {
@@ -34,6 +34,11 @@ export const routes = [
                         path: "property",
                         component: () =>
                             import("@/views/product/info/property/PropertyList"),
+                    },
+                    {
+                        path: "configuration",
+                        component: () =>
+                            import("@/views/product/info/configuration/ConfigurationList"),
                     },
                     {
                         path: "firmware",
@@ -69,6 +74,11 @@ export const routes = [
                         path: "state",
                         component: () =>
                             import("@/views/product/device/info/OperateState")
+                    },
+                    {
+                        path: "configuration",
+                        component: () =>
+                            import("@/views/product/device/info/ConfigurationList")
                     }
                 ]
             }

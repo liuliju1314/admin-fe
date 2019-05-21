@@ -16,7 +16,7 @@
         </div>
         <el-table
             :data="firmwareList.items"
-            style="width: 100%; margin-top: 12px"
+            style="width: 100%; margin-top: 13px"
             border
             size="small"
         >
