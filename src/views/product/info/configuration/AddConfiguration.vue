@@ -1,26 +1,26 @@
 <template>
     <el-main>
         <el-form
-            ref="propertForm"
-            :model="propertForm"
+            ref="configurationFrom"
+            :model="configurationFrom"
             label-width="100px"
             :rules="formRules"
             v-model="labelPosition"
             class="form-box"
             size="small"
         >
-            <el-form-item label="属性名称" prop="name">
-                <el-input v-model="propertForm.name"></el-input>
+            <el-form-item label="配置名称" prop="name">
+                <el-input v-model="configurationFrom.name"></el-input>
             </el-form-item>
 
             <el-form-item label="标识符" prop="label">
                 <el-input
-                    v-model="propertForm.label"
+                    v-model="configurationFrom.label"
                     placeholder="支持字母、数字，首单词不支持数字，同产品下不可重复，多个单词请使用小驼峰命名"
                 ></el-input>
             </el-form-item>
-            <el-form-item label="属性类型" prop="dataType.type">
-                <el-select v-model="propertForm.dataType.type" placeholder="请选择类型">
+            <el-form-item label="配置类型" prop="dataType.type">
+                <el-select v-model="configurationFrom.dataType.type" placeholder="请选择类型">
                     <el-option label="bool (布尔型)" value="bool"></el-option>
                     <el-option label="string (字符型)" value="text"></el-option>
                     <el-option label="enum (枚举型)" value="enum"></el-option>
@@ -30,26 +30,32 @@
                     <el-option label="array (数组型)" value="array"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="布尔值" v-if="propertForm.dataType.type === 'bool'">
+            <el-form-item label="布尔值" v-if="configurationFrom.dataType.type === 'bool'">
                 <div>
                     <span style="display: inline-block; width: 43%">0:</span>
                     <span style="display: inline-block; width: 40%">1:</span>
                 </div>
                 <div class="rain-item" style="margin: 0px 0px 10px 0px;">
-                    <el-input v-model.number="propertForm.dataType.specs['0']" class="small-width"></el-input>
+                    <el-input
+                        v-model.number="configurationFrom.dataType.specs['0']"
+                        class="small-width"
+                    ></el-input>
                     <span class="span" style="display: inline-block;width: 3%;text-align: center">~</span>
-                    <el-input v-model.number="propertForm.dataType.specs['1']" class="small-width"></el-input>
+                    <el-input
+                        v-model.number="configurationFrom.dataType.specs['1']"
+                        class="small-width"
+                    ></el-input>
                 </div>
             </el-form-item>
-            <el-form-item label="数据长度" v-if="propertForm.dataType.type === 'text'">
-                <el-input v-model="propertForm.dataType.specs.length" style="width:80%"></el-input>
+            <el-form-item label="数据长度" v-if="configurationFrom.dataType.type === 'text'">
+                <el-input v-model="configurationFrom.dataType.specs.length" style="width:80%"></el-input>
                 <span>&nbsp;字节</span>
             </el-form-item>
-            <el-form-item label="时间格式" v-if="propertForm.dataType.type === 'data'">
+            <el-form-item label="时间格式" v-if="configurationFrom.dataType.type === 'data'">
                 <span>String类型的UTC时间戳（秒）</span>
             </el-form-item>
-            <el-form-item label="元素类型" v-if="propertForm.dataType.type === 'array'">
-                <el-radio-group v-model="propertForm.dataType.specs.type">
+            <el-form-item label="元素类型" v-if="configurationFrom.dataType.type === 'array'">
+                <el-radio-group v-model="configurationFrom.dataType.specs.type">
                     <el-radio label="int">int</el-radio>
                     <el-radio label="float">float</el-radio>
                     <el-radio label="text">string</el-radio>
@@ -58,14 +64,14 @@
             <el-form-item
                 label="数组长度"
                 prop="arraySize"
-                v-if="propertForm.dataType.type === 'array'"
+                v-if="configurationFrom.dataType.type === 'array'"
             >
-                <el-input v-model="propertForm.dataType.specs.size"></el-input>
+                <el-input v-model="configurationFrom.dataType.specs.size"></el-input>
             </el-form-item>
-            <el-form-item label="枚举项" v-if="propertForm.dataType.type === 'enum'">
+            <el-form-item label="枚举项" v-if="configurationFrom.dataType.type === 'enum'">
                 <div>
-                    <span style="display: inline-block; width: 43%">属性值:</span>
-                    <span style="display: inline-block; width: 40%">属性描述:</span>
+                    <span style="display: inline-block; width: 43%">配置值:</span>
+                    <span style="display: inline-block; width: 40%">配置描述:</span>
                 </div>
                 <div
                     class="rain-item"
@@ -73,9 +79,9 @@
                     :key="index"
                     style="margin: 0px 0px 10px 0px;"
                 >
-                    <el-input v-model.number="item.propertyValue" class="small-width"></el-input>
+                    <el-input v-model.number="item.configurationValue" class="small-width"></el-input>
                     <span class="span" style="display: inline-block;width: 3%;text-align: center">~</span>
-                    <el-input v-model.number="item.propertyDesc" class="small-width"></el-input>
+                    <el-input v-model.number="item.configurationDesc" class="small-width"></el-input>
                     <el-button
                         type="text"
                         @click="deleteEnumerate(index)"
@@ -87,72 +93,48 @@
             <el-form-item
                 label="小数点位数"
                 prop="arraySize"
-                v-if="propertForm.dataType.type === 'float'"
+                v-if="configurationFrom.dataType.type === 'float'"
             >
-                <el-input v-model="propertForm.dataType.specs.places"></el-input>
+                <el-input v-model="configurationFrom.dataType.specs.places"></el-input>
             </el-form-item>
-            <el-form-item label="读写属性" prop="permission">
-                <el-radio-group v-model="propertForm.permission">
+            <el-form-item label="读写配置" prop="permission">
+                <el-radio-group v-model="configurationFrom.permission">
                     <el-radio label="RW">读写</el-radio>
                     <el-radio label="RO">只读</el-radio>
                     <el-radio label="WO">只写</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <!-- <el-form-item label="历史数据" prop="history">
-                <el-radio-group v-model="propertForm.history">
-                    <el-radio :label="true">保存</el-radio>
-                    <el-radio :label="false">丢弃</el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item label="属性类别" prop="businessType">
-                <el-radio-group v-model.number="propertForm.businessType">
-                    <el-radio :label="1">业务</el-radio>
-                    <el-radio :label="2">非业务</el-radio>
-                    <el-radio :label="3">不区分类别</el-radio>
-                </el-radio-group>
-            </el-form-item>-->
-            <!-- 目前系统暂时不需要 -->
-            <!-- <el-form-item label="采样值" prop="instant">
-                <el-radio-group v-model="propertForm.instant">
-                    <el-radio :label="true">瞬时采样</el-radio>
-                    <el-radio :label="false">时间段累积采样</el-radio>
-                </el-radio-group>
-            </el-form-item>-->
             <el-form-item label="默认值" prop="default">
-                <el-input v-model="propertForm.default"></el-input>
+                <el-input v-model="configurationFrom.default"></el-input>
             </el-form-item>
 
             <el-form-item label="描述" prop="desc">
-                <el-input type="textarea" v-model="propertForm.desc"></el-input>
+                <el-input type="textarea" v-model="configurationFrom.desc"></el-input>
             </el-form-item>
 
             <el-form-item>
                 <el-button @click="handleClose" :disabled="isCreating">取消</el-button>
-                <el-button type="primary" @click="submitProperty" :disabled="isCreating">确定</el-button>
+                <el-button type="primary" @click="submitConfiguration" :disabled="isCreating">确定</el-button>
             </el-form-item>
         </el-form>
     </el-main>
 </template>
 
 <script>
-import { addProperty, editProperty } from "@/api/property/property";
+import { addDevConfig, editDevConfig } from "@/api/configuration/configuration";
 
 export default {
-    props: ["property", "isEdit"],
+    props: ["configuration", "isEdit"],
     data() {
         return {
             isCreating: false,
             labelPosition: "right",
-            enumList: [{ propertyValue: "", propertyDesc: "" }],
-            dialogVisible: "",
-            propertForm: {
+            enumList: [{ configurationValue: "", configurationDesc: "" }],
+            configurationFrom: {
                 pid: "",
                 label: "",
                 name: "",
                 permission: "",
-                // history: "",
-                // businessType: "",
-                // instant: "",
                 desc: "",
                 default: "",
                 dataType: {
@@ -173,14 +155,14 @@ export default {
                 name: [
                     {
                         required: true,
-                        message: "请输入属性名称",
+                        message: "请输入配置名称",
                         trigger: "blur"
                     }
                 ],
                 "dataType.type": [
                     {
                         required: true,
-                        message: "请选择属性类型",
+                        message: "请选择配置类型",
                         trigger: "blur"
                     }
                 ],
@@ -201,7 +183,7 @@ export default {
                 // businessType: [
                 //     {
                 //         required: true,
-                //         message: "请选择属性类别",
+                //         message: "请选择配置类别",
                 //         trigger: "blur"
                 //     }
                 // ]
@@ -209,11 +191,11 @@ export default {
         };
     },
     created() {
-        this.propertForm.pid = this.$route.params.id;
+        this.configurationFrom.pid = this.$route.params.id;
     },
     watch: {
-        property(newValue) {
-            this.propertForm = newValue;
+        configuration(newValue) {
+            this.configurationFrom = newValue;
             if (newValue.dataType.type === "enum") {
                 this.enumList = newValue.dataType.specs;
             }
@@ -224,16 +206,16 @@ export default {
     },
     methods: {
         init() {
-            this.propertForm.pid = this.$route.params.id;
+            this.configurationFrom.pid = this.$route.params.id;
         },
         // 点击确定按钮
-        submitProperty() {
+        submitConfiguration() {
             if (this.isEdit === false) {
                 this.changeMetadata();
-                this.$refs.propertForm.validate(valid => {
+                this.$refs.configurationFrom.validate(valid => {
                     if (valid) {
                         this.isCreating = true;
-                        addProperty(this.propertForm)
+                        addDevConfig({ ...this.configurationFrom })
                             .then(() => {
                                 this.$message({
                                     type: "success",
@@ -248,10 +230,10 @@ export default {
                     }
                 });
             } else if (this.isEdit === true) {
-                this.$refs.propertForm.validate(valid => {
+                this.$refs.configurationFrom.validate(valid => {
                     if (valid) {
                         this.isCreating = true;
-                        editProperty(this.propertForm)
+                        editDevConfig(this.configurationFrom)
                             .then(() => {
                                 this.$message({
                                     type: "success",
@@ -268,16 +250,16 @@ export default {
         },
         // 枚举类型的数据，需要先转换metedata数据结构
         changeMetadata() {
-            if (this.propertForm.dataType.type === "enum") {
-                this.propertForm.dataType.specs = this.enumList;
+            if (this.configurationFrom.dataType.type === "enum") {
+                this.configurationFrom.dataType.specs = this.enumList;
             }
         },
         // 关闭表单，清空内容
         handleClose() {
             this.isCreating = false;
-            this.$refs.propertForm.resetFields();
-            this.propertForm.dataType.specs = {};
-            this.enumList = [{ propertyValue: "", propertyDesc: "" }];
+            this.$refs.configurationFrom.resetFields();
+            this.configurationFrom.dataType.specs = {};
+            this.enumList = [{ configurationValue: "", configurationDesc: "" }];
             setTimeout(() => {
                 this.$emit("listenDialog", this.dialogVisible);
             }, 0);
@@ -285,8 +267,8 @@ export default {
         // 添加枚举
         addEnumerate() {
             this.enumList.push({
-                propertyValue: "",
-                propertyDesc: ""
+                configurationValue: "",
+                configurationDesc: ""
             });
         },
         // 删除枚举项

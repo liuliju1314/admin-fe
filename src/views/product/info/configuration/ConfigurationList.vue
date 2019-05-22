@@ -10,12 +10,14 @@
             size="small"
         >
             <el-table-column prop="name" label="配置名称"></el-table-column>
-            <el-table-column prop="type" label="配置类型"></el-table-column>
-            <el-table-column prop="configurationValue" label="配置值"></el-table-column>
+            <el-table-column prop="dataType.type" label="配置类型"></el-table-column>
+            <el-table-column label="配置值">
+                <template slot-scope="scope">{{ scope.row.dataType.specs }}</template>
+            </el-table-column>
+            <el-table-column prop="permission" label="属性读写"></el-table-column>
             <el-table-column prop="desc" label="配置描述"></el-table-column>
             <el-table-column label="操作" width="160">
                 <template slot-scope="scope">
-                    <el-button type="text" size="small" @click="checkConfiguration(scope.row)">详情</el-button>
                     <el-button
                         type="text"
                         size="small"
@@ -50,36 +52,121 @@
             :visible.sync="dialogVisible"
             width="60%"
             :before-close="clearForm"
-        ></el-dialog>
+        >
+            <add-configuration
+                ref="configurationParam"
+                @listenDialog="closeDialog"
+                :configuration="configuration"
+                :isEdit="isEdit"
+            ></add-configuration>
+        </el-dialog>
     </el-main>
 </template>
 
 <script>
+import AddConfiguration from "./AddConfiguration";
+import {
+    devConfigList,
+    deleteDevConfig
+} from "@/api/configuration/configuration";
+
 export default {
-    name: "configurationList",
+    name: "configuration_list",
     data() {
         return {
             form: {
                 page: 1,
-                pageSize: 6,
+                pageSize: 10,
                 isPage: true
             },
-            configurationList: [
-                {
-                    name: "光照"
-                }
-            ],
+            configurationList: [],
             count: "",
             title: "添加配置",
-            dialogVisible: false
+            dialogVisible: false,
+            pid: "",
+            isEdit: "",
+            configuration: "" //配置编辑时的传输字段
         };
     },
+    created() {
+        this.init();
+    },
+    watch: {
+        $route() {
+            this.init();
+        }
+    },
+    components: {
+        AddConfiguration
+    },
     methods: {
-        addConfiguration() {
-            console.log("添加配置");
+        // 初始化
+        init() {
+            this.pid = this.$route.params.id;
+            if (this.pid && this.$route.path.indexOf("configuration") >= 0) {
+                this.getConfiguration();
+            }
         },
+        //   添加属性
+        addConfiguration() {
+            this.isEdit = false;
+            this.dialogVisible = true;
+            this.title = "添加配置";
+        },
+        //   编辑属性
+        editConfiguration(attr) {
+            this.isEdit = true;
+            this.dialogVisible = true;
+            this.title = "配置编辑";
+            this.$nextTick(() => {
+                this.configuration = attr;
+            });
+        },
+        // 获取配置列表
+        getConfiguration() {
+            const data = {
+                ...this.form,
+                pid: this.pid
+            };
+            devConfigList(data)
+                .then(res => {
+                    this.configurationList = res.payload;
+                    this.count = res.payload.count;
+                })
+                .catch(error => {
+                    return error;
+                });
+        },
+        // 关闭对话框
+        closeDialog(value) {
+            this.dialogVisible = value;
+            this.getConfiguration();
+        },
+        // 清空表单元素
         clearForm() {
-            console.log("清除表单");
+            this.$refs.configurationParam.handleClose();
+        },
+        //   删除配置
+        handleDeleteConfiguration(value) {
+            const data = {
+                proId: value.id,
+                pid: value.pid
+            };
+            this.$confirm("此操作将永久删除该配置, 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    deleteDevConfig(data).then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "删除成功!"
+                        });
+                        this.getConfiguration();
+                    });
+                })
+                .catch(() => {});
         }
     }
 };

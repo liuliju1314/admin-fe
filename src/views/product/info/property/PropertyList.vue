@@ -81,7 +81,7 @@ export default {
             propertList: [],
             form: {
                 page: 1,
-                pageSize: 6,
+                pageSize: 10,
                 isPage: true
             },
             pid: "",
