@@ -149,8 +149,8 @@ export default {
                 label: "",
                 name: "",
                 permission: "",
-                // history: "",
-                // businessType: "",
+                history: "",
+                businessType: "",
                 // instant: "",
                 desc: "",
                 default: "",
@@ -190,21 +190,21 @@ export default {
                         message: "请选择读写权限",
                         trigger: "blur"
                     }
+                ],
+                history: [
+                    {
+                        required: true,
+                        message: "请选择历史数据",
+                        trigger: "blur"
+                    }
+                ],
+                businessType: [
+                    {
+                        required: true,
+                        message: "请选择属性类别",
+                        trigger: "blur"
+                    }
                 ]
-                // history: [
-                //     {
-                //         required: true,
-                //         message: "请选择历史数据",
-                //         trigger: "blur"
-                //     }
-                // ],
-                // businessType: [
-                //     {
-                //         required: true,
-                //         message: "请选择属性类别",
-                //         trigger: "blur"
-                //     }
-                // ]
             }
         };
     },
