@@ -10,12 +10,9 @@
             size="small"
         >
             <el-table-column prop="name" label="配置名称"></el-table-column>
+            <el-table-column prop="label" label="标识符"></el-table-column>
             <el-table-column prop="dataType.type" label="配置类型"></el-table-column>
-            <el-table-column label="配置值">
-                <template slot-scope="scope">{{ scope.row.dataType.specs }}</template>
-            </el-table-column>
             <el-table-column prop="permission" label="属性读写"></el-table-column>
-            <el-table-column prop="desc" label="配置描述"></el-table-column>
             <el-table-column label="操作" width="160">
                 <template slot-scope="scope">
                     <el-button

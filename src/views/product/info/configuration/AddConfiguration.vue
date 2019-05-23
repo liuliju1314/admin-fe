@@ -173,20 +173,6 @@ export default {
                         trigger: "blur"
                     }
                 ]
-                // history: [
-                //     {
-                //         required: true,
-                //         message: "请选择历史数据",
-                //         trigger: "blur"
-                //     }
-                // ],
-                // businessType: [
-                //     {
-                //         required: true,
-                //         message: "请选择配置类别",
-                //         trigger: "blur"
-                //     }
-                // ]
             }
         };
     },

@@ -85,6 +85,7 @@
                                     placeholder="请选择操作项"
                                     size="small"
                                     style="margin-right: 10px"
+                                    @change="changeOperation"
                                 >
                                     <el-option label="属性" value="attribute"></el-option>
                                     <el-option label="配置" value="configuration"></el-option>
@@ -186,6 +187,7 @@ import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList, getDeviceProps } from "@/api/device/device";
+import { devConfigDetail } from "@/api/configuration/configuration";
 import { sendMessage, sendDebugLevel } from "@/api/debug/debug";
 export default {
     components: {},
@@ -196,7 +198,8 @@ export default {
                 pid: "",
                 did: "",
                 page: 1,
-                pageSize: 10
+                pageSize: 10,
+                isPage: false
             },
             level: "debug",
             operationItem: "",
@@ -229,7 +232,9 @@ export default {
             getDeviceListData: [],
             radio: "",
             total: "",
-            chooseData: ""
+            chooseData: "",
+            DevicePropsList: [],
+            configDetailList: []
         };
     },
     created() {
@@ -297,9 +302,13 @@ export default {
             this.isdevOnline = curDev.status === 1 ? true : false;
             getDeviceProps({ ...this.form, businessType: [1, 2, 3] }).then(
                 res => {
-                    this.propList = res.payload;
+                    this.DevicePropsList = res.payload;
                 }
             );
+
+            devConfigDetail({ ...this.form }).then(res => {
+                this.configDetailList = res.payload;
+            });
         },
         closeLink() {
             if (this.ws) {
@@ -386,8 +395,14 @@ export default {
                     return error;
                 });
         },
+        changeOperation() {
+            if (this.operationItem === "attribute") {
+                this.propList = this.DevicePropsList;
+            } else {
+                this.propList = this.configDetailList;
+            }
+        },
         setProp(value) {
-            console.log("value: " + value);
             this.content = {};
             const prop = this.propList.find(item => item.label === value);
             this.propPermission = prop.permission;
@@ -419,6 +434,7 @@ export default {
             };
             sendDebugLevel(data).then(() => {});
         },
+        // 选择设备的单选按钮
         handleDeviceChoice(value) {
             this.form.pid = value.pid;
             this.form.did = value.did;

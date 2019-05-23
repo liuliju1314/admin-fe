@@ -35,3 +35,12 @@ export function deleteDevConfig(data) {
         data
     })
 }
+
+// 删除属性
+export function devConfigDetail(data) {
+    return service({
+        url: '/api/device/config',
+        method: 'get',
+        params: data
+    })
+}

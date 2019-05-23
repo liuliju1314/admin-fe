@@ -7,11 +7,12 @@
             size="small"
         >
             <el-table-column prop="name" label="配置名称"></el-table-column>
+            <el-table-column prop="label" label="标识符"></el-table-column>
             <el-table-column prop="dataType.type" label="配置类型"></el-table-column>
+            <el-table-column prop="permission" label="属性读写"></el-table-column>
             <el-table-column label="配置值">
                 <template slot-scope="scope">{{ scope.row.dataType.specs }}</template>
             </el-table-column>
-            <el-table-column prop="permission" label="属性读写"></el-table-column>
             <el-table-column prop="desc" label="配置描述"></el-table-column>
         </el-table>
 
@@ -29,15 +30,18 @@
 </template>
 
 <script>
-import { devConfigList } from "@/api/configuration/configuration";
+import { devConfigDetail } from "@/api/configuration/configuration";
+
 export default {
     name: "configurationList",
     data() {
         return {
             form: {
+                pid: "",
+                did: "",
                 page: 1,
-                pageSize: 6,
-                isPage: true
+                pageSize: 10,
+                isPage: false
             },
             configurationList: [],
             count: "",
@@ -46,6 +50,8 @@ export default {
     },
     created() {
         this.form.did = this.$route.params.did;
+        this.form.pid = this.$route.params.id;
+        this.getConfiguration();
     },
     watch: {
         $route() {
@@ -57,29 +63,14 @@ export default {
                 this.form.did = this.$route.params.did;
                 this.getConfiguration();
             }
-        },
-        deviceList() {
-            if (this.$route.params.did) {
-                this.deviceInfo = this.deviceList.items[0];
-                console.log(this.deviceInfo);
-            }
         }
     },
     methods: {
         // 获取配置列表
         getConfiguration() {
-            const data = {
-                ...this.form,
-                pid: this.pid
-            };
-            devConfigList(data)
-                .then(res => {
-                    this.configurationList = res.payload;
-                    this.count = res.payload.count;
-                })
-                .catch(error => {
-                    return error;
-                });
+            devConfigDetail({ ...this.form }).then(res => {
+                this.configurationList = res.payload;
+            });
         }
     }
 };
