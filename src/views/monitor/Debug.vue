@@ -268,7 +268,8 @@ export default {
                 pid: this.form.pid,
                 did: this.form.did,
                 action: this.method,
-                payload: { ...this.content }
+                payload: { ...this.content },
+                operationItem: this.operationItem
             };
             sendMessage(data)
                 .then(() => {
