@@ -75,10 +75,15 @@
                         size="small"
                         style="margin-left: 10px;"
                         @click="getOtaDetail(scope.row.did)"
+                        v-if="scope.row.firmwareStatus === 2"
                     >升级进度</el-button>
                 </template>
             </el-table-column>
-            <el-table-column prop="firmwareStatus" label="固件升级状态" min-width="10%"></el-table-column>
+            <el-table-column label="固件升级状态" min-width="10%">
+                <template slot-scope="scope">
+                    <span>{{ handleFormatter(scope.row, 'firmwareStatus', scope.row.firmwareStatus) }}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="hwVersion" label="硬件版本号" min-width="8%"></el-table-column>
             <el-table-column label="在线状态" min-width="8%">
                 <template slot-scope="scope">
@@ -425,6 +430,17 @@ export default {
                     if (cellValue) {
                         let reg = /\{|\}/g;
                         result = JSON.stringify(cellValue).replace(reg, "");
+                    }
+                    break;
+                case "firmwareStatus":
+                    if (cellValue === 1) {
+                        result = "正常";
+                    } else if (cellValue === 2) {
+                        result = "正在升级";
+                    } else if (cellValue === 3) {
+                        result = "升级完成";
+                    } else if (cellValue === 4) {
+                        result = "升级失败";
                     }
                     break;
             }
