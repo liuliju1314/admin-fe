@@ -32,3 +32,11 @@ export function sendDebugLevel(data) {
         data
     })
 }
+
+export function sendDeviceData(data) {
+    return service({
+        url: '/api/debug/test',
+        method: 'post',
+        data
+    })
+}

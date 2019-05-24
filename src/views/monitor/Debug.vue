@@ -11,6 +11,8 @@
                 @click="dialogVisible = true"
             >选择设备</el-button>
 
+            <el-button type="primary" style="margin-bottom:20px" @click="sendDeviceMethod">发送</el-button>
+
             <div style="margin-bottom:20px">当前选中产品：{{chooseData.name}}，当前选择设备：{{chooseData.did}}</div>
 
             <el-dialog title="选择设备" :visible.sync="dialogVisible" center>
@@ -188,7 +190,7 @@ import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList, getDeviceProps } from "@/api/device/device";
 import { devConfigDetail } from "@/api/configuration/configuration";
-import { sendMessage, sendDebugLevel } from "@/api/debug/debug";
+import { sendMessage, sendDebugLevel, sendDeviceData } from "@/api/debug/debug";
 export default {
     components: {},
     props: {},
@@ -245,6 +247,23 @@ export default {
         this.closeLink();
     },
     methods: {
+        //测试使用的临时发送函数
+        sendDeviceMethod() {
+            const data = {
+                pid: this.chooseData.pid ? this.chooseData.pid : "",
+                did: this.chooseData.did ? this.chooseData.did : ""
+            };
+            sendDeviceData(data)
+                .then(() => {
+                    this.$message({
+                        message: "发送成功",
+                        type: "success"
+                    });
+                })
+                .catch(err => {
+                    return err;
+                });
+        },
         // 发送数据
         sendData() {
             this.content = this.editor.get(); //把编辑框中的文本赋值过来
