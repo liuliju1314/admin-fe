@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="添加固件" :visible.sync="visible" center :before-close="beforeClose">
+    <el-dialog :title="title" :visible.sync="visible" center :before-close="beforeClose">
         <el-form
             :model="form"
             ref="form"
@@ -75,13 +75,12 @@
                     filterable
                     default-first-option
                     placeholder="请选择固件名称"
-                    :disabled="isEdit"
                 >
                     <el-option
                         v-for="(item,index) in fwNameList"
                         :key="index"
                         :label="item.desc"
-                        :value="item.desc"
+                        :value="item.name"
                     ></el-option>
                 </el-select>
             </el-form-item>
@@ -137,6 +136,7 @@ export default {
             isEdit: false,
             files: [],
             fileList: [],
+            title: "",
             rules: {
                 group: [
                     {
@@ -181,11 +181,13 @@ export default {
         isFwInfo() {
             if (this.fwInfo) {
                 this.isEdit = true;
+                this.title = this.fwInfo.fwID;
                 this.$nextTick(() => {
                     this.form = { ...this.form, ...this.fwInfo };
                 });
             } else {
                 this.isEdit = false;
+                this.title = "添加固件";
             }
         },
         beforeClose() {

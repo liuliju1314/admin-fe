@@ -58,6 +58,7 @@
                 <el-form-item label="编码格式" prop="codeFormat">
                     <el-select v-model="form.codeFormat" placeholder="请选择编码格式" size="small">
                         <el-option label="JSON " value="JSON"></el-option>
+                        <el-option label="TLV " value="TLV"></el-option>
                     </el-select>
                 </el-form-item>
 

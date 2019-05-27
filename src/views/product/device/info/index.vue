@@ -15,9 +15,12 @@
                 设备详情
             </div>
             <div class="card-title">
-                <span> {{did}}</span>
+                <span>{{did}}</span>
                 <span class="product-status" :class="devStatus === 1 ? 'online': 'outline'"></span>
-                <span class="product-status" :class="devStatus === 1 ? '' : 'outlineText'">{{devStatus === 1? '在线': '离线'}}</span>
+                <span
+                    class="product-status"
+                    :class="devStatus === 1 ? '' : 'outlineText'"
+                >{{devStatus === 1? '在线': '离线'}}</span>
             </div>
             <router-link
                 class="link-item"
@@ -29,6 +32,11 @@
                 active-class="active"
                 :to="'/product/'+pid+ '/device/'+did+'/state'"
             >运行状态</router-link>
+            <router-link
+                class="link-item"
+                active-class="active"
+                :to="'/product/'+pid+ '/device/'+did+'/configuration'"
+            >配置详情</router-link>
         </div>
         <router-view></router-view>
     </el-card>
@@ -57,9 +65,9 @@ export default {
             if (this.$route.params.did) {
                 this.pid = this.$route.params.id;
                 this.did = this.$route.params.did;
-                getDeviceList({pid: this.pid, did: this.did}).then(res=> {
+                getDeviceList({ pid: this.pid, did: this.did }).then(res => {
                     this.devStatus = res.payload.items[0].status;
-                })
+                });
                 this.$store
                     .dispatch("DeviceInfoSet", { name: this.did })
                     .then(() => {
@@ -104,21 +112,21 @@ export default {
         color: @baseColor;
         border-bottom: 2px solid @baseColor;
     }
-        .product-circle {
-            width: 6px;
-            height: 6px;
-            display: inline-block;
-            vertical-align: middle;
-            margin: 0 4px 0 10px;
-            border-radius: 50%;
-            background-color: #1890ff;
-        }
-        .product-status {
-            font-size: 13px;
-            color: #1890ff;
-        }
-        .outlineText{
-            color: #74777A;
-        }
+    .product-circle {
+        width: 6px;
+        height: 6px;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 4px 0 10px;
+        border-radius: 50%;
+        background-color: #1890ff;
+    }
+    .product-status {
+        font-size: 13px;
+        color: #1890ff;
+    }
+    .outlineText {
+        color: #74777a;
+    }
 }
 </style>

@@ -11,6 +11,8 @@
                 @click="dialogVisible = true"
             >选择设备</el-button>
 
+            <el-button type="primary" style="margin-bottom:20px" @click="sendDeviceMethod">发送</el-button>
+
             <div style="margin-bottom:20px">当前选中产品：{{chooseData.name}}，当前选择设备：{{chooseData.did}}</div>
 
             <el-dialog title="选择设备" :visible.sync="dialogVisible" center>
@@ -81,6 +83,16 @@
                         <div v-if="form.did">
                             <div style="margin-bottom: 10px;display: flex;">
                                 <el-select
+                                    v-model="operationItem"
+                                    placeholder="请选择操作项"
+                                    size="small"
+                                    style="margin-right: 10px"
+                                    @change="changeOperation"
+                                >
+                                    <el-option label="属性" value="attribute"></el-option>
+                                    <el-option label="配置" value="configuration"></el-option>
+                                </el-select>
+                                <el-select
                                     v-model="propId"
                                     placeholder="请选择功能"
                                     size="small"
@@ -94,7 +106,6 @@
                                         :key="prop.id"
                                     ></el-option>
                                 </el-select>
-
                                 <el-select v-model="method" placeholder="请选择方法" size="small">
                                     <el-option
                                         v-if="propPermission === 'RW' || propPermission === 'WO'"
@@ -178,7 +189,8 @@ import JSONEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
 import { getProductList } from "@/api/product/product";
 import { getDeviceList, getDeviceProps } from "@/api/device/device";
-import { sendMessage, sendDebugLevel } from "@/api/debug/debug";
+import { devConfigDetail } from "@/api/configuration/configuration";
+import { sendMessage, sendDebugLevel, sendDeviceData } from "@/api/debug/debug";
 export default {
     components: {},
     props: {},
@@ -188,9 +200,11 @@ export default {
                 pid: "",
                 did: "",
                 page: 1,
-                pageSize: 10
+                pageSize: 10,
+                isPage: false
             },
             level: "debug",
+            operationItem: "",
             propId: "",
             method: "",
             rules: {
@@ -220,7 +234,9 @@ export default {
             getDeviceListData: [],
             radio: "",
             total: "",
-            chooseData: ""
+            chooseData: "",
+            DevicePropsList: [],
+            configDetailList: []
         };
     },
     created() {
@@ -231,6 +247,23 @@ export default {
         this.closeLink();
     },
     methods: {
+        //测试使用的临时发送函数
+        sendDeviceMethod() {
+            const data = {
+                pid: this.chooseData.pid ? this.chooseData.pid : "",
+                did: this.chooseData.did ? this.chooseData.did : ""
+            };
+            sendDeviceData(data)
+                .then(() => {
+                    this.$message({
+                        message: "发送成功",
+                        type: "success"
+                    });
+                })
+                .catch(err => {
+                    return err;
+                });
+        },
         // 发送数据
         sendData() {
             this.content = this.editor.get(); //把编辑框中的文本赋值过来
@@ -254,7 +287,8 @@ export default {
                 pid: this.form.pid,
                 did: this.form.did,
                 action: this.method,
-                payload: { ...this.content }
+                payload: { ...this.content },
+                operationItem: this.operationItem
             };
             sendMessage(data)
                 .then(() => {
@@ -288,9 +322,13 @@ export default {
             this.isdevOnline = curDev.status === 1 ? true : false;
             getDeviceProps({ ...this.form, businessType: [1, 2, 3] }).then(
                 res => {
-                    this.propList = res.payload;
+                    this.DevicePropsList = res.payload;
                 }
             );
+
+            devConfigDetail({ ...this.form }).then(res => {
+                this.configDetailList = res.payload;
+            });
         },
         closeLink() {
             if (this.ws) {
@@ -377,8 +415,14 @@ export default {
                     return error;
                 });
         },
+        changeOperation() {
+            if (this.operationItem === "attribute") {
+                this.propList = this.DevicePropsList;
+            } else {
+                this.propList = this.configDetailList;
+            }
+        },
         setProp(value) {
-            console.log("value: " + value);
             this.content = {};
             const prop = this.propList.find(item => item.label === value);
             this.propPermission = prop.permission;
@@ -410,6 +454,7 @@ export default {
             };
             sendDebugLevel(data).then(() => {});
         },
+        // 选择设备的单选按钮
         handleDeviceChoice(value) {
             this.form.pid = value.pid;
             this.form.did = value.did;

@@ -13,6 +13,16 @@ export default {
     created() {
         this.getDevice();
     },
+    watch: {
+        $route() {
+            if (
+                this.$route.path.indexOf("device") >= 0 &&
+                !this.$route.params.did
+            ) {
+                this.form.pid = this.$route.params.id;
+            }
+        }
+    },
     methods: {
         getDevice() {
             this.form.pid = this.$route.params.id;
@@ -31,5 +41,6 @@ export default {
             }
 
         },
+
     },
 }

@@ -27,6 +27,11 @@
             <router-link
                 class="link-item"
                 active-class="active"
+                :to="'/product/'+pid+'/configuration'"
+            >配置管理</router-link>
+            <router-link
+                class="link-item"
+                active-class="active"
                 :to="'/product/'+pid+'/firmware'"
             >固件升级</router-link>
             <router-link
