@@ -75,7 +75,7 @@
                         size="small"
                         style="margin-left: 10px;"
                         @click="getOtaDetail(scope.row.did)"
-                        v-if="scope.row.firmwareStatus === 2"
+                        v-if="scope.row.firmwareStatus === 1"
                     >升级进度</el-button>
                 </template>
             </el-table-column>
@@ -411,6 +411,7 @@ export default {
         listenUpgrade(value) {
             this.upgradeDevice = "";
             this.dialogVisible = value;
+            this.getDevice();
         },
         // 格式化表单显示
         handleFormatter(row, column, cellValue) {
@@ -433,13 +434,13 @@ export default {
                     }
                     break;
                 case "firmwareStatus":
-                    if (cellValue === 1) {
+                    if (cellValue === 0) {
                         result = "正常";
-                    } else if (cellValue === 2) {
+                    } else if (cellValue === 1) {
                         result = "正在升级";
-                    } else if (cellValue === 3) {
+                    } else if (cellValue === 2) {
                         result = "升级完成";
-                    } else if (cellValue === 4) {
+                    } else if (cellValue === 3) {
                         result = "升级失败";
                     }
                     break;
