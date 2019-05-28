@@ -15,7 +15,12 @@
 
             <div style="margin-bottom:20px">当前选中产品：{{chooseData.name}}，当前选择设备：{{chooseData.did}}</div>
 
-            <el-dialog title="选择设备" :visible.sync="dialogVisible" center>
+            <el-dialog
+                title="选择设备"
+                :visible.sync="dialogVisible"
+                center
+                :before-close="closeSetting"
+            >
                 <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small">
                     <el-form-item class="form-item" prop="pid">
                         <el-select
@@ -467,6 +472,7 @@ export default {
             }
             this.openLink();
             this.dialogVisible = false;
+            this.closeSetting();
         },
         // 格式化表单显示
         handleFormatter(row, column, cellValue) {
@@ -491,6 +497,12 @@ export default {
                     break;
             }
             return result;
+        },
+        //清空表单
+        closeSetting() {
+            this.form.pid = "";
+            this.getDeviceListData = [];
+            this.dialogVisible = false;
         }
     }
 };
