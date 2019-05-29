@@ -623,7 +623,9 @@ export default {
         },
         getMetaData(value) {
             this.metaData = [];
-            const curProp = this.propertyList.find(item => item.id === value);
+            const curProp = this.propertyList.find(
+                item => item.label === value
+            );
             if (curProp) {
                 const dataType = curProp.dataType;
                 if (dataType.type === "enum") {
