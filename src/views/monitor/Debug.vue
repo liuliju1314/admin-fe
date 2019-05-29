@@ -11,7 +11,12 @@
                 @click="dialogVisible = true"
             >选择设备</el-button>
 
-            <el-button type="primary" style="margin-bottom:20px" @click="sendDeviceMethod">发送</el-button>
+            <el-button
+                type="primary"
+                style="margin-bottom:20px"
+                @click="sendDeviceMethod"
+                icon="el-icon-camera-solid"
+            >拍照</el-button>
 
             <div style="margin-bottom:20px">当前选中产品：{{chooseData.name}}，当前选择设备：{{chooseData.did}}</div>
 
@@ -26,8 +31,8 @@
                         <el-select
                             placeholder="请选择产品"
                             filterable
-                            v-model="form.pid"
-                            @change="getDeviceListMethod(form.pid)"
+                            v-model="pid"
+                            @change="getDeviceListMethod(pid)"
                         >
                             <el-option
                                 v-for="product in productList"
@@ -241,7 +246,8 @@ export default {
             total: "",
             chooseData: "",
             DevicePropsList: [],
-            configDetailList: []
+            configDetailList: [],
+            pid: "" //为了不污染传输数据所以单独写了一个pid，不然清空表单时form的pid也会消失
         };
     },
     created() {
@@ -252,7 +258,15 @@ export default {
         this.closeLink();
     },
     methods: {
-        //测试使用的临时发送函数
+        getDeviceListMethod(value) {
+            this.getDeviceListData = [];
+            this.form.page = 1;
+            this.form.pid = value;
+            if (value) {
+                this.getDevice();
+            }
+        },
+        //测试拍照使用的临时发送函数
         sendDeviceMethod() {
             const data = {
                 pid: this.chooseData.pid ? this.chooseData.pid : "",
@@ -288,6 +302,7 @@ export default {
                     return;
                 }
             }
+            console.log("this.form.pid: " + this.form.pid);
             const data = {
                 pid: this.form.pid,
                 did: this.form.did,
@@ -434,14 +449,7 @@ export default {
             this.content = Object.assign({}, { [prop.label]: prop.value });
             this.editor.set(this.content);
         },
-        getDeviceListMethod(value) {
-            this.getDeviceListData = [];
-            this.form.page = 1;
-            this.form.pid = value;
-            if (value) {
-                this.getDevice();
-            }
-        },
+
         //分页
         handlePage(value) {
             this.form.page = value;
@@ -500,7 +508,7 @@ export default {
         },
         //清空表单
         closeSetting() {
-            this.form.pid = "";
+            this.pid = "";
             this.getDeviceListData = [];
             this.dialogVisible = false;
         }
