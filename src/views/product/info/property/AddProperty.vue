@@ -26,7 +26,7 @@
                     <el-option label="enum (枚举型)" value="enum"></el-option>
                     <el-option label="float (浮点型)" value="float"></el-option>
                     <el-option label="int (整数型)" value="int"></el-option>
-                    <el-option label="data (时间型)" value="data"></el-option>
+                    <el-option label="date (时间型)" value="date"></el-option>
                     <el-option label="array (数组型)" value="array"></el-option>
                 </el-select>
             </el-form-item>
@@ -118,9 +118,9 @@
                     <el-radio :label="false">时间段累积采样</el-radio>
                 </el-radio-group>
             </el-form-item>-->
-            <el-form-item label="默认值" prop="default">
+            <!-- <el-form-item label="默认值" prop="default">
                 <el-input v-model="propertForm.default"></el-input>
-            </el-form-item>
+            </el-form-item>-->
 
             <el-form-item label="描述" prop="desc">
                 <el-input type="textarea" v-model="propertForm.desc"></el-input>
