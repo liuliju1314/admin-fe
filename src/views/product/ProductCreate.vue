@@ -149,7 +149,8 @@ export default {
                 nodeType: "",
                 netMode: "",
                 protocolType: "",
-                fwGroup: []
+                fwGroup: [],
+                codeFormat: ""
             },
             title: "",
             formRules: {
