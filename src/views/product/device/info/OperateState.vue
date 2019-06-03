@@ -97,6 +97,11 @@ export default {
             businessType: [2, 3]
         }).then(res => {
             this.propList = res.payload;
+            this.propList.map(item => {
+                if (item.name === "时间") {
+                    item.value = formatDate(item.value * 1000, "h:i:s");
+                }
+            });
         });
     },
     methods: {
