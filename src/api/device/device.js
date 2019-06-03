@@ -97,3 +97,14 @@ export function getDevTemplates(data) {
         params: data
     })
 }
+
+// 升级失败原因接口
+
+export function getOTAFailDetail(data) {
+    return service({
+        url: '/api/device/ota/fail/detail',
+        method: 'GET',
+        params: data
+    })
+}
+

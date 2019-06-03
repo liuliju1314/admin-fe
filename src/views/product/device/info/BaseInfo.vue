@@ -48,8 +48,6 @@ import copy from "@/views/mixins/copy";
 
 export default {
     mixins: [deviceList, copy],
-    components: {},
-    props: {},
     data() {
         return {
             form: {
@@ -65,7 +63,10 @@ export default {
     watch: {
         $route() {
             this.form.did = this.$route.params.did;
-            if (this.$route.params.did) {
+            if (
+                this.$route.params.did &&
+                this.$route.path.indexOf("detail") >= 0
+            ) {
                 this.form.did = this.$route.params.did;
                 this.getDevice();
             }

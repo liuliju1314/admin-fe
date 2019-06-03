@@ -81,7 +81,10 @@
             </el-table-column>
             <el-table-column label="固件升级状态" min-width="10%">
                 <template slot-scope="scope">
-                    <span>{{ handleFormatter(scope.row, 'firmwareStatus', scope.row.firmwareStatus) }}</span>
+                    <span
+                        :class="scope.row.firmwareStatus === 3?'blue':''"
+                        @click="upgradeFailed(scope.row)"
+                    >{{ handleFormatter(scope.row, 'firmwareStatus', scope.row.firmwareStatus) }}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="hwVersion" label="硬件版本号" min-width="8%"></el-table-column>
@@ -230,6 +233,32 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
+        <!-- 升级失败 -->
+        <el-dialog
+            title="升级失败"
+            :visible.sync="upgradeFailedVisible"
+            top="15%"
+            :before-close="upgradeFailedClose"
+        >
+            <el-row style="line-height: 50px">
+                <div>
+                    <span class="upgradeFailed">信息：</span>
+                    <span>{{otaFailDetail.errMsg}}</span>
+                </div>
+                <div>
+                    <span class="upgradeFailed">时间：</span>
+                    <span>{{formatTime(otaFailDetail.time)}}</span>
+                </div>
+                <div>
+                    <span class="upgradeFailed">固件ID：</span>
+                    <span>{{otaFailDetail.fwID}}</span>
+                </div>
+                <div>
+                    <span class="upgradeFailed">固件名称：</span>
+                    <span>{{otaFailDetail.name}}</span>
+                </div>
+            </el-row>
+        </el-dialog>
     </div>
 </template>
 
@@ -238,11 +267,14 @@ import VueProgress from "./info/VueProgress";
 import DeviceUpgrade from "./DeviceUpgrade";
 import deviceList from "./mixins/deviceList";
 import copy from "@/views/mixins/copy";
+import { formatDate } from "@/utils/timeFormat";
+
 import {
     addDeviceAuto,
     addDeviceUpload,
     addVirtual,
-    getDevTemplates
+    getDevTemplates,
+    getOTAFailDetail
 } from "@/api/device/device";
 import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 import {
@@ -298,10 +330,12 @@ export default {
             upgradeVisible: false,
             virtualVisible: false,
             batchVisible: false,
+            upgradeFailedVisible: false,
             progressList: [],
             selectedDevice: "",
             deviceCount: "",
-            refreshDid: ""
+            refreshDid: "",
+            otaFailDetail: []
         };
     },
     components: { DeviceUpgrade, VueProgress },
@@ -601,11 +635,41 @@ export default {
                     }
                 }
             }
+        },
+        // 升级失败详情
+        upgradeFailed(value) {
+            this.upgradeFailedVisible = true;
+            if (value.firmwareStatus === 3) {
+                const data = {
+                    did: value.did,
+                    pid: value.pid
+                };
+                getOTAFailDetail(data).then(res => {
+                    this.otaFailDetail = res.payload;
+                });
+            }
+        },
+        // 格式化时间
+        formatTime(value) {
+            return formatDate(value, "y - m - d h : i : s");
+        },
+        upgradeFailedClose() {
+            this.otaFailDetail = [];
+            this.upgradeFailedVisible = false;
+            this.getDevice();
         }
     }
 };
 </script>
 <style lang='less' scoped>
+.upgradeFailed {
+    width: 80px;
+    display: inline-block;
+}
+.blue {
+    color: #409eff;
+    cursor: pointer;
+}
 .copy-box {
     margin-left: 4px;
 }

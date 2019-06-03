@@ -325,6 +325,7 @@ export default {
         },
 
         doDeviceSearch() {
+            this.operationItem = [];
             if (!this.editor) {
                 this.$nextTick(() => {
                     this.editor = new JSONEditor(

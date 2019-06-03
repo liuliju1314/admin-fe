@@ -88,23 +88,38 @@ export default {
         VeLine,
         VeHistogram
     },
+    watch: {
+        $route() {
+            this.did = this.$route.params.did;
+            if (
+                this.$route.params.did &&
+                this.$route.path.indexOf("state") >= 0
+            ) {
+                this.did = this.$route.params.did;
+                this.getPropsMethod();
+            }
+        }
+    },
     created() {
         this.did = this.$route.params.did;
         this.pid = this.$route.params.id;
-        getDeviceProps({
-            did: this.did,
-            pid: this.pid,
-            businessType: [2, 3]
-        }).then(res => {
-            this.propList = res.payload;
-            this.propList.map(item => {
-                if (item.name === "时间") {
-                    item.value = formatDate(item.value * 1000, "h:i:s");
-                }
-            });
-        });
+        this.getPropsMethod();
     },
     methods: {
+        getPropsMethod() {
+            getDeviceProps({
+                did: this.did,
+                pid: this.pid,
+                businessType: [2, 3]
+            }).then(res => {
+                this.propList = res.payload;
+                this.propList.map(item => {
+                    if (item.name === "时间") {
+                        item.value = formatDate(item.value * 1000, "h:i:s");
+                    }
+                });
+            });
+        },
         // 设置默认日期格式
         handleDefaultformat() {
             let curDate = new Date(),
