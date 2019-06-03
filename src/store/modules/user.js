@@ -1,5 +1,5 @@
 
-import { userLogin,userLogout} from "@/api/user/user";
+import { userLogin, userLogout } from "@/api/user/user";
 import { setToken, removeToken, getStorage, setStorage } from '@/utils/auth';
 
 const user = {
@@ -19,7 +19,7 @@ const user = {
             return new Promise((resolve, reject) => {
                 userLogin(data).then(res => {
                     const data = res.payload;
-                    if(data === null) {
+                    if (data === null) {
                         return Promise.reject(res.code);
                     }
                     commit('SET_TOKEN', data.token)
@@ -38,7 +38,7 @@ const user = {
                     .then(() => {
                         commit('SET_TOKEN', "")
                         removeToken()
-                        localStorage.clear();                      
+                        localStorage.clear();
                         resolve();
                     })
                     .catch(error => {
@@ -46,20 +46,6 @@ const user = {
                     });
             });
         }
-        // UserLogout({ commit, state }) {
-        //     return new Promise((resolve, reject) => {
-        //         userLogout(state.id).then(() => {
-        //             commit('SET_TOKEN', '')
-        //             commit('SET_USER', [])
-        //             removeToken();
-        //             sessionStorage.clear()
-        //             localStorage.clear()
-        //             resolve()
-        //         }).catch(error => {
-        //             reject(error)
-        //         })
-        //     })
-        // }
     }
 }
 

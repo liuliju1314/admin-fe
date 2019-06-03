@@ -155,7 +155,7 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="设备数量：" prop="deviceNum" v-if="batchForm.addMothod === 'auto'">
-                    <el-input-number v-model="batchForm.deviceNum" :min="1" :max="10" label="描述文字"></el-input-number>
+                    <el-input-number v-model="batchForm.deviceNum" :min="1" label="描述文字"></el-input-number>
                 </el-form-item>
                 <el-form-item label="上传设备文件：" prop="file" v-if="batchForm.addMothod === 'manual'">
                     <div class="upload-demo">
@@ -221,12 +221,7 @@
                     prop="deviceNum"
                     v-if="virtualForm.addMothod === 'auto'"
                 >
-                    <el-input-number
-                        v-model="virtualForm.deviceNum"
-                        :min="1"
-                        :max="10"
-                        label="描述文字"
-                    ></el-input-number>
+                    <el-input-number v-model="virtualForm.deviceNum" :min="1" label="描述文字"></el-input-number>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="addVirtualDevs">确定</el-button>
