@@ -21,6 +21,15 @@
                 <el-table-column label="创建时间">
                     <template slot-scope="scope">{{ changeTimeFormater(scope.row.createdTime) }}</template>
                 </el-table-column>
+                <el-table-column label="状态">
+                    <template slot-scope="scope">
+                        <span
+                            class="cell-item"
+                            :class="scope.row.enable === 1? 'online': 'outline'"
+                        ></span>
+                        <span>{{ handleFormatter(scope.row, 'enable', scope.row.enable) }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
                         <el-button
@@ -92,6 +101,21 @@ export default {
     },
 
     methods: {
+        // 格式化表单显示
+        handleFormatter(row, column, cellValue) {
+            const prop = column.property || column;
+            let result;
+            switch (prop) {
+                case "enable":
+                    if (cellValue === 1) {
+                        result = "运行中";
+                    } else if (cellValue === 0) {
+                        result = "未启动";
+                    }
+                    break;
+            }
+            return result;
+        },
         listenAdd(value) {
             this.dialogVisible = value;
             this.handleRuleList(1);
