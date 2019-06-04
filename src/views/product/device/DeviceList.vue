@@ -117,6 +117,7 @@
             @listenUpgrade="listenUpgrade"
             :visible="dialogVisible"
         ></device-upgrade>
+        <!-- 升级详情对话框 -->
         <el-dialog title="升级详情" :visible.sync="upgradeVisible" :before-close="handleProgressClose">
             <el-button
                 size="small"
@@ -486,6 +487,7 @@ export default {
         // 关闭进度框
         handleProgressClose() {
             this.progressList = [];
+            this.getDevice();
             this.upgradeVisible = false;
         },
         // 设备类型过滤
