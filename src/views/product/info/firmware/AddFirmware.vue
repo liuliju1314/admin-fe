@@ -21,7 +21,6 @@
                             :key="index"
                             :label="item.desc"
                             :value="item.name"
-                            @change="handleFwType"
                         ></el-option>
                     </el-select>
                 </el-form-item>
@@ -62,7 +61,7 @@
 
                 <div
                     style="margin-left: 100px"
-                    v-if="fwNameList.find( item => item.value === 'double' && item.name === form.fwName)"
+                    v-if="fwNameList.find( item => item.type === 'double' && item.name === form.fwName)"
                 >
                     <el-button
                         type="text"
