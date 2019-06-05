@@ -9,6 +9,22 @@
             size="small"
         >
             <div v-if="!isEdit">
+                <el-form-item label="固件名称" prop="fwName" v-if="fwNameList.length > 0">
+                    <el-select
+                        v-model="form.fwName"
+                        filterable
+                        default-first-option
+                        placeholder="请选择固件名称"
+                    >
+                        <el-option
+                            v-for="(item,index) in fwNameList"
+                            :key="index"
+                            :label="item.desc"
+                            :value="item.name"
+                            @change="handleFwType"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
                 <div style="display: flex" v-for="(item,index) in upload" :key="index">
                     <el-form-item label="选择固件">
                         <div class="upload-demo">
@@ -44,7 +60,10 @@
                     </div>
                 </div>
 
-                <div style="margin-left: 100px">
+                <div
+                    style="margin-left: 100px"
+                    v-if="fwNameList.find( item => item.value === 'double' && item.name === form.fwName)"
+                >
                     <el-button
                         type="text"
                         size="small"
@@ -68,21 +87,6 @@
                     v-model="form.version"
                     placeholder="建议采用版本递增进行管理,如：1.0.0"
                 ></el-input>
-            </el-form-item>
-            <el-form-item label="固件名称" prop="fwName" v-if="fwNameList.length > 0">
-                <el-select
-                    v-model="form.fwName"
-                    filterable
-                    default-first-option
-                    placeholder="请选择固件名称"
-                >
-                    <el-option
-                        v-for="(item,index) in fwNameList"
-                        :key="index"
-                        :label="item.desc"
-                        :value="item.name"
-                    ></el-option>
-                </el-select>
             </el-form-item>
             <el-form-item label="描述" prop="desc">
                 <el-input type="textarea" v-model="form.desc"></el-input>
@@ -190,6 +194,8 @@ export default {
                 this.title = "添加固件";
             }
         },
+        // 判断固件使用单一分区还是AB分区
+        handleFwType(value) {},
         beforeClose() {
             this.$nextTick(() => {
                 this.isCreating = false;

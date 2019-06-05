@@ -74,32 +74,48 @@
                             style="margin: 0px 0px 10px 0px;"
                         >
                             <div v-if="index === 0">
-                                <span style="display: inline-block; width: 43%">标识符:</span>
-                                <span style="display: inline-block; width: 40%">描述:</span>
+                                <span style="display: inline-block; width: 33%">标识符:</span>
+                                <span style="display: inline-block; width: 31%">描述:</span>
+                                <span style="display: inline-block; width: 30%">分区类型:</span>
                             </div>
                             <el-form-item
                                 :prop="'fwGroup.' + index + '.name'"
                                 :rules="{
                             required: true, message: '请输入标识符', trigger: 'blur'
                             }"
-                                style="display: inline-block;width: 33%;"
+                                style="display: inline-block;width: 25%;"
                             >
                                 <el-input v-model="item.name"></el-input>
                             </el-form-item>
                             <span
                                 class="span"
-                                style="display: inline-block;width: 3%;margin:0 3%;text-align: center"
+                                style="display: inline-block;width: 2%;margin:0 3%;text-align: center"
                             >~</span>
                             <el-form-item
                                 :prop="'fwGroup.' + index + '.desc'"
-                                style="    display: inline-block;width: 33%;"
+                                style="    display: inline-block;width: 25%;"
                                 :rules="{
                             required: true, message: '请输入描述', trigger: 'blur'
                         }"
                             >
                                 <el-input v-model="item.desc"></el-input>
                             </el-form-item>
-
+                            <span
+                                class="span"
+                                style="display: inline-block;width: 2%;margin:0 3%;text-align: center"
+                            >~</span>
+                            <el-form-item
+                                :prop="'fwGroup.' + index + '.type'"
+                                style="    display: inline-block;width: 25%;"
+                                :rules="{
+                            required: true, message: '请输入描述', trigger: 'blur'
+                        }"
+                            >
+                                <el-select v-model="item.type" placeholder="请选择">
+                                    <el-option label="AB分区" value="double"></el-option>
+                                    <el-option label="单一分区" value="single"></el-option>
+                                </el-select>
+                            </el-form-item>
                             <el-button
                                 type="text"
                                 @click="deleteFw(index)"
@@ -108,7 +124,7 @@
                         </div>
                         <el-button
                             type="text"
-                            @click="form.fwGroup.push({name: '', desc: ''})"
+                            @click="form.fwGroup.push({name: '', desc: '', type: ''})"
                         >+ 添加固件名称</el-button>
                     </div>
                 </div>
