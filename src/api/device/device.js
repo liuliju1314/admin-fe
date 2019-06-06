@@ -99,12 +99,38 @@ export function getDevTemplates(data) {
 }
 
 // 升级失败原因接口
-
 export function getOTAFailDetail(data) {
     return service({
         url: '/api/device/ota/fail/detail',
         method: 'GET',
         params: data
+    })
+}
+
+// 批量删除虚拟设备
+export function deleteVirtualDevice(data) {
+    return service({
+        url: '/api/device/delete',
+        method: 'delete',
+        data
+    })
+}
+
+// 批量禁用虚拟设备
+export function disableDevice(data) {
+    return service({
+        url: '/api/device/disable',
+        method: 'post',
+        data
+    })
+}
+
+// 恢复禁用虚拟设备
+export function enableDevice(data) {
+    return service({
+        url: '/api/device/enable',
+        method: 'post',
+        data
     })
 }
 

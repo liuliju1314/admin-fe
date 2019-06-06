@@ -11,12 +11,34 @@
             <el-form-item label="设备编号">
                 <el-input v-model="form.did"></el-input>
             </el-form-item>
+            <el-form-item label="设备类型">
+                <el-select
+                    v-model="form.deviceType"
+                    placeholder="请选择设备类型"
+                    @change="handleeEquipment"
+                >
+                    <el-option label="全部" value></el-option>
+                    <el-option label="虚拟设备" value="virtual"></el-option>
+                    <el-option label="真实设备" value="true"></el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="handleeEquipment">查询</el-button>
                 <el-button @click="batchVisible=true">批量添加设备</el-button>
                 <el-button @click="virtualVisible=true">添加虚拟设备</el-button>
                 <el-button @click="switchVirtualDevice(true)">批量启动虚拟设备</el-button>
                 <el-button @click="switchVirtualDevice(false)">批量关闭虚拟设备</el-button>
+                <el-dropdown @command="handleCommand">
+                    <span class="el-dropdown-link">
+                        更多操作
+                        <i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="close">批量禁用虚拟设备</el-dropdown-item>
+                        <el-dropdown-item command="open">取消禁用虚拟设备</el-dropdown-item>
+                        <el-dropdown-item command="delete">批量删除虚拟设备</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </el-form-item>
         </el-form>
         <div
@@ -30,9 +52,9 @@
             size="small"
             @selection-change="handleSelectionChange"
         >
-            <el-table-column type="selection" min-width="5%"></el-table-column>
-            <el-table-column prop="did" label="设备编号" min-width="8%"></el-table-column>
-            <el-table-column label="设备秘钥" min-width="14%">
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column prop="did" label="设备编号"></el-table-column>
+            <el-table-column label="设备秘钥">
                 <template slot-scope="scope">
                     {{scope.row.deviceSecret}}
                     <el-button
@@ -43,14 +65,12 @@
                     >复制</el-button>
                 </template>
             </el-table-column>
-            <el-table-column
-                min-width="8%"
-                prop="deviceType"
-                :filters="[{ text: '真实设备', value: 'true' }, { text: '虚拟设备', value: 'virtual' }]"
-                :filter-method="filterDeviceType"
-                label="设备类型"
-            ></el-table-column>
-            <el-table-column prop="group" label="设备分组" min-width="10%">
+            <el-table-column label="设备类型">
+                <template
+                    slot-scope="scope"
+                >{{handleFormatter(scope.row, 'deviceType', scope.row.deviceType)}}</template>
+            </el-table-column>
+            <el-table-column prop="group" label="设备分组">
                 <template slot-scope="scope">
                     <el-select
                         v-model="scope.row.group"
@@ -64,10 +84,7 @@
                     </el-select>
                 </template>
             </el-table-column>
-            <!-- <el-table-column label="固件版本号">
-                    <template slot-scope="scope">{{scope.row.fwVersion.app}}</template>
-            </el-table-column>-->
-            <el-table-column label="软件版本号" min-width="8%">
+            <el-table-column label="软件版本号">
                 <template slot-scope="scope">
                     <div>{{ handleFormatter(scope.row, 'fwVersion', scope.row.fwVersion) }}</div>
                     <el-button
@@ -79,7 +96,7 @@
                     >升级进度</el-button>
                 </template>
             </el-table-column>
-            <el-table-column label="固件升级状态" min-width="10%">
+            <el-table-column label="固件升级状态">
                 <template slot-scope="scope">
                     <span
                         :class="scope.row.firmwareStatus === 3?'blue':''"
@@ -87,17 +104,19 @@
                     >{{ handleFormatter(scope.row, 'firmwareStatus', scope.row.firmwareStatus) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="hwVersion" label="硬件版本号" min-width="8%"></el-table-column>
-            <el-table-column label="在线状态" min-width="8%">
+            <el-table-column prop="hwVersion" label="硬件版本号"></el-table-column>
+            <el-table-column label="在线状态">
                 <template slot-scope="scope">
                     <span class="cell-item" :class="scope.row.status === 1? 'online': 'outline'"></span>
                     <span>{{ handleFormatter(scope.row, 'status', scope.row.status) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" min-width="8%">
+            <el-table-column prop="enable" label="是否禁用"></el-table-column>
+            <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click="expandDetail(scope.row)">查看</el-button>
                     <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
+                    <el-button type="text" size="small" @click="handleDelete(scope.row)">删除</el-button>
                     <el-button type="text" size="small" @click="handleState(scope.row)">运行状态</el-button>
                 </template>
             </el-table-column>
@@ -276,7 +295,10 @@ import { startVirtualDevice, stopVirtualDevice } from "@/api/debug/debug";
 import {
     updateDeviceGroup,
     getOTAProgress,
-    getDeviceCount
+    getDeviceCount,
+    deleteVirtualDevice,
+    disableDevice,
+    enableDevice
 } from "@/api/device/device";
 export default {
     mixins: [deviceList, copy],
@@ -285,6 +307,7 @@ export default {
             form: {
                 did: "",
                 status: "",
+                deviceType: "",
                 page: 1,
                 pageSize: 10
             },
@@ -367,7 +390,6 @@ export default {
                 path: `/product/${pid}/device/${row.did}/detail`
             });
         },
-
         // 获取设备总数，在线，离线
         deviceCountMethod() {
             getDeviceCount({ pid: this.form.pid })
@@ -438,6 +460,31 @@ export default {
                 });
             }
         },
+        // 删除设备
+        handleDelete(device) {
+            const didList = [];
+            didList.push(device.did);
+            const data = {
+                pid: this.form.pid,
+                did: didList
+            };
+            this.$confirm(`是否确认删除${device.did}?`, "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消"
+            }).then(() => {
+                deleteVirtualDevice(data)
+                    .then(() => {
+                        this.$message({
+                            message: "删除成功",
+                            type: "success"
+                        });
+                        this.handleeEquipment();
+                    })
+                    .catch(error => {
+                        return error;
+                    });
+            });
+        },
         listenUpgrade(value) {
             this.upgradeDevice = "";
             this.dialogVisible = value;
@@ -474,6 +521,13 @@ export default {
                         result = "升级失败";
                     }
                     break;
+                case "deviceType":
+                    if (cellValue === "virtual") {
+                        result = "虚拟设备";
+                    } else if (cellValue === "true") {
+                        result = "真实设备";
+                    }
+                    break;
             }
             return result;
         },
@@ -491,10 +545,10 @@ export default {
             this.upgradeVisible = false;
         },
         // 设备类型过滤
-        filterDeviceType(value, row, column) {
-            const property = column["property"];
-            return row[property] === value;
-        },
+        // filterDeviceType(value, row, column) {
+        //     const property = column["property"];
+        //     return row[property] === value;
+        // },
         // table选中状态
         handleSelectionChange(val) {
             this.selectedDevice = val;
@@ -633,6 +687,59 @@ export default {
                 }
             }
         },
+        // 点击更多按钮时的操作
+        handleCommand(command) {
+            if (this.selectedDevice) {
+                const hasTrueDevice = this.selectedDevice.some(
+                    item => item.deviceType === "true"
+                );
+                if (hasTrueDevice) {
+                    this.$message({
+                        message: "被选中设备中含有真实设备，不允许操作真实设备",
+                        type: "warning"
+                    });
+                } else {
+                    const list = [];
+                    this.selectedDevice.map(item => {
+                        list.push(item.did);
+                    });
+                    const data = {
+                        pid: this.$route.params.id,
+                        did: list
+                    };
+                    // 批量禁用
+                    if (command === "close") {
+                        disableDevice(data).then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "禁用成功"
+                            });
+                            this.deviceCountMethod();
+                            this.getDevice();
+                        });
+                    } else if (command === "open") {
+                        enableDevice(data).then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "解除禁用成功"
+                            });
+                            this.deviceCountMethod();
+                            this.getDevice();
+                        });
+                    } else if (command === "delete") {
+                        deleteVirtualDevice(data).then(() => {
+                            this.$message({
+                                type: "success",
+                                message: "批量删除成功"
+                            });
+                            this.deviceCountMethod();
+                            this.getDevice();
+                        });
+                    }
+                }
+            }
+            // this.$message("click on item " + command);
+        },
         // 升级失败详情
         upgradeFailed(value) {
             this.upgradeFailedVisible = true;
@@ -659,6 +766,14 @@ export default {
 };
 </script>
 <style lang='less' scoped>
+.el-dropdown-link {
+    cursor: pointer;
+    color: #409eff;
+    margin-left: 15px;
+}
+.el-icon-arrow-down {
+    font-size: 12px;
+}
 .upgradeFailed {
     width: 80px;
     display: inline-block;
