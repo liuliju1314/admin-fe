@@ -193,8 +193,6 @@ export default {
                 this.title = "添加固件";
             }
         },
-        // 判断固件使用单一分区还是AB分区
-        handleFwType(value) {},
         beforeClose() {
             this.$nextTick(() => {
                 this.isCreating = false;
