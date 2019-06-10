@@ -40,27 +40,20 @@
                 <td class="label">编码格式:</td>
                 <td class="value">{{baseInfo.codeFormat}}</td>
             </tr>
-            <tr>
+
+            <tr v-for="(item,index) in baseInfo.fwGroup" :key="index">
                 <td class="label">
-                    <span style="letter-space: 16px;"></span> 固&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件:
+                    <span style="letter-space: 16px;"></span>
+                    固件{{index + 1}}:
                 </td>
-                <td class="value">
-                    <div
-                        class="fwname-box"
-                        v-for="(item,index) in baseInfo.fwGroup"
-                        :key="index"
-                    >{{item.name}} - {{item.desc}}</div>
-                </td>
+                <td class="value">{{item.desc}}（{{item.type === 'single' ? '单一分区': 'AB分区'}}）</td>
             </tr>
             <tr>
                 <td class="label">产品描述:</td>
                 <td class="value">{{baseInfo.desc}}</td>
             </tr>
         </table>
-        <el-button
-            @click="editProduct"
-            style="padding: 10px 22px; margin: 30px 0 0 100px;"
-        >编辑</el-button>
+        <el-button @click="editProduct" style="padding: 10px 22px; margin: 30px 0 0 100px;">编辑</el-button>
         <product-create :product="product" :visible="visible" @listenOp="closeDialog"></product-create>
     </div>
 </template>
