@@ -33,7 +33,7 @@
                 class="link-item"
                 active-class="active"
                 :to="'/product/'+pid+'/firmware'"
-            >固件升级</router-link>
+            >固件管理</router-link>
             <router-link
                 class="link-item"
                 active-class="active"
