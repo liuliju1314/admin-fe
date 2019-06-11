@@ -236,8 +236,10 @@ export default {
                 if (this.product && this.visible) {
                     this.form = Object.assign({}, this.form, this.product);
                     this.title = "产品编辑";
+                    this.isCreating = false;
                 } else {
                     this.title = "添加产品";
+                    this.isCreating = true;
                 }
             });
         }
