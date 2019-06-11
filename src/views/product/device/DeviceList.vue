@@ -27,6 +27,7 @@
                 <el-button @click="virtualVisible=true">添加虚拟设备</el-button>
                 <el-button @click="switchVirtualDevice(true)">批量启动虚拟设备</el-button>
                 <el-button @click="switchVirtualDevice(false)">批量关闭虚拟设备</el-button>
+                <!-- <el-button @click="switchVirtualDevice(false)">批量升级设备</el-button> -->
                 <el-dropdown @command="handleMoreOp">
                     <span class="el-dropdown-link">
                         更多操作
@@ -439,12 +440,15 @@ export default {
             this.getDevice();
         },
         // 格式化表单显示
+        // handleFormatter(scope.row, 'status', scope.row.status)
         handleFormatter(row, column, cellValue) {
             const prop = column.property || column;
+            // console.log("prop: " + prop);
             const obj = {
                 status: ["未知状态", "在线", "离线"],
-                firmwareStatus: ["正常", "正在升级", "升级成功", "升级失败"]
+                firmwareStatus: ["待升级", "正在升级", "升级成功", "升级失败"]
             };
+            // console.log("obj[prop][cellValue]: " + obj[prop][cellValue]);
             return obj[prop][cellValue];
         },
         // 跳转至运行状态接口
