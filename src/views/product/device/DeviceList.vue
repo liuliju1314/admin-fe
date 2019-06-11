@@ -103,7 +103,6 @@
                     <span>{{scope.row.disable ? '是' :'否'}}</span>
                 </template>
             </el-table-column>
-
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click="expandDetail(scope.row)">查看</el-button>

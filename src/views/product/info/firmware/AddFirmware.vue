@@ -274,7 +274,8 @@ export default {
             reader.readAsArrayBuffer(files[0]);
         },
         handleFwName(value) {
-            this.files = this.fileList = [];
+            this.files = [];
+            this.fileList = [];
             const isDouble = this.fwNameList.find(
                 item => item.type === "double" && item.name === value
             );
