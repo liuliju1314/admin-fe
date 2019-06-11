@@ -20,7 +20,11 @@
                 ></el-input>
             </el-form-item>
             <el-form-item label="属性类型" prop="dataType.type">
-                <el-select v-model="propertForm.dataType.type" placeholder="请选择类型">
+                <el-select
+                    v-model="propertForm.dataType.type"
+                    @change="handleDatChange"
+                    placeholder="请选择类型"
+                >
                     <el-option label="bool (布尔型)" value="bool"></el-option>
                     <el-option label="string (字符型)" value="text"></el-option>
                     <el-option label="enum (枚举型)" value="enum"></el-option>
@@ -151,14 +155,14 @@ export default {
                 permission: "",
                 history: "",
                 businessType: "",
+                // instant: "",
                 desc: "",
                 default: "",
                 dataType: {
                     specs: {},
                     type: ""
                 },
-                arraySize: "",
-                dialogVisible: ""
+                arraySize: ""
             },
             formRules: {
                 label: [
@@ -227,43 +231,21 @@ export default {
         },
         // 点击确定按钮
         submitProperty() {
-            if (this.isEdit === false) {
-                this.changeMetadata();
-                this.$refs.propertForm.validate(valid => {
-                    if (valid) {
-                        this.isSubmit = true;
-                        addProperty(this.propertForm)
-                            .then(() => {
-                                this.$message({
-                                    type: "success",
-                                    message: "添加成功!"
-                                });
-                                this.handleClose();
-                            })
-                            .catch(error => {
-                                this.isSubmit = false;
-                                return error;
-                            });
-                    }
+            this.changeMetadata();
+            const fn = this.isEdit ? editProperty : addProperty;
+            const tips = this.isEdit ? "修改成功！" : "添加成功！";
+            fn(this.propertForm)
+                .then(() => {
+                    this.$message({
+                        type: "success",
+                        message: tips
+                    });
+                    this.handleClose();
+                })
+                .catch(error => {
+                    this.isSubmit = false;
+                    return error;
                 });
-            } else {
-                this.$refs.propertForm.validate(valid => {
-                    if (valid) {
-                        this.isSubmit = true;
-                        editProperty(this.propertForm)
-                            .then(() => {
-                                this.$message({
-                                    type: "success",
-                                    message: "修改成功!"
-                                });
-                                this.handleClose();
-                            })
-                            .catch(() => {
-                                this.$message.error("修改失败!");
-                            });
-                    }
-                });
-            }
         },
         // 枚举类型的数据，需要先转换metedata数据结构
         changeMetadata() {
@@ -278,7 +260,7 @@ export default {
             this.propertForm.dataType.specs = {};
             this.enumList = [{ propertyValue: "", propertyDesc: "" }];
             setTimeout(() => {
-                this.$emit("listenDialog", this.dialogVisible);
+                this.$emit("listenDialog", false);
             }, 0);
         },
         // 添加枚举
@@ -291,6 +273,10 @@ export default {
         // 删除枚举项
         deleteEnumerate(index) {
             this.enumList.splice(index, 1);
+        },
+        // 属性类型改变时操作
+        handleDatChange() {
+            this.propertForm.dataType.specs = {};
         }
     }
 };

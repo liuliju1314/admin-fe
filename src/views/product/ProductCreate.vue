@@ -85,7 +85,10 @@
                             }"
                                 style="display: inline-block;width: 25%;"
                             >
-                                <el-input v-model="item.name" :disabled="!isCreate && !!item.name"></el-input>
+                                <el-input
+                                    v-model="item.name"
+                                    :disabled="!isCreate && !!item.name && index < fwGroupLength"
+                                ></el-input>
                             </el-form-item>
                             <span
                                 class="span"
@@ -168,6 +171,7 @@ export default {
                 fwGroup: [],
                 codeFormat: ""
             },
+            fwGroupLength: 0,
             title: "",
             formRules: {
                 name: [
@@ -237,6 +241,7 @@ export default {
                 if (this.product && this.visible) {
                     this.form = Object.assign({}, this.form, this.product);
                     this.title = "产品编辑";
+                    this.fwGroupLength = this.form.fwGroup.length;
                     this.isCreate = false;
                 } else {
                     this.title = "添加产品";
