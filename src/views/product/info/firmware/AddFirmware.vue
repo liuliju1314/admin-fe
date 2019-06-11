@@ -169,12 +169,20 @@ export default {
             isEdit: false,
             files: [],
             fileList: [],
+            fileListLength: [],
             title: "",
             rules: {
                 group: [
                     {
                         required: true,
                         message: "请选择固件分组",
+                        trigger: "blur"
+                    }
+                ],
+                fwName: [
+                    {
+                        required: true,
+                        message: "请选择固件名称",
                         trigger: "blur"
                     }
                 ],
@@ -270,8 +278,12 @@ export default {
                 });
                 this.fileList.push(files[0]);
                 event.target.value = "";
+
+                console.log("this.files: " + JSON.stringify(this.files));
             };
             reader.readAsArrayBuffer(files[0]);
+
+            // console.log("this.files: " + this.files);
         },
         handleFwName(value) {
             this.files = [];
@@ -282,54 +294,59 @@ export default {
             this.files.length = isDouble ? 2 : 1;
         },
         addfirmware() {
-            this.$refs.form.validate(valid => {
-                if (valid) {
-                    this.isCreating = true;
-                    if (!this.isEdit) {
-                        let formData = new FormData();
-                        let group = ["A", "B"];
-                        this.fileList.forEach((item, index) => {
-                            formData.append(`file${group[index]}`, item);
-                        });
-                        const data = {
-                            ...this.form,
-                            files: this.files
-                        };
-                        formData.append("firmware", JSON.stringify(data));
-                        addFirmware(formData)
-                            .then(() => {
-                                this.$message({
-                                    type: "success",
-                                    message: "添加成功"
-                                });
-                                this.beforeClose();
-                            })
-                            .catch(error => {
-                                this.isCreating = false;
-                                return error;
+            if (this.fileList.length === this.files.length) {
+                this.$refs.form.validate(valid => {
+                    if (valid) {
+                        this.isCreating = true;
+                        if (!this.isEdit) {
+                            let formData = new FormData();
+                            let group = ["A", "B"];
+                            this.fileList.forEach((item, index) => {
+                                formData.append(`file${group[index]}`, item);
                             });
+                            const data = {
+                                ...this.form,
+                                files: this.files
+                            };
+                            // console.log("this.files: " + this.files);
+                            formData.append("firmware", JSON.stringify(data));
+                            addFirmware(formData)
+                                .then(() => {
+                                    this.$message({
+                                        type: "success",
+                                        message: "添加成功"
+                                    });
+                                    this.beforeClose();
+                                })
+                                .catch(error => {
+                                    this.isCreating = false;
+                                    return error;
+                                });
+                        } else {
+                            const data = {
+                                fwID: this.fwInfo.fwID,
+                                ...this.form
+                            };
+                            editFirmware(data)
+                                .then(() => {
+                                    this.$message({
+                                        type: "success",
+                                        message: "更新成功"
+                                    });
+                                    this.beforeClose();
+                                })
+                                .catch(err => {
+                                    this.isCreating = false;
+                                    return err;
+                                });
+                        }
                     } else {
-                        const data = {
-                            fwID: this.fwInfo.fwID,
-                            ...this.form
-                        };
-                        editFirmware(data)
-                            .then(() => {
-                                this.$message({
-                                    type: "success",
-                                    message: "更新成功"
-                                });
-                                this.beforeClose();
-                            })
-                            .catch(err => {
-                                this.isCreating = false;
-                                return err;
-                            });
+                        return false;
                     }
-                } else {
-                    return false;
-                }
-            });
+                });
+            } else {
+                this.$message.error("请上传正确的固件文件");
+            }
         }
     }
 };
