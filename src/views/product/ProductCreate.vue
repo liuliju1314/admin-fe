@@ -85,7 +85,7 @@
                             }"
                                 style="display: inline-block;width: 25%;"
                             >
-                                <el-input v-model="item.name" :disabled="!isCreate && item.name"></el-input>
+                                <el-input v-model="item.name" :disabled="!isCreate && !!item.name"></el-input>
                             </el-form-item>
                             <span
                                 class="span"
