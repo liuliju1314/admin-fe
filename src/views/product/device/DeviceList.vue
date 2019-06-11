@@ -608,21 +608,15 @@ export default {
                 const hasTrueDevice = this.selectedDevice.some(
                     item => item.deviceType === "true"
                 );
-                if (hasTrueDevice) {
-                    this.$message({
-                        message: "被选中设备中含有真实设备，不允许操作真实设备",
-                        type: "warning"
-                    });
-                } else {
-                    const list = [];
-                    this.selectedDevice.map(item => {
-                        list.push(item.did);
-                    });
-                    const data = {
-                        pid: this.$route.params.id,
-                        did: list
-                    };
-                    // 批量禁用
+                const list = [];
+                this.selectedDevice.map(item => {
+                    list.push(item.did);
+                });
+                const data = {
+                    pid: this.$route.params.id,
+                    did: list
+                };
+                if (command !== "delete") {
                     if (command === "close") {
                         disableDevice(data).then(() => {
                             this.$message({
@@ -641,7 +635,16 @@ export default {
                             this.deviceCountMethod();
                             this.getDevice();
                         });
-                    } else if (command === "delete") {
+                    }
+                } else {
+                    if (hasTrueDevice) {
+                        this.$message({
+                            message:
+                                "被选中设备中含有真实设备，不允许操作真实设备",
+                            type: "warning"
+                        });
+                    } else {
+                        // 批量禁用
                         deleteVirtualDevice(data).then(() => {
                             this.$message({
                                 type: "success",
@@ -653,7 +656,6 @@ export default {
                     }
                 }
             }
-            // this.$message("click on item " + command);
         },
         // 升级失败详情
         upgradeFailed(value) {
