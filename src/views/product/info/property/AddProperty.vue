@@ -127,8 +127,8 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button @click="handleClose" :disabled="isCreating">取消</el-button>
-                <el-button type="primary" @click="submitProperty" :disabled="isCreating">确定</el-button>
+                <el-button @click="handleClose" :disabled="isSubmit">取消</el-button>
+                <el-button type="primary" @click="submitProperty" :disabled="isSubmit">确定</el-button>
             </el-form-item>
         </el-form>
     </el-main>
@@ -141,7 +141,7 @@ export default {
     props: ["property", "isEdit"],
     data() {
         return {
-            isCreating: false,
+            isSubmit: false,
             labelPosition: "right",
             enumList: [{ propertyValue: "", propertyDesc: "" }],
             propertForm: {
@@ -151,7 +151,6 @@ export default {
                 permission: "",
                 history: "",
                 businessType: "",
-                // instant: "",
                 desc: "",
                 default: "",
                 dataType: {
@@ -232,7 +231,7 @@ export default {
                 this.changeMetadata();
                 this.$refs.propertForm.validate(valid => {
                     if (valid) {
-                        this.isCreating = true;
+                        this.isSubmit = true;
                         addProperty(this.propertForm)
                             .then(() => {
                                 this.$message({
@@ -242,15 +241,15 @@ export default {
                                 this.handleClose();
                             })
                             .catch(error => {
-                                this.isCreating = false;
+                                this.isSubmit = false;
                                 return error;
                             });
                     }
                 });
-            } else if (this.isEdit === true) {
+            } else {
                 this.$refs.propertForm.validate(valid => {
                     if (valid) {
-                        this.isCreating = true;
+                        this.isSubmit = true;
                         editProperty(this.propertForm)
                             .then(() => {
                                 this.$message({
@@ -274,7 +273,7 @@ export default {
         },
         // 关闭表单，清空内容
         handleClose() {
-            this.isCreating = false;
+            this.isSubmit = false;
             this.$refs.propertForm.resetFields();
             this.propertForm.dataType.specs = {};
             this.enumList = [{ propertyValue: "", propertyDesc: "" }];

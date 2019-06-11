@@ -34,7 +34,6 @@
                         <el-form-item
                             class="form-item"
                             :prop="'triggerList.' + index + '.did'"
-                            @change="handleRuleDataChange(index, 'did', 'triggerList')"
                             :rules="{
                                     required: true, message: '请选择设备', trigger: 'blur'
                                 }"
@@ -43,6 +42,7 @@
                                 placeholder="请选择设备"
                                 v-model="item.did"
                                 filterable
+                                @change="handleRuleDataChange(index, 'did', 'triggerList')"
                                 @focus="getDevice(item)"
                             >
                                 <el-option
@@ -56,7 +56,6 @@
                         <el-form-item
                             class="form-item"
                             :prop="'triggerList.' + index + '.key'"
-                            @change="handleRuleDataChange(index, 'key', 'triggerList')"
                             :rules="{
                                     required: true, message: '请选择属性', trigger: 'blur'
                                 }"
@@ -64,6 +63,7 @@
                             <el-select
                                 placeholder="请选择属性"
                                 v-model="item.key"
+                                @change="handleRuleDataChange(index, 'key', 'triggerList')"
                                 filterable
                                 @focus="getProperty(item)"
                             >
@@ -78,12 +78,15 @@
                         <el-form-item
                             class="form-item"
                             :prop="'triggerList.' + index + '.op'"
-                            @change="handleRuleDataChange(index, 'op', 'triggerList')"
                             :rules="{
                                     required: true, message: '请选择比较方式', trigger: 'blur'
                                 }"
                         >
-                            <el-select placeholder="请选择比较模式" v-model="item.op">
+                            <el-select
+                                placeholder="请选择比较模式"
+                                @change="handleRuleDataChange(index, 'op', 'triggerList')"
+                                v-model="item.op"
+                            >
                                 <el-option label=">" value=">"></el-option>
                                 <el-option label=">=" value=">="></el-option>
                                 <el-option label="<" value="<"></el-option>
@@ -124,12 +127,16 @@
                         <el-form-item
                             class="form-item"
                             :prop="'filterList.' + index + '.pid'"
-                            @change="handleRuleDataChange(index, 'pid', 'filterList')"
                             :rules="{
                                     message: '请选择产品', trigger: 'blur'
                                 }"
                         >
-                            <el-select placeholder="请选择产品" v-model="item.pid" @focus="getProduct">
+                            <el-select
+                                placeholder="请选择产品"
+                                @change="handleRuleDataChange(index, 'pid', 'filterList')"
+                                v-model="item.pid"
+                                @focus="getProduct"
+                            >
                                 <el-option
                                     v-for="product in productList"
                                     :label="product.name"
@@ -140,7 +147,6 @@
                         </el-form-item>
                         <el-form-item
                             class="form-item"
-                            @change="handleRuleDataChange(index, 'did', 'filterList')"
                             :prop="'filterList.' + index + '.did'"
                             :rules="{
                                     message: '请选择设备', trigger: 'blur'
@@ -149,6 +155,7 @@
                             <el-select
                                 placeholder="请选择设备"
                                 v-model="item.did"
+                                @change="handleRuleDataChange(index, 'did', 'filterList')"
                                 filterable
                                 @focus="getDevice(item)"
                             >
@@ -162,7 +169,6 @@
                         </el-form-item>
                         <el-form-item
                             class="form-item"
-                            @change="handleRuleDataChange(index, 'key', 'filterList')"
                             :prop="'filterList.' + index + '.key'"
                             :rules="{
                                     message: '请选择属性', trigger: 'blur'
@@ -171,6 +177,7 @@
                             <el-select
                                 placeholder="请选择属性"
                                 v-model="item.key"
+                                @change="handleRuleDataChange(index, 'key', 'filterList')"
                                 filterable
                                 @focus="getProperty(item)"
                             >
@@ -185,12 +192,15 @@
                         <el-form-item
                             class="form-item"
                             :prop="'filterList.' + index + '.op'"
-                            @change="handleRuleDataChange(index, 'op', 'filterList')"
                             :rules="{
                                     message: '请选择比较方式', trigger: 'blur'
                                 }"
                         >
-                            <el-select placeholder="请选择比较模式" v-model="item.op">
+                            <el-select
+                                placeholder="请选择比较模式"
+                                @change="handleRuleDataChange(index, 'op', 'filterList')"
+                                v-model="item.op"
+                            >
                                 <el-option label=">" value=">"></el-option>
                                 <el-option label=">=" value=">="></el-option>
                                 <el-option label="<" value="<"></el-option>
@@ -246,7 +256,6 @@
                         <template v-if="item.type === 'device'">
                             <el-form-item
                                 class="form-item"
-                                @change="handleRuleDataChange(index, 'pid', 'actionList')"
                                 :prop="'actionList.' + index + '.pid'"
                                 :rules="{
                                     required: true, message: '请选择产品', trigger: 'blur'
@@ -255,6 +264,7 @@
                                 <el-select
                                     placeholder="请选择产品"
                                     v-model="item.pid"
+                                    @change="handleRuleDataChange(index, 'pid', 'actionList')"
                                     @focus="getProduct"
                                 >
                                     <el-option
@@ -268,7 +278,6 @@
                             <el-form-item
                                 class="form-item"
                                 :prop="'actionList.' + index + '.did'"
-                                @change="handleRuleDataChange(index, 'did', 'actionList')"
                                 :rules="{
                                     required: true, message: '请选择设备', trigger: 'blur'
                                 }"
@@ -276,6 +285,7 @@
                                 <el-select
                                     placeholder="请选择设备"
                                     v-model="item.did"
+                                    @change="handleRuleDataChange(index, 'did', 'actionList')"
                                     filterable
                                     @focus="getDevice(item)"
                                 >
@@ -290,7 +300,6 @@
                             <el-form-item
                                 class="form-item"
                                 :prop="'actionList.' + index + '.key'"
-                                @change="handleRuleDataChange(index, 'key', 'actionList')"
                                 :rules="{
                                     required: true, message: '请选择属性', trigger: 'blur'
                                 }"
@@ -300,7 +309,7 @@
                                     v-model="item.key"
                                     filterable
                                     @focus="getProperty(item)"
-                                    @change="getMetaData"
+                                    @change="handleRuleDataChange(index, 'key', 'actionList')"
                                 >
                                     <el-option
                                         v-for="property in propertyList.filter(item => item.permission === 'RW' || item.permission === 'WO')"
@@ -318,6 +327,7 @@
                                 }"
                             >
                                 <el-select
+                                    @focus="getMetaData(item)"
                                     v-model="item.value"
                                     placeholder="请输入或选择值"
                                     allow-create
@@ -584,7 +594,7 @@ export default {
         getMetaData(value) {
             this.metaData = [];
             const curProp = this.propertyList.find(
-                item => item.label === value
+                item => item.label === value.key.label
             );
             if (curProp) {
                 const dataType = curProp.dataType;

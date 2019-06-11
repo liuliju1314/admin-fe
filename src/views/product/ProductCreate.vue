@@ -85,7 +85,7 @@
                             }"
                                 style="display: inline-block;width: 25%;"
                             >
-                                <el-input v-model="item.name" :disabled="!isCreating && item.name"></el-input>
+                                <el-input v-model="item.name" :disabled="!isCreate && item.name"></el-input>
                             </el-form-item>
                             <span
                                 class="span"
@@ -135,13 +135,13 @@
                     <el-button
                         @click="beforeClose"
                         style="padding: 10px 22px"
-                        :disabled="isCreating"
+                        :disabled="isSubmit"
                     >取消</el-button>
                     <el-button
                         type="primary"
                         @click="isCreatOrEdit"
                         style="padding: 10px 22px"
-                        :disabled="isCreating"
+                        :disabled="isSubmit"
                     >确定</el-button>
                 </el-form-item>
             </el-form>
@@ -227,7 +227,8 @@ export default {
                     }
                 ]
             },
-            isCreating: false
+            isCreate: false, //储存当前组件处于编辑或创建状态
+            isSubmit: false //用于储存正在提交状态
         };
     },
     watch: {
@@ -236,10 +237,10 @@ export default {
                 if (this.product && this.visible) {
                     this.form = Object.assign({}, this.form, this.product);
                     this.title = "产品编辑";
-                    this.isCreating = false;
+                    this.isCreate = false;
                 } else {
                     this.title = "添加产品";
-                    this.isCreating = true;
+                    this.isCreate = true;
                 }
             });
         }
@@ -247,7 +248,7 @@ export default {
     methods: {
         beforeClose() {
             this.$refs.form.resetFields();
-            this.isCreating = false;
+            this.isSubmit = false;
             setTimeout(() => {
                 this.$emit("listenOp", false);
             }, 0);
@@ -256,7 +257,7 @@ export default {
         isCreatOrEdit() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    this.isCreating = true;
+                    this.isSubmit = true;
                     if (this.product) {
                         this.$store
                             .dispatch("BaseInfoSet", this.form)
@@ -277,7 +278,7 @@ export default {
                                     message: "更新失败",
                                     duration: 500
                                 });
-                                this.isCreating = false;
+                                this.isSubmit = false;
                             });
                     } else {
                         addProduct(this.form)
@@ -294,7 +295,7 @@ export default {
                                     message: "产品创建失败",
                                     duration: 500
                                 });
-                                this.isCreating = false;
+                                this.isSubmit = false;
                             });
                     }
                 }
