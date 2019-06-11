@@ -24,18 +24,17 @@
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="handleeEquipment">查询</el-button>
-                <el-button @click="batchVisible=true">批量添加设备</el-button>
                 <el-button @click="virtualVisible=true">添加虚拟设备</el-button>
                 <el-button @click="switchVirtualDevice(true)">批量启动虚拟设备</el-button>
                 <el-button @click="switchVirtualDevice(false)">批量关闭虚拟设备</el-button>
-                <el-dropdown @command="handleCommand">
+                <el-dropdown @command="handleMoreOp">
                     <span class="el-dropdown-link">
                         更多操作
                         <i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command="close">批量禁用虚拟设备</el-dropdown-item>
-                        <el-dropdown-item command="open">取消禁用虚拟设备</el-dropdown-item>
+                        <el-dropdown-item command="close">批量禁用设备</el-dropdown-item>
+                        <el-dropdown-item command="open">取消禁用设备</el-dropdown-item>
                         <el-dropdown-item command="delete">批量删除虚拟设备</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -54,22 +53,6 @@
         >
             <el-table-column type="selection"></el-table-column>
             <el-table-column prop="did" label="设备编号"></el-table-column>
-            <el-table-column label="设备秘钥">
-                <template slot-scope="scope">
-                    {{scope.row.deviceSecret}}
-                    <el-button
-                        class="copy-box"
-                        size="mini"
-                        @click="copyPid(scope.row.deviceSecret)"
-                        round
-                    >复制</el-button>
-                </template>
-            </el-table-column>
-            <el-table-column label="设备类型">
-                <template
-                    slot-scope="scope"
-                >{{handleFormatter(scope.row, 'deviceType', scope.row.deviceType)}}</template>
-            </el-table-column>
             <el-table-column prop="group" label="设备分组">
                 <template slot-scope="scope">
                     <el-select
@@ -86,7 +69,10 @@
             </el-table-column>
             <el-table-column label="软件版本号">
                 <template slot-scope="scope">
-                    <div>{{ handleFormatter(scope.row, 'fwVersion', scope.row.fwVersion) }}</div>
+                    <div
+                        v-for="(value, key, index) in scope.row.fwVersion"
+                        :key="index"
+                    >{{key}}: {{value}}</div>
                     <el-button
                         type="text"
                         size="small"
@@ -111,12 +97,17 @@
                     <span>{{ handleFormatter(scope.row, 'status', scope.row.status) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="enable" label="是否禁用"></el-table-column>
+            <el-table-column prop="enable" label="禁用状态"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click="expandDetail(scope.row)">查看</el-button>
                     <el-button type="text" size="small" @click="handleUpgrade(scope.row)">升级</el-button>
-                    <el-button type="text" size="small" @click="handleDelete(scope.row)">删除</el-button>
+                    <el-button
+                        v-if="scope.row.deviceType !== 'true'"
+                        type="text"
+                        size="small"
+                        @click="handleDelete(scope.row)"
+                    >删除</el-button>
                     <el-button type="text" size="small" @click="handleState(scope.row)">运行状态</el-button>
                 </template>
             </el-table-column>
@@ -159,54 +150,6 @@
                     <vue-progress :progress="item.progress"></vue-progress>
                 </el-col>
             </el-row>
-        </el-dialog>
-        <el-dialog title="批量添加设备" :visible.sync="batchVisible" :before-close="handleClose" center>
-            <el-form
-                size="small"
-                style="margin: auto;"
-                ref="batchForm"
-                :rules="rules"
-                :model="batchForm"
-            >
-                <el-form-item label="添加方式：" prop="addMothod">
-                    <el-radio-group v-model="batchForm.addMothod">
-                        <el-radio label="auto">自动生成</el-radio>
-                        <el-radio label="manual">批量上传</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="设备数量：" prop="deviceNum" v-if="batchForm.addMothod === 'auto'">
-                    <el-input-number v-model="batchForm.deviceNum" :min="1" label="描述文字"></el-input-number>
-                </el-form-item>
-                <el-form-item label="上传设备文件：" prop="file" v-if="batchForm.addMothod === 'manual'">
-                    <div class="upload-demo">
-                        <div tabindex="0" class="el-upload el-upload--text">
-                            <button
-                                type="button"
-                                class="el-button el-button--primary el-button--small"
-                            >
-                                <i class="el-icon-upload"></i>
-                                <span>选择文件</span>
-                            </button>
-                            <input
-                                type="file"
-                                name="file"
-                                class="el-upload__input"
-                                @change="addFile($event)"
-                            >
-                        </div>
-                        <span>{{this.fileName}}</span>
-                        <el-button type="text" style="margin: 0 10px" @click="downloadTems">下载csv模板</el-button>
-                    </div>
-                </el-form-item>
-                <el-form-item>
-                    <el-button
-                        type="primary"
-                        v-if="batchForm.addMothod === 'auto'"
-                        @click="autoAddDevs"
-                    >确定并导出证书</el-button>
-                    <el-button type="primary" v-else @click="uploadDevsFile">确定</el-button>
-                </el-form-item>
-            </el-form>
         </el-dialog>
         <el-dialog title="添加虚拟设备" :visible.sync="virtualVisible" :before-close="handleClose" center>
             <el-form
@@ -493,43 +436,11 @@ export default {
         // 格式化表单显示
         handleFormatter(row, column, cellValue) {
             const prop = column.property || column;
-            let result;
-            switch (prop) {
-                case "status":
-                    if (cellValue === 0) {
-                        result = "未知状态";
-                    } else if (cellValue === 1) {
-                        result = "在线";
-                    } else if (cellValue === 2) {
-                        result = "离线";
-                    }
-                    break;
-                case "fwVersion":
-                    if (cellValue) {
-                        let reg = /\{|\}/g;
-                        result = JSON.stringify(cellValue).replace(reg, "");
-                    }
-                    break;
-                case "firmwareStatus":
-                    if (cellValue === 0) {
-                        result = "正常";
-                    } else if (cellValue === 1) {
-                        result = "正在升级";
-                    } else if (cellValue === 2) {
-                        result = "升级完成";
-                    } else if (cellValue === 3) {
-                        result = "升级失败";
-                    }
-                    break;
-                case "deviceType":
-                    if (cellValue === "virtual") {
-                        result = "虚拟设备";
-                    } else if (cellValue === "true") {
-                        result = "真实设备";
-                    }
-                    break;
-            }
-            return result;
+            const obj = {
+                status: ["未知状态", "在线", "离线"],
+                firmwareStatus: ["正常", "正在升级", "升级成功", "升级失败"]
+            };
+            return obj[prop][cellValue];
         },
         // 跳转至运行状态接口
         handleState(value) {
@@ -544,11 +455,6 @@ export default {
             this.getDevice();
             this.upgradeVisible = false;
         },
-        // 设备类型过滤
-        // filterDeviceType(value, row, column) {
-        //     const property = column["property"];
-        //     return row[property] === value;
-        // },
         // table选中状态
         handleSelectionChange(val) {
             this.selectedDevice = val;
@@ -688,7 +594,7 @@ export default {
             }
         },
         // 点击更多按钮时的操作
-        handleCommand(command) {
+        handleMoreOp(command) {
             if (this.selectedDevice) {
                 const hasTrueDevice = this.selectedDevice.some(
                     item => item.deviceType === "true"
