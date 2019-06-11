@@ -9,7 +9,25 @@
             size="small"
         >
             <div v-if="!isEdit">
-                <div style="display: flex" v-for="(item,index) in upload" :key="index">
+                <el-form-item label="固件名称" prop="fwName" v-if="fwNameList.length > 0">
+                    <el-select
+                        v-model="form.fwName"
+                        filterable
+                        default-first-option
+                        placeholder="请选择固件名称"
+                        @change="handleFwName"
+                    >
+                        <el-option
+                            v-for="(item,index) in fwNameList"
+                            :key="index"
+                            :label="item.desc"
+                            :value="item.name"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
+                <div
+                    v-if="fwNameList.find( item => item.type === 'single' && item.name === form.fwName)"
+                >
                     <el-form-item label="选择固件">
                         <div class="upload-demo">
                             <div tabindex="0" class="el-upload el-upload--text">
@@ -24,34 +42,65 @@
                                     type="file"
                                     name="file"
                                     class="el-upload__input"
-                                    @change="addFile(index,$event)"
+                                    @change="addFile('A',$event)"
                                 >
                             </div>
                             <span
                                 class="el-upload-list el-upload-list--text"
-                                v-if="files[index]"
-                            >{{files[index].filename}}</span>
+                                v-if="files[0]"
+                            >{{files[0].filename}}</span>
                         </div>
                     </el-form-item>
-                    <div style="vertical-align: top; margin-left: 10px;">
-                        <el-button
-                            type="text"
-                            icon="el-icon-delete"
-                            size="small"
-                            v-if="index > 0"
-                            @click="deleteUpload(index)"
-                        >删除</el-button>
-                    </div>
                 </div>
-
-                <div style="margin-left: 100px">
-                    <el-button
-                        type="text"
-                        size="small"
-                        style="padding-top: 0"
-                        @click="upload.push( { index: '' })"
-                        v-if="upload.length <= 1"
-                    >+ 新增固件</el-button>
+                <div
+                    v-if="fwNameList.find( item => item.type === 'double' && item.name === form.fwName)"
+                >
+                    <el-form-item label="固件A区">
+                        <div class="upload-demo">
+                            <div tabindex="0" class="el-upload el-upload--text">
+                                <button
+                                    type="button"
+                                    class="el-button el-button--primary el-button--small"
+                                >
+                                    <i class="el-icon-upload"></i>
+                                    <span>选择文件</span>
+                                </button>
+                                <input
+                                    type="file"
+                                    name="file"
+                                    class="el-upload__input"
+                                    @change="addFile('A',$event)"
+                                >
+                            </div>
+                            <span
+                                class="el-upload-list el-upload-list--text"
+                                v-if="files[0]"
+                            >{{files[0].filename}}</span>
+                        </div>
+                    </el-form-item>
+                    <el-form-item label="固件B区">
+                        <div class="upload-demo">
+                            <div tabindex="0" class="el-upload el-upload--text">
+                                <button
+                                    type="button"
+                                    class="el-button el-button--primary el-button--small"
+                                >
+                                    <i class="el-icon-upload"></i>
+                                    <span>选择文件</span>
+                                </button>
+                                <input
+                                    type="file"
+                                    name="file"
+                                    class="el-upload__input"
+                                    @change="addFile('B',$event)"
+                                >
+                            </div>
+                            <span
+                                class="el-upload-list el-upload-list--text"
+                                v-if="files[1]"
+                            >{{files[1].filename}}</span>
+                        </div>
+                    </el-form-item>
                 </div>
             </div>
 
@@ -68,21 +117,6 @@
                     v-model="form.version"
                     placeholder="建议采用版本递增进行管理,如：1.0.0"
                 ></el-input>
-            </el-form-item>
-            <el-form-item label="固件名称" prop="fwName" v-if="fwNameList.length > 0">
-                <el-select
-                    v-model="form.fwName"
-                    filterable
-                    default-first-option
-                    placeholder="请选择固件名称"
-                >
-                    <el-option
-                        v-for="(item,index) in fwNameList"
-                        :key="index"
-                        :label="item.desc"
-                        :value="item.name"
-                    ></el-option>
-                </el-select>
             </el-form-item>
             <el-form-item label="描述" prop="desc">
                 <el-input type="textarea" v-model="form.desc"></el-input>
@@ -132,7 +166,6 @@ export default {
                 desc: ""
             },
             fwNameList: [],
-            group: ["A", "B"],
             isEdit: false,
             files: [],
             fileList: [],
@@ -195,15 +228,9 @@ export default {
                 this.isCreating = false;
                 this.files = [];
                 this.fileList = [];
-                this.upload = [{ index: "" }];
                 this.$refs.form.resetFields();
             });
             this.$emit("listenAdd", false);
-        },
-        deleteUpload(index) {
-            this.upload.splice(index, 1);
-            this.fileList.splice(index, 1);
-            this.files.splice(index, 1);
         },
         // 获取固件名称
         getFwName() {
@@ -220,7 +247,7 @@ export default {
                 });
         },
         // 文件上传成功后返回值
-        addFile(index, event) {
+        addFile(group, event) {
             let files = event.target.files;
             if (files.length === 0) {
                 return;
@@ -235,16 +262,23 @@ export default {
                 this.$message.error("读取文件失败");
             };
             reader.onload = () => {
-                this.files.length = this.upload.length;
+                const index = group === "A" ? 0 : 1;
                 this.files.splice(index, 1, {
-                    zone: this.group[index].charCodeAt(),
+                    zone: group.charCodeAt(),
                     size: files[0].size,
                     filename: files[0].name
                 });
-
                 this.fileList.push(files[0]);
+                event.target.value = "";
             };
             reader.readAsArrayBuffer(files[0]);
+        },
+        handleFwName(value) {
+            this.files = this.fileList = [];
+            const isDouble = this.fwNameList.find(
+                item => item.type === "double" && item.name === value
+            );
+            this.files.length = isDouble ? 2 : 1;
         },
         addfirmware() {
             this.$refs.form.validate(valid => {
@@ -252,8 +286,9 @@ export default {
                     this.isCreating = true;
                     if (!this.isEdit) {
                         let formData = new FormData();
+                        let group = ["A", "B"];
                         this.fileList.forEach((item, index) => {
-                            formData.append(`file${this.group[index]}`, item);
+                            formData.append(`file${group[index]}`, item);
                         });
                         const data = {
                             ...this.form,
