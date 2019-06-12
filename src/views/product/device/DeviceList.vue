@@ -79,14 +79,14 @@
                         size="small"
                         style="margin-left: 10px;"
                         @click="getOtaDetail(scope.row.did)"
-                        v-if="scope.row.firmwareStatus === 1"
+                        v-if="scope.row.firmwareStatus === 2"
                     >升级进度</el-button>
                 </template>
             </el-table-column>
             <el-table-column label="固件升级状态">
                 <template slot-scope="scope">
                     <span
-                        :class="scope.row.firmwareStatus === 3?'blue':''"
+                        :class="scope.row.firmwareStatus === 4?'blue':''"
                         @click="upgradeFailed(scope.row)"
                     >{{ handleFormatter(scope.row, 'firmwareStatus', scope.row.firmwareStatus) }}</span>
                 </template>
@@ -445,7 +445,13 @@ export default {
             // console.log("prop: " + prop);
             const obj = {
                 status: ["未知状态", "在线", "离线"],
-                firmwareStatus: ["待升级", "正在升级", "升级成功", "升级失败"]
+                firmwareStatus: [
+                    "",
+                    "待升级",
+                    "正在升级",
+                    "升级成功",
+                    "升级失败"
+                ]
             };
             // console.log("obj[prop][cellValue]: " + obj[prop][cellValue]);
             return obj[prop][cellValue];
@@ -658,8 +664,8 @@ export default {
         },
         // 升级失败详情
         upgradeFailed(value) {
-            this.upgradeFailedVisible = true;
-            if (value.firmwareStatus === 3) {
+            if (value.firmwareStatus === 4) {
+                this.upgradeFailedVisible = true;
                 const data = {
                     did: value.did,
                     pid: value.pid
